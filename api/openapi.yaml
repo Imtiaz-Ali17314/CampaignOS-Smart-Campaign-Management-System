@@ -1,0 +1,182 @@
+openapi: 3.0.0
+info:
+  title: CampaignOS Management API
+  description: API for managing marketing campaigns, clients, and alerts.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        created_at: { type: string, format: date-time }
+
+    Client:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        industry: { type: string }
+        created_at: { type: string, format: date-time }
+
+    Campaign:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        client_id: { type: string, format: uuid }
+        name: { type: string }
+        status: { type: string, enum: [active, paused, completed, draft] }
+        budget: { type: number }
+        spend: { type: number }
+        impressions: { type: integer }
+        clicks: { type: integer }
+        conversions: { type: integer }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        ctr: { type: number }
+        roas: { type: number }
+        spend_pct: { type: number }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+        details: { type: string }
+
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  user: { $ref: '#/components/schemas/User' }
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /campaigns:
+    get:
+      summary: List all campaigns
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: client_id
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        200:
+          description: A list of campaigns
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campaigns:
+                    type: array
+                    items: { $ref: '#/components/schemas/Campaign' }
+                  pagination:
+                    type: object
+                    properties:
+                      total: { type: integer }
+                      page: { type: integer }
+                      totalPages: { type: integer }
+    post:
+      summary: Create a new campaign
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                client_id: { type: string, format: uuid }
+                budget: { type: number }
+                status: { type: string }
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Campaign' }
+        422:
+          description: Validation failed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /campaigns/{id}:
+    get:
+      summary: Get campaign details
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        200:
+          description: Campaign found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Campaign' }
+        404:
+          description: Not found
+    put:
+      summary: Update a campaign
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        200:
+          description: Updated
+        404:
+          description: Not found
+    delete:
+      summary: Soft-delete a campaign
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        204:
+          description: No Content
+        404:
+          description: Not found
