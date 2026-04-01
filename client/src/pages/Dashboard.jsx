@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { 
   TrendingUp, 
   MousePointer2, 
@@ -9,7 +9,6 @@ import {
   Bell,
   Menu
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { subDays } from 'date-fns';
 
 import KPICard from '../components/dashboard/KPICard';
@@ -17,6 +16,7 @@ import PerformanceTrend from '../components/dashboard/PerformanceTrend';
 import CampaignTable from '../components/dashboard/CampaignTable';
 import DateRangePicker from '../components/dashboard/DateRangePicker';
 import Sidebar from '../components/dashboard/Sidebar';
+import NotificationBell from '../components/notifications/NotificationBell';
 import useDarkMode from '../hooks/useDarkMode';
 
 import campaignData from '../data/campaigns.json';
@@ -104,14 +104,7 @@ const Dashboard = () => {
               {dark ? <Sun size={20} /> : <Moon size={20} />}
             </motion.button>
 
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 sm:p-3 bg-card border border-border rounded-xl text-muted-foreground hover:bg-muted transition-all relative"
-            >
-              <Bell size={20} />
-              <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 border-2 border-[var(--card)] bg-red-500 rounded-full" />
-            </motion.button>
+            <NotificationBell />
 
             <div className="h-10 sm:h-12 w-10 sm:w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary cursor-pointer hover:bg-primary/20 transition-all">
               IA
