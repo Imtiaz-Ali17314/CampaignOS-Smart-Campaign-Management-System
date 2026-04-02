@@ -20,7 +20,13 @@ const NotificationBell = () => {
 
     const socket = io(WS_URL, {
       auth: { token },
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      reconnection: false,
+      timeout: 5000
+    });
+
+    socket.on('connect_error', () => {
+      console.warn('Real-time notification bridge inactive. Operating in offline/mock mode.');
     });
 
     socket.on('connect', () => {

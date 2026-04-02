@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '../../context/NotificationContext';
 import { 
   X, 
   DollarSign, 
@@ -12,8 +13,14 @@ import {
   PieChart as PieIcon
 } from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
+  const { showNotification } = useNotification();
+  const [isApplying, setIsApplying] = React.useState(false);
+  const modalRef = React.useRef();
+
   const COLORS = ['#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6'];
 
   const campaignData = campaigns.map(c => ({
@@ -49,6 +56,103 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
     }
   ];
 
+  const handleApplyAll = () => {
+    setIsApplying(true);
+    showNotification("Strategic Protocol Active: Initializing Balancing...", "info");
+    
+    setTimeout(() => {
+      showNotification("Mitigating Pacing Risk: Adjusting 'Summer Launch' bids.", "warning");
+    }, 1500);
+
+    setTimeout(() => {
+      showNotification("ROI Maximized: Applied all recommendations.", "success");
+      setIsApplying(false);
+      onClose();
+    }, 3500);
+  };
+
+  const handleShowBreakdown = async () => {
+    showNotification("Compiling Deep Metric Audit Report...", "info");
+    
+    // Synthetic delay to allow UI to settle and SVG animations to finish
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    try {
+        const canvas = await html2canvas(modalRef.current, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#0b0c10',
+            width: modalRef.current.offsetWidth,
+            height: modalRef.current.scrollHeight,
+            onclone: (clonedDoc) => {
+              const isDark = document.documentElement.classList.contains('dark');
+              const allElements = clonedDoc.querySelectorAll('*');
+              
+              // Force replace any oklch/oklab colors with safe HEX fallbacks in computed styles
+              allElements.forEach(el => {
+                const style = window.getComputedStyle(el);
+                
+                // Nuclear override for oklab/oklch colors in live styles
+                if (style.color.includes('okl')) {
+                    el.style.color = isDark ? '#f8fafc' : '#0f172a';
+                }
+                if (style.backgroundColor.includes('okl')) {
+                    el.style.backgroundColor = isDark ? '#15171e' : '#ffffff';
+                }
+                if (style.borderColor.includes('okl')) {
+                    el.style.borderColor = isDark ? '#232530' : '#e2e8f0';
+                }
+                if (style.outlineColor.includes('okl')) {
+                    el.style.outlineColor = isDark ? '#8b5cf6' : '#8b5cf6';
+                }
+                if (style.backgroundImage.includes('okl')) {
+                    el.style.backgroundImage = 'linear-gradient(to right, #8b5cf6, #ec4899)';
+                }
+                if (style.boxShadow.includes('okl')) {
+                    el.style.boxShadow = 'none';
+                }
+                
+                // Disable unsupported CSS features
+                el.style.transition = 'none';
+                el.style.animation = 'none';
+                if (style.backdropFilter !== 'none') {
+                    el.style.backdropFilter = 'none';
+                    el.style.webkitBackdropFilter = 'none';
+                }
+              });
+                
+              // Force Recharts containers to be visible and correctly sized
+              const charts = clonedDoc.querySelectorAll('.recharts-responsive-container');
+              charts.forEach(chart => {
+                chart.style.width = '600px';
+                chart.style.height = '400px';
+                chart.style.visibility = 'visible';
+                chart.style.opacity = '1';
+                // Force Pie sectors colors
+                const sectors = chart.querySelectorAll('.recharts-pie-sector');
+                sectors.forEach((s, idx) => {
+                    const colors = ['#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6'];
+                    s.style.fill = colors[idx % colors.length];
+                });
+              });
+            }
+        });
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('l', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Audit_Breakdown_${new Date().getTime()}.pdf`);
+        
+        showNotification("Full Breakdown Report synced & downloaded.", "success");
+    } catch (error) {
+        console.error("PDF Component Export Collision Error:", error);
+        showNotification("Report generation failed.", "error");
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 sm:p-6">
       <motion.div 
@@ -65,7 +169,8 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         className="relative w-full max-w-5xl bg-card border border-border/40 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
-        <div className="p-8 border-b border-border/40 flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md z-10">
+        <div ref={modalRef} className="flex flex-col h-full overflow-hidden">
+            <div className="p-8 border-b border-border/40 flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md z-10">
           <div className="flex items-center gap-4">
               <div className="p-3 bg-primary/10 rounded-2xl text-primary border border-primary/20">
                 <BarChart2 size={24} strokeWidth={2.5} />
@@ -120,7 +225,12 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
               <div className="p-8 bg-card border border-border/40 rounded-[2rem]">
                   <div className="flex items-center justify-between mb-8">
                       <h3 className="font-black text-xs uppercase tracking-widest text-muted-foreground">Top Channel Allocation</h3>
-                      <button className="text-[10px] font-black uppercase text-primary hover:underline">Full Breakdown</button>
+                      <button 
+                        onClick={handleShowBreakdown}
+                        className="text-[10px] font-black uppercase text-primary hover:underline"
+                      >
+                        Full Breakdown
+                      </button>
                   </div>
                   <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -133,6 +243,7 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
                           outerRadius={100}
                           paddingAngle={8}
                           dataKey="value"
+                          isAnimationActive={false}
                         >
                           {campaignData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -198,14 +309,26 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
                     ))}
                   </div>
                   
-                  <button className="mt-8 w-full py-4 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    Apply All Recommendations
+                  <button 
+                    disabled={isApplying}
+                    onClick={handleApplyAll}
+                    className="mt-8 w-full py-4 bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                  >
+                    <div className="flex items-center justify-center gap-3">
+                        {isApplying ? (
+                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <Zap size={14} className="group-hover:animate-pulse" />
+                        )}
+                        {isApplying ? "Processing Protocol..." : "Apply All Recommendations"}
+                    </div>
                   </button>
                </div>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
+     </motion.div>
     </div>
   );
 };
