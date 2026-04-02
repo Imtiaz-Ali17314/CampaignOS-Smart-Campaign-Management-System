@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, 
   MousePointer2, 
@@ -28,8 +29,9 @@ import useDarkMode from '../hooks/useDarkMode';
 import campaignData from '../data/campaigns.json';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [dark, setDark] = useDarkMode();
-  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{"email": "Guest"}');
   const [viewRange, setViewRange] = React.useState(() => {
     const end = new Date();
@@ -196,11 +198,17 @@ const Dashboard = () => {
                     </div>
                     
                     <div className="space-y-1">
-                      <button className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-2xl transition-all">
+                      <button 
+                        onClick={() => navigate('/settings?tab=profile')}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                      >
                         <User size={16} />
                         Strategic Profile
                       </button>
-                      <button className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-2xl transition-all">
+                      <button 
+                        onClick={() => navigate('/settings?tab=ai')}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-2xl transition-all"
+                      >
                         <SettingsIcon size={16} />
                         Global Config
                       </button>
