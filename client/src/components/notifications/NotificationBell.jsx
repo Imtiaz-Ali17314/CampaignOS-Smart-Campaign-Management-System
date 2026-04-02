@@ -9,6 +9,7 @@ const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:4000';
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState('alerts'); // 'alerts' or 'history'
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
 
@@ -52,6 +53,7 @@ const NotificationBell = () => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+        setView('alerts');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -69,7 +71,10 @@ const NotificationBell = () => {
         whileTap={{ scale: 0.95 }}
         onClick={() => {
           setIsOpen(!isOpen);
-          if (!isOpen) markAllAsRead();
+          if (!isOpen) {
+            markAllAsRead();
+            setView('alerts');
+          }
         }}
         className={`p-3 bg-card border border-border/60 rounded-2xl text-muted-foreground hover:bg-muted/50 hover:text-primary transition-all relative shadow-sm ${unreadCount > 0 ? 'ring-2 ring-primary/20' : ''}`}
       >
@@ -97,61 +102,83 @@ const NotificationBell = () => {
             <div className="p-6 border-b border-border/40 flex items-center justify-between bg-muted/5 backdrop-blur-xl">
               <div className="flex items-center gap-3">
                  <h3 className="font-black text-xs uppercase tracking-[0.2em] text-foreground flex items-center gap-2">
-                    Alerts
-                    {notifications.length > 0 && (
+                    {view === 'alerts' ? 'Live Alerts' : 'Strategic History'}
+                    {view === 'alerts' && notifications.length > 0 && (
                     <span className="bg-primary/20 text-primary px-2 py-0.5 rounded-full text-[10px] font-bold">
                         {notifications.length}
                     </span>
                     )}
                 </h3>
               </div>
-              <button 
-                onClick={() => setNotifications([])}
-                className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-rose-500 transition-colors"
-              >
-                Flush All
-              </button>
+              {view === 'alerts' ? (
+                <button 
+                  onClick={() => setNotifications([])}
+                  className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-rose-500 transition-colors"
+                >
+                  Flush All
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setView('alerts')}
+                  className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline transition-all"
+                >
+                  Back to Live
+                </button>
+              )}
             </div>
 
             <div className="max-h-[450px] overflow-y-auto scrollbar-hide bg-card/40 backdrop-blur-3xl">
-              {notifications.length === 0 ? (
-                <div className="p-20 flex flex-col items-center justify-center text-center opacity-30">
-                  <div className="p-5 bg-muted/20 rounded-3xl mb-4 border border-border/40">
-                    <Bell size={40} strokeWidth={1} />
-                  </div>
-                  <p className="text-sm font-black tracking-tight text-foreground uppercase tracking-widest">System Clear</p>
-                  <p className="text-[10px] font-bold mt-1 max-w-[120px]">No critical threshold violations detected.</p>
-                </div>
-              ) : (
-                <div className="divide-y divide-border/10">
-                  {notifications.map((notif) => (
-                    <div key={notif.id} className="p-6 hover:bg-muted/30 transition-colors flex gap-5 items-start group">
-                      <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-500 mt-0.5 shrink-0 border border-rose-500/20 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300">
-                        <AlertCircle size={18} strokeWidth={2.5} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1.5 border-b border-border/10 pb-1.5">
-                          <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary truncate">
-                            {notif.campaign_name || 'System Broadcast'}
-                          </span>
-                          <span className="text-[9px] font-bold text-muted-foreground/60 uppercase flex items-center gap-1 shrink-0">
-                            <Clock size={10} strokeWidth={3} />
-                            {format(new Date(notif.triggered_at), 'HH:mm')}
-                          </span>
-                        </div>
-                        <p className="text-sm text-foreground/80 leading-snug font-medium line-clamp-3">
-                          {notif.message}
-                        </p>
-                      </div>
+              {view === 'history' ? (
+                 <div className="p-10 text-center">
+                    <div className="p-5 bg-primary/5 rounded-3xl mb-4 border border-primary/10 inline-block">
+                        <Clock size={32} className="text-primary" />
                     </div>
-                  ))}
-                </div>
+                    <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Audit Trail Active</p>
+                    <p className="text-[10px] text-muted-foreground font-medium px-6">All historical strategies and threshold violations are being indexed in the master log.</p>
+                 </div>
+              ) : (
+                notifications.length === 0 ? (
+                    <div className="p-20 flex flex-col items-center justify-center text-center opacity-30">
+                      <div className="p-5 bg-muted/20 rounded-3xl mb-4 border border-border/40">
+                        <Bell size={40} strokeWidth={1} />
+                      </div>
+                      <p className="text-sm font-black tracking-tight text-foreground uppercase tracking-widest">System Clear</p>
+                      <p className="text-[10px] font-bold mt-1 max-w-[120px]">No critical threshold violations detected.</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-border/10">
+                      {notifications.map((notif) => (
+                        <div key={notif.id} className="p-6 hover:bg-muted/30 transition-colors flex gap-5 items-start group">
+                          <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-500 mt-0.5 shrink-0 border border-rose-500/20 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300">
+                            <AlertCircle size={18} strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1.5 border-b border-border/10 pb-1.5">
+                              <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary truncate">
+                                {notif.campaign_name || 'System Broadcast'}
+                              </span>
+                              <span className="text-[9px] font-bold text-muted-foreground/60 uppercase flex items-center gap-1 shrink-0">
+                                <Clock size={10} strokeWidth={3} />
+                                {format(new Date(notif.triggered_at), 'HH:mm')}
+                              </span>
+                            </div>
+                            <p className="text-sm text-foreground/80 leading-snug font-medium line-clamp-3">
+                              {notif.message}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )
               )}
             </div>
             
             <div className="p-5 bg-muted/10 border-t border-border/20 mt-auto">
-              <button className="w-full py-3 text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:bg-primary/10 rounded-xl transition-all border border-primary/20">
-                Strategic History
+              <button 
+                onClick={() => setView(view === 'alerts' ? 'history' : 'alerts')}
+                className="w-full py-3 text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:bg-primary/10 rounded-xl transition-all border border-primary/20"
+              >
+                {view === 'alerts' ? 'Strategic History' : 'View Live Alerts'}
               </button>
             </div>
           </motion.div>
