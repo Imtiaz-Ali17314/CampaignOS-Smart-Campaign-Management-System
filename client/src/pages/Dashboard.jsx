@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
   const [campaigns, setCampaigns] = useState(campaignData.campaigns);
+  const [selectedClient, setSelectedClient] = useState(null);
   const [viewRange, setViewRange] = useState(() => {
     const end = new Date();
     end.setHours(23, 59, 59, 999);
@@ -72,16 +73,18 @@ const Dashboard = () => {
 
   const metricsInRange = useMemo(() => {
     const metrics = [];
-    campaigns.forEach(c => {
-      c.dailyMetrics.forEach(m => {
-        const mDate = new Date(m.date);
-        if (mDate >= viewRange.start && mDate <= viewRange.end) {
-          metrics.push({ ...m, campaignId: c.id, budget: c.budget / c.dailyMetrics.length }); // Mock budget per day
-        }
+    campaigns
+      .filter(c => !selectedClient || c.client === selectedClient)
+      .forEach(c => {
+        c.dailyMetrics.forEach(m => {
+          const mDate = new Date(m.date);
+          if (mDate >= viewRange.start && mDate <= viewRange.end) {
+            metrics.push({ ...m, campaignId: c.id, budget: c.budget / c.dailyMetrics.length }); // Mock budget per day
+          }
+        });
       });
-    });
     return metrics;
-  }, [campaigns, viewRange]);
+  }, [campaigns, viewRange, selectedClient]);
 
   const stats = useMemo(() => {
     const totalImpressions = metricsInRange.reduce((acc, m) => acc + m.impressions, 0);
@@ -110,22 +113,24 @@ const Dashboard = () => {
   }, [metricsInRange, campaigns]);
 
   const campaignsWithRangeStats = useMemo(() => {
-    return campaigns.map(c => {
-      const rangeMetrics = c.dailyMetrics.filter(m => {
-        const mDate = new Date(m.date);
-        return mDate >= viewRange.start && mDate <= viewRange.end;
-      });
+    return campaigns
+      .filter(c => !selectedClient || c.client === selectedClient)
+      .map(c => {
+        const rangeMetrics = c.dailyMetrics.filter(m => {
+          const mDate = new Date(m.date);
+          return mDate >= viewRange.start && mDate <= viewRange.end;
+        });
 
-      return {
-        ...c,
-        impressions: rangeMetrics.reduce((acc, m) => acc + m.impressions, 0),
-        clicks: rangeMetrics.reduce((acc, m) => acc + m.clicks, 0),
-        conversions: rangeMetrics.reduce((acc, m) => acc + m.conversions, 0),
-        spend: rangeMetrics.reduce((acc, m) => acc + m.spend, 0)
-        // Note: we keep the original budget for the campaign
-      };
-    }).filter(c => c.impressions > 0 || c.spend > 0); // Only show active campaigns in this range
-  }, [campaigns, viewRange]);
+        return {
+          ...c,
+          impressions: rangeMetrics.reduce((acc, m) => acc + m.impressions, 0),
+          clicks: rangeMetrics.reduce((acc, m) => acc + m.clicks, 0),
+          conversions: rangeMetrics.reduce((acc, m) => acc + m.conversions, 0),
+          spend: rangeMetrics.reduce((acc, m) => acc + m.spend, 0)
+          // Note: we keep the original budget for the campaign
+        };
+      }).filter(c => c.impressions > 0 || c.spend > 0); // Only show active campaigns in this range
+  }, [campaigns, viewRange, selectedClient]);
 
   // Combined daily metrics for the chart
   const combinedChartData = useMemo(() => {
@@ -183,7 +188,11 @@ const Dashboard = () => {
 
   return (
     <div className="flex bg-background min-h-screen text-foreground selection:bg-primary/20">
-      <Sidebar campaigns={campaigns} />
+      <Sidebar 
+          campaigns={campaigns} 
+          onClientSelect={setSelectedClient} 
+          activeClient={selectedClient} 
+      />
       
       <main className="flex-1 overflow-x-hidden pt-6 sm:pt-10">
         <header className="max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center justify-between mb-12 gap-8 relative z-50">
@@ -196,18 +205,21 @@ const Dashboard = () => {
             </motion.div>
             <div>
               <motion.h1 
+                key={selectedClient || 'overview'}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 leading-none"
               >
-                Strategy <span className="gradient-text">Overview</span>
+                Strategy <span className="gradient-text">{selectedClient || 'Overview'}</span>
               </motion.h1>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Live System
+                  {selectedClient ? `${selectedClient} Portfolio` : 'Global System'}
                 </div>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">Last Sync: 2m ago</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
+                   {selectedClient ? 'Filtered View' : 'Last Sync: 2m ago'}
+                </span>
               </div>
             </div>
           </div>

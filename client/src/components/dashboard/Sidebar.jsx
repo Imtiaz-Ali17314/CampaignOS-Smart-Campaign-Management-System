@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Sidebar = ({ campaigns }) => {
+const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   
   const clients = Array.from(new Set(campaigns.map(c => c.client))).map(clientName => ({
@@ -22,7 +22,6 @@ const Sidebar = ({ campaigns }) => {
   const menuItems = [
     { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/brief-builder', icon: FileEdit, label: 'Brief Builder' },
-    { path: '/settings', icon: Settings, label: 'Settings' }
   ];
 
   return (
@@ -57,7 +56,7 @@ const Sidebar = ({ campaigns }) => {
 
       <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto overflow-x-hidden pt-2 scrollbar-hide">
         {!isCollapsed && <p className="px-3 text-[10px] font-black tracking-widest text-muted-foreground/60 uppercase mb-3">Principal Menu</p>}
-        {menuItems.slice(0, 2).map((item) => (
+        {menuItems.map((item) => (
           <NavLink 
             key={item.path}
             to={item.path} 
@@ -88,10 +87,22 @@ const Sidebar = ({ campaigns }) => {
             </div>
           )}
           <div className="space-y-1">
+            {/* NEW: Campaigns Link that resets filter */}
+            <button 
+              onClick={() => onClientSelect(null)}
+              className={`w-full flex items-center p-3 rounded-xl text-sm transition-all ${!activeClient ? 'bg-primary/5 text-primary font-bold' : 'text-muted-foreground hover:bg-muted/30'} ${isCollapsed ? 'justify-center' : ''}`}
+            >
+               <BarChart3 size={16} className={`shrink-0 ${isCollapsed ? '' : 'mr-3'}`} />
+               {!isCollapsed && <span>Campaigns Overview</span>}
+            </button>
+
             {clients.map((client) => (
               <div key={client.name} className="group/item">
-                <button className={`w-full flex items-center p-3 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all ${isCollapsed ? 'justify-center' : ''}`}>
-                  <div className="w-2 h-2 rounded-full bg-primary/40 mr-1.5 group-hover/item:bg-primary transition-colors shrink-0" />
+                <button 
+                  onClick={() => onClientSelect(client.name)}
+                  className={`w-full flex items-center p-3 rounded-xl text-sm transition-all ${activeClient === client.name ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'} ${isCollapsed ? 'justify-center' : ''}`}
+                >
+                  <div className={`w-2 h-2 rounded-full mr-1.5 transition-colors shrink-0 ${activeClient === client.name ? 'bg-primary' : 'bg-primary/40 group-hover/item:bg-primary'}`} />
                   {!isCollapsed && <span className="truncate font-medium">{client.name}</span>}
                 </button>
               </div>
