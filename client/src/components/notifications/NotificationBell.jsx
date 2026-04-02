@@ -70,6 +70,18 @@ const NotificationBell = () => {
     setUnreadCount(0);
   };
 
+  const handleFireTestAlert = () => {
+    const demoAlert = {
+        id: Date.now(),
+        campaign_name: 'Strategic Pulse - DemoMode',
+        message: 'BUDGET BREACH: Campaign "Lumiere Winter Sparkle" has exceeded 95% of its flight projection.',
+        triggered_at: new Date().toISOString(),
+        is_read: false
+    };
+    setNotifications([demoAlert, ...notifications]);
+    setUnreadCount(prev => prev + 1);
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <motion.button 
@@ -88,6 +100,7 @@ const NotificationBell = () => {
         <AnimatePresence>
           {unreadCount > 0 && (
             <motion.span 
+              key="unread-badge"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
@@ -144,12 +157,19 @@ const NotificationBell = () => {
                  </div>
               ) : (
                 notifications.length === 0 ? (
-                    <div className="p-20 flex flex-col items-center justify-center text-center opacity-30">
-                      <div className="p-5 bg-muted/20 rounded-3xl mb-4 border border-border/40">
+                    <div className="p-16 flex flex-col items-center justify-center text-center">
+                      <div className="p-5 bg-muted/20 rounded-3xl mb-4 border border-border/40 opacity-30">
                         <Bell size={40} strokeWidth={1} />
                       </div>
-                      <p className="text-sm font-black tracking-tight text-foreground uppercase tracking-widest">System Clear</p>
-                      <p className="text-[10px] font-bold mt-1 max-w-[120px]">No critical threshold violations detected.</p>
+                      <p className="text-sm font-black tracking-tight text-foreground uppercase tracking-widest opacity-30">System Clear</p>
+                      <p className="text-[10px] font-bold mt-1 text-muted-foreground/40 uppercase max-w-[150px]">No critical threshold violations detected.</p>
+                      
+                      <button 
+                        onClick={handleFireTestAlert}
+                        className="mt-6 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                      >
+                        Fire Strategic Test
+                      </button>
                     </div>
                   ) : (
                     <div className="divide-y divide-border/10">
