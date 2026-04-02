@@ -36,16 +36,39 @@ const Dashboard = () => {
   const [dark, setDark] = useDarkMode();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user') || '{"email": "Guest"}');
-  const [viewRange, setViewRange] = React.useState(() => {
+  const [campaigns, setCampaigns] = useState(campaignData.campaigns);
+  const [viewRange, setViewRange] = useState(() => {
     const end = new Date();
     end.setHours(23, 59, 59, 999);
     const start = subDays(end, 30);
     start.setHours(0, 0, 0, 0);
     return { start, end };
   });
+  
+  const user = JSON.parse(localStorage.getItem('user') || '{"email": "Guest"}');
 
-  const campaigns = campaignData.campaigns;
+  const handleToggleStatus = (id) => {
+    const campaign = campaigns.find(c => c.id === id);
+    if (!campaign) return;
+    
+    const newStatus = campaign.status === 'active' ? 'paused' : 'active';
+    setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
+    showNotification(`Strategic Pulse Update: ${campaign.name} set to ${newStatus}`, "info");
+  };
+
+  const handleComplete = (id) => {
+    const campaign = campaigns.find(c => c.id === id);
+    if (!campaign) return;
+    
+    setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: 'completed' } : c));
+    showNotification(`Objective Met: ${campaign.name} protocol marked as Complete.`, "success");
+  };
+
+  const handleArchive = (id) => {
+    const campaign = campaigns.find(c => c.id === id);
+    setCampaigns(prev => prev.filter(c => c.id !== id));
+    showNotification(`Archiving Protocol Complete: ${campaign?.name || 'Protocol'} moved to cold storage.`, "error");
+  };
 
   const metricsInRange = useMemo(() => {
     const metrics = [];
@@ -377,9 +400,17 @@ const Dashboard = () => {
                     <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{campaigns.length} Active Records</span>
                 </div>
             </div>
-            <div className="glass-card rounded-[2.5rem] border-border/40 overflow-hidden shadow-2xl shadow-black/5">
-                <CampaignTable campaigns={campaignsWithRangeStats} />
-            </div>
+            {/* Campaigns Section */}
+          <div className="glass-card rounded-[2.5rem] border-border/40 overflow-hidden relative group">
+            <div className="absolute inset-0 bg-primary/[0.02] pointer-events-none" />
+            <CampaignTable 
+                campaigns={campaignsWithRangeStats} 
+                onAudit={() => setIsAuditOpen(true)}
+                onToggleStatus={handleToggleStatus}
+                onComplete={handleComplete}
+                onArchive={handleArchive}
+            />
+          </div>
           </div>
         </div>
       </main>

@@ -10,16 +10,18 @@ import {
   Clock,
   ArrowUpDown,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from 'lucide-react';
-
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/NotificationContext';
 
-const CampaignTable = ({ campaigns }) => {
+const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchive }) => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeMenu, setActiveMenu] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
@@ -114,7 +116,7 @@ const CampaignTable = ({ campaigns }) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto scrollbar-hide">
+      <div className="overflow-x-auto scrollbar-hide pb-48">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-border/20">
@@ -155,10 +157,74 @@ const CampaignTable = ({ campaigns }) => {
                         </div>
                     </div>
                 </td>
-                <td className="px-8 py-6 text-right">
-                  <button className="p-2.5 hover:bg-muted rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                <td className="px-8 py-6 text-right relative">
+                  <button 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveMenu(activeMenu === campaign.id ? null : campaign.id);
+                    }}
+                    className={`p-2.5 hover:bg-muted rounded-xl transition-all ${activeMenu === campaign.id ? 'bg-muted opacity-100 text-primary' : 'opacity-0 group-hover:opacity-100'}`}
+                  >
                     <MoreVertical size={16} className="text-muted-foreground" />
                   </button>
+
+                  <AnimatePresence>
+                    {activeMenu === campaign.id && (
+                        <>
+                            <div className="fixed inset-0 z-10" onClick={() => setActiveMenu(null)} />
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                className="absolute right-8 mt-2 w-48 bg-card border border-border/60 rounded-2xl shadow-2xl z-20 p-2 backdrop-blur-xl"
+                            >
+                                <button 
+                                    onClick={() => {
+                                        onAudit(campaign.id);
+                                        setActiveMenu(null);
+                                    }}
+                                    className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl transition-all flex items-center gap-3"
+                                >
+                                    <Activity size={14} />
+                                    Deep Audit
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        onToggleStatus(campaign.id);
+                                        setActiveMenu(null);
+                                    }}
+                                    className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-amber-500 hover:bg-amber-500/5 rounded-xl transition-all flex items-center gap-3"
+                                >
+                                    <Clock size={14} />
+                                    {campaign.status === 'active' ? 'Pause Strategy' : 'Resume Strategy'}
+                                </button>
+                                {campaign.status !== 'completed' && (
+                                    <button 
+                                        onClick={() => {
+                                            onComplete(campaign.id);
+                                            setActiveMenu(null);
+                                        }}
+                                        className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-emerald-500 hover:bg-emerald-500/5 rounded-xl transition-all flex items-center gap-3"
+                                    >
+                                        <CheckCircle2 size={14} />
+                                        Complete Protocol
+                                    </button>
+                                )}
+                                <div className="h-px bg-border/20 my-1 mx-2" />
+                                <button 
+                                    onClick={() => {
+                                        onArchive(campaign.id);
+                                        setActiveMenu(null);
+                                    }}
+                                    className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-500/5 rounded-xl transition-all flex items-center gap-3"
+                                >
+                                    <LogOut size={14} />
+                                    Archive Protocol
+                                </button>
+                            </motion.div>
+                        </>
+                    )}
+                  </AnimatePresence>
                 </td>
               </tr>
             ))}
