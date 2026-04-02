@@ -13,7 +13,12 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../../context/NotificationContext';
+
 const CampaignTable = ({ campaigns }) => {
+  const navigate = useNavigate();
+  const { showNotification } = useNotification();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -94,10 +99,16 @@ const CampaignTable = ({ campaigns }) => {
           />
         </div>
         <div className="flex items-center gap-3">
-            <button className="p-3 bg-card border border-border/60 rounded-xl text-muted-foreground hover:text-primary transition-all shadow-sm">
+            <button 
+              onClick={() => showNotification("Multi-Channel Query Engine Initializing...", "info")}
+              className="p-3 bg-card border border-border/60 rounded-xl text-muted-foreground hover:text-primary transition-all shadow-sm"
+            >
                 <Filter size={16} strokeWidth={2.5} />
             </button>
-            <button className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest">
+            <button 
+              onClick={() => navigate('/brief')}
+              className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+            >
                 Launch Campaign
             </button>
         </div>
