@@ -13,24 +13,57 @@ const BriefOutput = ({ result, onReset }) => {
       useCORS: true,
       backgroundColor: '#ffffff',
       onclone: (clonedDoc) => {
-        const allElements = clonedDoc.querySelectorAll('*');
-        allElements.forEach(el => {
-            const style = window.getComputedStyle(el);
-            // Replace modern oklch/oklab with safe HEX fallbacks
-            if (style.color.includes('okl')) el.style.color = '#000000';
-            if (style.backgroundColor.includes('okl')) el.style.backgroundColor = '#ffffff';
-            if (style.borderColor.includes('okl')) el.style.borderColor = '#dddddd';
-            if (style.backgroundImage.includes('okl')) {
-                el.style.backgroundImage = 'linear-gradient(to right, #8b5cf6, #ec4899)';
-            }
-            if (style.boxShadow.includes('okl')) el.style.boxShadow = 'none';
-            // Disable filters and transitions in the clone
-            el.style.transition = 'none';
-            el.style.animation = 'none';
-            if (style.backdropFilter !== 'none') el.style.backdropFilter = 'none';
+        const container = clonedDoc.getElementById('brief-output');
+        if (!container) return;
+
+        // NUCLEAR OPTION: Identify all stylable elements before clearing global styles
+        const elements = container.querySelectorAll('*');
+        const computedStyles = Array.from(elements).map(el => {
+          const style = window.getComputedStyle(el);
+          return {
+            color: style.color,
+            backgroundColor: style.backgroundColor,
+            borderColor: style.borderColor,
+            fontSize: style.fontSize,
+            fontFamily: style.fontFamily,
+            padding: style.padding,
+            margin: style.margin,
+            display: style.display,
+            width: style.width,
+            height: style.height,
+            opacity: style.opacity,
+            // Convert any 'okl' colors to safe RGB strings
+            colorText: style.color.replace(/okl[chb]\([^)]+\)/g, '#8b5cf6'),
+            bgText: style.backgroundColor.replace(/okl[chb]\([^)]+\)/g, '#ffffff')
+          };
+        });
+
+        // 1. Purge ALL styles to stop the html2canvas internal CSS parser from crashing
+        const allStyles = clonedDoc.querySelectorAll('style, link');
+        allStyles.forEach(s => s.remove());
+
+        // 2. "Bake" the pre-resolved computed styles into each element as safe inline HEX/RGB
+        elements.forEach((el, i) => {
+          const cs = computedStyles[i];
+          el.style.cssText = `
+            color: ${cs.colorText} !important;
+            background-color: ${cs.bgText} !important;
+            border-color: ${cs.borderColor} !important;
+            font-size: ${cs.fontSize} !important;
+            font-family: ${cs.fontFamily} !important;
+            padding: ${cs.padding} !important;
+            margin: ${cs.margin} !important;
+            display: ${cs.display} !important;
+            width: ${cs.width} !important;
+            height: ${cs.height} !important;
+            opacity: ${cs.opacity} !important;
+            transition: none !important;
+            animation: none !important;
+          `;
         });
       }
     });
+
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -42,7 +75,47 @@ const BriefOutput = ({ result, onReset }) => {
   if (!result) return null;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-10 animate-fadeIn">
+    <div className="max-w-5xl mx-auto space-y-10 animate-fadeIn relative">
+      <style>
+        {`
+          @media print {
+            /* Total UI Exclusion */
+            aside, header, nav, button, .status-pill, .flex-col.md\\:flex-row.items-center, .btn-premium { 
+                display: none !important; 
+                visibility: hidden !important;
+            }
+            
+            /* Structural Flattening - UNLOCK MULTI-PAGE PRINT */
+            html, body, #root, main, .flex, .flex-col, .max-w-4xl {
+                height: auto !important;
+                min-height: auto !important;
+                overflow: visible !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            #brief-output { 
+              display: block !important;
+              visibility: visible !important;
+              position: relative !important;
+              width: 100% !important;
+              margin: 0 !important;
+              padding: 40px !important;
+              border: none !important;
+              box-shadow: none !important;
+              background: white !important;
+            }
+
+            #brief-output * {
+              visibility: visible !important;
+            }
+          }
+        `}
+      </style>
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 glass-card p-6 rounded-[2.5rem] border-primary/10">
         <div className="flex items-center gap-4 px-2">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">

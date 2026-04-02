@@ -86,55 +86,54 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
             width: modalRef.current.offsetWidth,
             height: modalRef.current.scrollHeight,
             onclone: (clonedDoc) => {
-              const isDark = document.documentElement.classList.contains('dark');
+              // 1. Identify all elements in the clone
               const allElements = clonedDoc.querySelectorAll('*');
               
-              // Force replace any oklch/oklab colors with safe HEX fallbacks in computed styles
-              allElements.forEach(el => {
-                const style = window.getComputedStyle(el);
-                
-                // Nuclear override for oklab/oklch colors in live styles
-                if (style.color.includes('okl')) {
-                    el.style.color = isDark ? '#f8fafc' : '#0f172a';
-                }
-                if (style.backgroundColor.includes('okl')) {
-                    el.style.backgroundColor = isDark ? '#15171e' : '#ffffff';
-                }
-                if (style.borderColor.includes('okl')) {
-                    el.style.borderColor = isDark ? '#232530' : '#e2e8f0';
-                }
-                if (style.outlineColor.includes('okl')) {
-                    el.style.outlineColor = isDark ? '#8b5cf6' : '#8b5cf6';
-                }
-                if (style.backgroundImage.includes('okl')) {
-                    el.style.backgroundImage = 'linear-gradient(to right, #8b5cf6, #ec4899)';
-                }
-                if (style.boxShadow.includes('okl')) {
-                    el.style.boxShadow = 'none';
-                }
-                
-                // Disable unsupported CSS features
-                el.style.transition = 'none';
-                el.style.animation = 'none';
-                if (style.backdropFilter !== 'none') {
-                    el.style.backdropFilter = 'none';
-                    el.style.webkitBackdropFilter = 'none';
-                }
+              // 2. Capture and resolve all computed styles into safe HEX/RGB strings
+              const styles = Array.from(allElements).map(el => {
+                const s = window.getComputedStyle(el);
+                return {
+                  color: s.color.replace(/okl[chb]\([^)]+\)/g, '#ffffff'),
+                  bg: s.backgroundColor.replace(/okl[chb]\([^)]+\)/g, '#0b0c10'),
+                  border: s.borderColor.replace(/okl[chb]\([^)]+\)/g, '#232530'),
+                  font: s.fontFamily,
+                  size: s.fontSize,
+                  weight: s.fontWeight,
+                  display: s.display,
+                  opacity: s.opacity,
+                  width: s.width,
+                  height: s.height
+                };
               });
-                
-              // Force Recharts containers to be visible and correctly sized
-              const charts = clonedDoc.querySelectorAll('.recharts-responsive-container');
-              charts.forEach(chart => {
-                chart.style.width = '600px';
-                chart.style.height = '400px';
-                chart.style.visibility = 'visible';
-                chart.style.opacity = '1';
-                // Force Pie sectors colors
-                const sectors = chart.querySelectorAll('.recharts-pie-sector');
-                sectors.forEach((s, idx) => {
-                    const colors = ['#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6'];
-                    s.style.fill = colors[idx % colors.length];
-                });
+
+              // 3. NUCLEAR OPTION: Purge all global stylesheets to prevent engine parser crashes
+              const styleNodes = clonedDoc.querySelectorAll('style, link');
+              styleNodes.forEach(s => s.remove());
+
+              // 4. Bake resolved styles into elements as safe inline values
+              allElements.forEach((el, idx) => {
+                const s = styles[idx];
+                el.style.cssText = `
+                  color: ${s.color} !important;
+                  background-color: ${s.bg} !important;
+                  border-color: ${s.border} !important;
+                  font-family: ${s.font} !important;
+                  font-size: ${s.size} !important;
+                  font-weight: ${s.weight} !important;
+                  display: ${s.display} !important;
+                  opacity: ${s.opacity} !important;
+                  width: ${s.width} !important;
+                  height: ${s.height} !important;
+                  transition: none !important;
+                  animation: none !important;
+                `;
+              });
+
+              // 5. Special handling for Recharts SVG sectors
+              const sectors = clonedDoc.querySelectorAll('.recharts-pie-sector');
+              sectors.forEach((s, i) => {
+                const colors = ['#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6'];
+                s.setAttribute('fill', colors[i % colors.length]);
               });
             }
         });
