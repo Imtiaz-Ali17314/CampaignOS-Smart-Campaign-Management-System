@@ -1,5 +1,5 @@
-import React from 'react';
 import { Target, Users2, CircleDollarSign } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
   const handleChange = (e) => {

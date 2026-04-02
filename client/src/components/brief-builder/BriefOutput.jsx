@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Download, Share2, Printer, Sparkles, Layout, MessageSquare, Target, Palette } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const BriefOutput = ({ result, onReset }) => {
   const briefRef = useRef();
@@ -10,7 +11,25 @@ const BriefOutput = ({ result, onReset }) => {
     const canvas = await html2canvas(briefRef.current, {
       scale: 2,
       useCORS: true,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      onclone: (clonedDoc) => {
+        const allElements = clonedDoc.querySelectorAll('*');
+        allElements.forEach(el => {
+            const style = window.getComputedStyle(el);
+            // Replace modern oklch/oklab with safe HEX fallbacks
+            if (style.color.includes('okl')) el.style.color = '#000000';
+            if (style.backgroundColor.includes('okl')) el.style.backgroundColor = '#ffffff';
+            if (style.borderColor.includes('okl')) el.style.borderColor = '#dddddd';
+            if (style.backgroundImage.includes('okl')) {
+                el.style.backgroundImage = 'linear-gradient(to right, #8b5cf6, #ec4899)';
+            }
+            if (style.boxShadow.includes('okl')) el.style.boxShadow = 'none';
+            // Disable filters and transitions in the clone
+            el.style.transition = 'none';
+            el.style.animation = 'none';
+            if (style.backdropFilter !== 'none') el.style.backdropFilter = 'none';
+        });
+      }
     });
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
