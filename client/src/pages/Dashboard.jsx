@@ -8,10 +8,13 @@ import {
   Moon,
   Bell,
   Menu,
-  BarChart3
+  BarChart3,
+  LogOut,
+  User,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import { subDays, format } from 'date-fns';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 import KPICard from '../components/dashboard/KPICard';
@@ -26,6 +29,8 @@ import campaignData from '../data/campaigns.json';
 
 const Dashboard = () => {
   const [dark, setDark] = useDarkMode();
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const user = JSON.parse(localStorage.getItem('user') || '{"email": "Guest"}');
   const [viewRange, setViewRange] = React.useState(() => {
     const end = new Date();
     end.setHours(23, 59, 59, 999);
@@ -163,16 +168,59 @@ const Dashboard = () => {
 
             <NotificationBell />
 
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="group relative cursor-pointer"
-            >
-                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[2px]">
-                    <div className="h-full w-full bg-card rounded-[14px] flex items-center justify-center font-black text-foreground group-hover:bg-transparent group-hover:text-white transition-all text-sm">
-                        IA
+            <div className="relative">
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="group relative cursor-pointer"
+              >
+                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[2px]">
+                      <div className="h-full w-full bg-card rounded-[14px] flex items-center justify-center font-black text-foreground group-hover:bg-transparent group-hover:text-white transition-all text-sm uppercase">
+                          {user.email.substring(0, 2)}
+                      </div>
+                  </div>
+              </motion.div>
+
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-3 w-64 bg-card border border-border/60 rounded-3xl shadow-2xl z-[100] p-3 backdrop-blur-xl"
+                  >
+                    <div className="p-4 mb-2 border-b border-border/40">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Session Active</p>
+                      <p className="text-sm font-black text-foreground truncate">{user.email}</p>
                     </div>
-                </div>
-            </motion.div>
+                    
+                    <div className="space-y-1">
+                      <button className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-2xl transition-all">
+                        <User size={16} />
+                        Strategic Profile
+                      </button>
+                      <button className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-2xl transition-all">
+                        <SettingsIcon size={16} />
+                        Global Config
+                      </button>
+                      <div className="h-px bg-border/40 my-2" />
+                      <button 
+                        onClick={() => {
+                          localStorage.removeItem('token');
+                          localStorage.removeItem('user');
+                          window.location.href = '/login';
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all"
+                      >
+                        <LogOut size={16} />
+                        Terminate Session
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </header>
 
