@@ -7,88 +7,74 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCompetitorsChange = (e) => {
-    const value = e.target.value;
-    setFormData((prev) => ({ ...prev, keyCompetitors: value }));
-  };
-
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Client Information</h2>
-        <p className="text-slate-500 dark:text-slate-400">Tell us about the brand we're building this campaign for.</p>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Market Orientation</h2>
+        <p className="text-sm text-muted-foreground font-medium">Define the core brand identity and operational industry.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Client Name */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Building2 className="w-4 h-4" />
-            Client Name *
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Building2 className="w-3 h-3" />
+            Client Identity*
           </label>
           <input
             type="text"
             name="clientName"
             value={formData.clientName || ''}
             onChange={handleChange}
-            placeholder="e.g. Acme Corp"
-            className={`w-full px-4 py-2 rounded-lg border ${
-              errors.clientName ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500'
-            } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 transition-all duration-200`}
+            placeholder="Search or enter brand name"
+            className={`input-field ${errors.clientName ? 'border-rose-500/50' : ''}`}
           />
-          {errors.clientName && <p className="text-xs text-red-500 mt-1">{errors.clientName}</p>}
+          {errors.clientName && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.clientName}</p>}
         </div>
 
-        {/* Industry */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <User className="w-4 h-4" />
-            Industry *
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <User className="w-3 h-3" />
+            Industry Sector*
           </label>
           <input
             type="text"
             name="industry"
             value={formData.industry || ''}
             onChange={handleChange}
-            placeholder="e.g. SaaS / E-commerce"
-            className={`w-full px-4 py-2 rounded-lg border ${
-              errors.industry ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500'
-            } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 transition-all duration-200`}
+            placeholder="e.g. FINTECH / AG-TECH"
+            className={`input-field ${errors.industry ? 'border-rose-500/50' : ''}`}
           />
-          {errors.industry && <p className="text-xs text-red-500 mt-1">{errors.industry}</p>}
+          {errors.industry && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.industry}</p>}
         </div>
 
-        {/* Website */}
         <div className="space-y-2 md:col-span-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            Website URL *
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Globe className="w-3 h-3" />
+            Digital Presence (URL)*
           </label>
           <input
             type="url"
             name="website"
             value={formData.website || ''}
             onChange={handleChange}
-            placeholder="https://example.com"
-            className={`w-full px-4 py-2 rounded-lg border ${
-              errors.website ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500'
-            } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 transition-all duration-200`}
+            placeholder="https://platform.brand.com"
+            className={`input-field ${errors.website ? 'border-rose-500/50' : ''}`}
           />
-          {errors.website && <p className="text-xs text-red-500 mt-1">{errors.website}</p>}
+          {errors.website && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.website}</p>}
         </div>
 
-        {/* Key Competitors */}
         <div className="space-y-2 md:col-span-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Key Competitors (Comma separated)
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Users className="w-3 h-3" />
+            Strategic Competitors
           </label>
-          <textarea
+          <input
+            type="text"
             name="keyCompetitors"
             value={formData.keyCompetitors || ''}
-            onChange={handleCompetitorsChange}
-            placeholder="e.g. Competitor A, Competitor B"
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 h-24 resize-none"
+            onChange={handleChange}
+            placeholder="Competitor A, Competitor B..."
+            className="input-field"
           />
         </div>
       </div>

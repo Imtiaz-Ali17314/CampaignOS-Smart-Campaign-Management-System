@@ -23,37 +23,37 @@ const BriefOutput = ({ result, onReset }) => {
   if (!result) return null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-700">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-            <Sparkles className="w-6 h-6" />
+    <div className="max-w-5xl mx-auto space-y-10 animate-fadeIn">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 glass-card p-6 rounded-[2.5rem] border-primary/10">
+        <div className="flex items-center gap-4 px-2">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+            <Sparkles className="w-6 h-6 stroke-[2.5]" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">AI Brief Generated</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Your professional creative direction is ready.</p>
+            <h2 className="text-xl font-black tracking-tight text-foreground uppercase tracking-widest text-xs">Synthesis Complete</h2>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Strategy engine v4.0.2 generated</p>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={exportPDF}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+            className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest group"
           >
-            <Download className="w-4 h-4" />
-            Export PDF
+            <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+            Archive PDF
           </button>
           <button
             onClick={() => window.print()}
-            className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all duration-200"
+            className="p-3 text-muted-foreground hover:text-foreground transition-all hover:bg-muted/50 rounded-2xl border border-border/40 shadow-sm"
           >
-            <Printer className="w-4 h-4" />
+            <Printer size={16} strokeWidth={2.5} />
           </button>
           <button
              onClick={onReset}
-             className="px-4 py-2 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 font-medium"
+             className="px-6 py-2.5 bg-card border border-border/60 text-foreground hover:text-primary transition-all rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-sm"
           >
-            Build Another
+            New Flight
           </button>
         </div>
       </div>
@@ -61,67 +61,81 @@ const BriefOutput = ({ result, onReset }) => {
       <div 
         ref={briefRef}
         id="brief-output"
-        className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl relative overflow-hidden print:p-0 print:border-none print:shadow-none"
+        className="bg-card p-12 md:p-20 rounded-[3rem] border border-border/40 shadow-2xl relative overflow-hidden print:p-0 print:border-none print:shadow-none"
       >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/5 dark:bg-rose-500/10 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
+        {/* Aesthetic Accents */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full -mr-48 -mt-48 blur-[100px] opacity-40 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-rose-500/5 rounded-full -ml-48 -mb-48 blur-[100px] opacity-40 pointer-events-none" />
 
-        <div className="relative space-y-12">
+        <div className="relative space-y-20">
           {/* Header Section */}
-          <div className="space-y-4 text-center border-b border-slate-100 dark:border-slate-800 pb-10">
-            <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <div className="space-y-6 text-center border-b border-border/20 pb-12">
+            <div className="status-pill bg-primary/10 text-primary border-primary/20 mx-auto">
+                Confidential Strategic Asset
+            </div>
+            <h1 className="text-5xl font-black text-foreground tracking-tight leading-none uppercase italic">
               {result.campaignTitle}
             </h1>
-            <div className="flex items-center justify-center gap-4 text-sm font-medium uppercase tracking-[0.2em] text-indigo-500">
-               Creative Strategy Brief
+            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/40">
+               Flight Intelligence & Narrative Framework
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             {/* Headlines Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <MessageSquare className="w-5 h-5 text-indigo-500" />
-                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs">Primary Messaging</h3>
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-primary/10 rounded-xl border border-primary/20">
+                    <MessageSquare className="w-4 h-4 text-primary" strokeWidth={2.5} />
+                </div>
+                <h3 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px]">Primary Rhetoric</h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {result.headlines.map((headline, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700/50 relative overflow-hidden group">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 opacity-30" />
-                    <p className="text-slate-700 dark:text-slate-300 font-medium italic">"{headline}"</p>
+                  <div key={idx} className="p-6 bg-muted/5 rounded-3xl border border-border/30 relative overflow-hidden group hover:border-primary/40 transition-colors">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
+                    <p className="text-foreground/80 font-black italic text-sm tracking-tight leading-relaxed">"{headline}"</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Visual Direction Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <Palette className="w-5 h-5 text-rose-500" />
-                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs">Visual Direction</h3>
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-rose-500/10 rounded-xl border border-rose-500/20">
+                    <Palette className="w-4 h-4 text-rose-500" strokeWidth={2.5} />
+                </div>
+                <h3 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px]">Visual Grammar</h3>
               </div>
-              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed p-6 bg-rose-50/50 dark:bg-rose-500/5 rounded-3xl border border-rose-100 dark:border-rose-900/20">
-                {result.visualDirection}
-              </p>
+              <div className="p-8 bg-rose-500/[0.02] rounded-[2.5rem] border border-rose-500/10 backdrop-blur-3xl">
+                <p className="text-foreground/70 text-xs leading-loose font-bold tracking-widest uppercase">
+                  {result.visualDirection}
+                </p>
+              </div>
             </div>
 
             {/* Channels & Budget Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <Layout className="w-5 h-5 text-emerald-500" />
-                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs">Channel Allocation</h3>
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                    <Layout className="w-4 h-4 text-emerald-500" strokeWidth={2.5} />
+                </div>
+                <h3 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px]">Strategic Placement</h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-8">
                 {result.channels.map((channel, idx) => (
-                  <div key={idx} className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
-                      <span>{channel.name}</span>
-                      <span>{channel.budgetPct}%</span>
+                  <div key={idx} className="space-y-3">
+                    <div className="flex justify-between items-end">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{channel.name}</span>
+                      <span className="text-sm font-black text-emerald-500 tracking-tighter">{channel.budgetPct}%</span>
                     </div>
-                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-emerald-500 rounded-full"
-                        style={{ width: `${channel.budgetPct}%` }}
+                    <div className="h-1.5 w-full bg-muted/20 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${channel.budgetPct}%` }}
+                        transition={{ duration: 1, delay: 0.5 + idx * 0.1 }}
+                        className="h-full bg-emerald-500/60 rounded-full"
                       />
                     </div>
                   </div>
@@ -130,21 +144,25 @@ const BriefOutput = ({ result, onReset }) => {
             </div>
 
             {/* Tone Strategy Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <Target className="w-5 h-5 text-orange-500" />
-                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs">Tone & Voice Strategy</h3>
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-orange-500/10 rounded-xl border border-orange-500/20">
+                    <Target className="w-4 h-4 text-orange-500" strokeWidth={2.5} />
+                </div>
+                <h3 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px]">Vocal Signature</h3>
               </div>
-              <div className="p-6 bg-orange-50/50 dark:bg-orange-500/5 rounded-3xl border border-orange-100 dark:border-orange-900/20">
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic">
+              <div className="p-8 bg-orange-500/[0.02] rounded-[2.5rem] border border-orange-500/10 backdrop-blur-3xl italic">
+                <p className="text-foreground/70 text-xs leading-loose font-bold tracking-widest uppercase">
                   {result.toneGuide}
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="pt-10 border-t border-slate-100 dark:border-slate-800 text-center text-[10px] text-slate-400 dark:text-slate-600 uppercase tracking-widest">
-            Generated by CampaignOS AI Content Engine © 2025
+          <div className="pt-16 border-t border-border/20 text-center">
+            <div className="inline-block px-10 py-4 bg-muted/5 border border-border/40 rounded-2xl text-[9px] font-black tracking-[0.5em] text-muted-foreground/30 uppercase italic">
+                Generated via CampaignOS Neural Engine Model 4.0 // 2025 Standard
+            </div>
           </div>
         </div>
       </div>

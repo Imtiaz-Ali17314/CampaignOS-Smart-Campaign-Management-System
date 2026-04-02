@@ -8,18 +8,26 @@ const alertEngine = require('./alertEngine');
 const server = http.createServer();
 const io = new Server(server, {
   cors: {
-    origin: "*", // Adjust for production
-    methods: ["GET", "POST"]
-  }
+    origin: true, 
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  allowEIO3: true
 });
 
 // Authentication middleware for Socket.io
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
-  if (!token) return next(new Error('Authentication error'));
+  if (!token) {
+    console.error('!! AUTH FAILED: No token provided !!');
+    return next(new Error('Authentication error'));
+  }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return next(new Error('Authentication error'));
+    if (err) {
+      console.error('!! AUTH FAILED: Invalid or Expired Token !!', err.message);
+      return next(new Error('Authentication error'));
+    }
     socket.user = decoded;
     next();
   });
@@ -39,7 +47,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.NOTIFICATION_PORT || 4000;
+const PORT = process.env.PORT || process.env.NOTIFICATION_PORT || 4000;
 server.listen(PORT, () => {
   console.log(`WebSocket Server running on port ${PORT}`);
   // Start the alert evaluation engine

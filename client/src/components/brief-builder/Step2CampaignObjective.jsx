@@ -8,33 +8,32 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
   };
 
   const objectives = [
-    { value: 'awareness', label: 'Awareness', description: 'Reach new potential customers' },
-    { value: 'consideration', label: 'Consideration', description: 'Engagement and traffic' },
-    { value: 'conversion', label: 'Conversion', description: 'Sales and lead generation' },
+    { value: 'awareness', label: 'Brand Awareness', description: 'Maximize reach and visibility' },
+    { value: 'consideration', label: 'Market Interest', description: 'Drive traffic and engagement' },
+    { value: 'conversion', label: 'Growth/Sales', description: 'Lead gen and direct response' },
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Campaign Goals</h2>
-        <p className="text-slate-500 dark:text-slate-400">Define what you want to achieve with this campaign.</p>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Strategic Intent</h2>
+        <p className="text-sm text-muted-foreground font-medium">Define the core KPIs and audience segment for this flight.</p>
       </div>
 
-      <div className="space-y-6">
-        {/* Campaign Objective */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Target className="w-4 h-4" />
-            Objective *
+      <div className="space-y-8">
+        <div className="space-y-4">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Target className="w-3 h-3" />
+            Core Objective*
           </label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {objectives.map((obj) => (
               <label
                 key={obj.value}
-                className={`relative flex flex-col p-4 border rounded-xl cursor-pointer transition-all duration-200 group ${
+                className={`group relative flex flex-col p-5 border rounded-2xl cursor-pointer transition-all duration-300 ${
                   formData.objective === obj.value
-                    ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 ring-2 ring-indigo-500/20'
-                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
+                    ? 'border-primary bg-primary/[0.03] shadow-lg shadow-primary/5 ring-4 ring-primary/5'
+                    : 'border-border/40 bg-card hover:border-primary/20'
                 }`}
               >
                 <input
@@ -45,56 +44,52 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
                   onChange={handleChange}
                   className="sr-only"
                 />
-                <span className={`block text-sm font-bold mb-1 transition-colors ${
-                  formData.objective === obj.value ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-900 dark:text-white'
+                <span className={`block text-sm font-black mb-1.5 transition-colors ${
+                  formData.objective === obj.value ? 'text-primary' : 'text-foreground'
                 }`}>
                   {obj.label}
                 </span>
-                <span className="block text-xs text-slate-500 dark:text-slate-400">
+                <span className="block text-[10px] font-bold text-muted-foreground leading-relaxed">
                   {obj.description}
                 </span>
+                {formData.objective === obj.value && (
+                    <motion.div layoutId="badge" className="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full" />
+                )}
               </label>
             ))}
           </div>
-          {errors.objective && <p className="text-xs text-red-500 mt-1">{errors.objective}</p>}
+          {errors.objective && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.objective}</p>}
         </div>
 
-        {/* Target Audience */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Users2 className="w-4 h-4" />
-            Target Audience *
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Users2 className="w-3 h-3" />
+            Segment Description*
           </label>
           <textarea
             name="targetAudience"
             value={formData.targetAudience || ''}
             onChange={handleChange}
-            placeholder="Describe your ideal customer persona..."
-            className={`w-full px-4 py-3 rounded-lg border ${
-              errors.targetAudience ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500'
-            } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 transition-all duration-200 h-32 resize-none`}
+            placeholder="e.g. TECH DECISION MAKERS AGED 25-45 IN URBAN HUBS..."
+            className={`input-field h-32 resize-none uppercase text-[10px] tracking-widest font-black ${errors.targetAudience ? 'border-rose-500/50' : ''}`}
           />
-          {errors.targetAudience && <p className="text-xs text-red-500 mt-1">{errors.targetAudience}</p>}
+          {errors.targetAudience && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.targetAudience}</p>}
         </div>
 
-        {/* Budget */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <CircleDollarSign className="w-4 h-4" />
-            Allocated Budget (USD) *
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <CircleDollarSign className="w-3 h-3" />
+            Budgetary Commitment (USD)*
           </label>
           <input
             type="number"
             name="budget"
             value={formData.budget || ''}
             onChange={handleChange}
-            min="1"
-            placeholder="e.g. 5000"
-            className={`w-full px-4 py-2 rounded-lg border ${
-              errors.budget ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500'
-            } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 transition-all duration-200`}
+            placeholder="MIN: 1,000"
+            className={`input-field font-black ${errors.budget ? 'border-rose-500/50' : ''}`}
           />
-          {errors.budget && <p className="text-xs text-red-500 mt-1">{errors.budget}</p>}
+          {errors.budget && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.budget}</p>}
         </div>
       </div>
     </div>

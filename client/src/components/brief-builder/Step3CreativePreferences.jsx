@@ -12,28 +12,27 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
   ];
 
   const imageryStyles = [
-    'Photorealistic', 'Illustrative', 'Abstract', 'Video-focused', 'User-Generated Content (UGC)', 'Infographic'
+    'Photorealistic', 'Illustrative', 'Abstract', 'Video-focused', 'UGC-Style', 'Infographic'
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Creative & Visual Style</h2>
-        <p className="text-slate-500 dark:text-slate-400">Set the look and feel for the campaign's visual assets.</p>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Creative DNA</h2>
+        <p className="text-sm text-muted-foreground font-medium">Fine-tune the aesthetic vibrations and narrative tone.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Brand Tone */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <MessageSquareText className="w-4 h-4" />
-            Brand Tone
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <MessageSquareText className="w-3 h-3" />
+            Narrative Tone
           </label>
           <select
             name="tone"
             value={formData.tone || 'Professional'}
             onChange={handleChange}
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            className="input-field font-bold text-xs"
           >
             {tones.map((tone) => (
               <option key={tone} value={tone}>{tone}</option>
@@ -41,17 +40,16 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
           </select>
         </div>
 
-        {/* Imagery Style */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Image className="w-4 h-4" />
-            Imagery Style
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Image className="w-3 h-3" />
+            Visual Aesthetic
           </label>
           <select
             name="imageryStyle"
             value={formData.imageryStyle || 'Photorealistic'}
             onChange={handleChange}
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            className="input-field font-bold text-xs"
           >
             {imageryStyles.map((style) => (
               <option key={style} value={style}>{style}</option>
@@ -59,48 +57,48 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
           </select>
         </div>
 
-        {/* Brand Color Direction */}
         <div className="space-y-2 md:col-span-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Palette className="w-4 h-4" />
-            Primary Brand Color Direction
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <Palette className="w-3 h-3" />
+            Primary Hue Spectrum
           </label>
-          <input
-            type="color"
-            name="colorDirection"
-            value={formData.colorDirection || '#4f46e5'}
-            onChange={handleChange}
-            className="w-full h-10 p-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer"
-          />
+          <div className="flex items-center gap-4">
+              <input
+                type="color"
+                name="colorDirection"
+                value={formData.colorDirection || '#8b5cf6'}
+                onChange={handleChange}
+                className="w-16 h-10 rounded-xl bg-card border border-border/40 cursor-pointer overflow-hidden"
+              />
+              <span className="text-[10px] font-black tracking-widest text-muted-foreground uppercase">{formData.colorDirection}</span>
+          </div>
         </div>
 
-        {/* Do's */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-500" />
-            Do's (What to include)
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <CheckCircle size={12} className="text-emerald-500" />
+            Strategic Do's
           </label>
           <textarea
             name="dos"
             value={formData.dos || ''}
             onChange={handleChange}
-            placeholder="e.g. Include client logo, emphasize sustainable features..."
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 h-32 resize-none"
+            placeholder="MANDATORY ELEMENTS..."
+            className="input-field h-32 resize-none text-[10px] tracking-widest font-black uppercase"
           />
         </div>
 
-        {/* Don'ts */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-rose-500" />
-            Don'ts (What to avoid)
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+            <XCircle size={12} className="text-rose-500" />
+            Strategic Don'ts
           </label>
           <textarea
             name="donts"
             value={formData.donts || ''}
             onChange={handleChange}
-            placeholder="e.g. No dark imagery, avoid technical jargon..."
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 h-32 resize-none"
+            placeholder="RESTRICTED ELEMENTS..."
+            className="input-field h-32 resize-none text-[10px] tracking-widest font-black uppercase"
           />
         </div>
       </div>
