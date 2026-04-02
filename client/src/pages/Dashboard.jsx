@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   TrendingUp, 
   MousePointer2, 
@@ -36,8 +36,15 @@ const Dashboard = () => {
   const [dark, setDark] = useDarkMode();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const urlClient = searchParams.get('client');
   const [campaigns, setCampaigns] = useState(campaignData.campaigns);
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(urlClient || null);
+
+  React.useEffect(() => {
+    setSelectedClient(urlClient || null);
+  }, [urlClient]);
+
   const [viewRange, setViewRange] = useState(() => {
     const end = new Date();
     end.setHours(23, 59, 59, 999);

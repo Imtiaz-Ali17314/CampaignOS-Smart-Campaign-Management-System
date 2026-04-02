@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   BarChart3, 
   Users, 
@@ -13,11 +13,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
   
   const clients = Array.from(new Set(campaigns.map(c => c.client))).map(clientName => ({
     name: clientName,
     campaigns: campaigns.filter(c => c.client === clientName)
   }));
+
+  const handleClientClick = (clientName) => {
+    if (onClientSelect) {
+      onClientSelect(clientName);
+    } else {
+      // If we're on another page, navigate to dashboard with the client filter
+      navigate(`/?client=${encodeURIComponent(clientName || '')}`);
+    }
+  };
 
   const menuItems = [
     { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -89,7 +99,7 @@ const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
           <div className="space-y-1">
             {/* NEW: Campaigns Link that resets filter */}
             <button 
-              onClick={() => onClientSelect(null)}
+              onClick={() => handleClientClick(null)}
               className={`w-full flex items-center p-3 rounded-xl text-sm transition-all ${!activeClient ? 'bg-primary/5 text-primary font-bold' : 'text-muted-foreground hover:bg-muted/30'} ${isCollapsed ? 'justify-center' : ''}`}
             >
                <BarChart3 size={16} className={`shrink-0 ${isCollapsed ? '' : 'mr-3'}`} />
@@ -99,7 +109,7 @@ const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
             {clients.map((client) => (
               <div key={client.name} className="group/item">
                 <button 
-                  onClick={() => onClientSelect(client.name)}
+                  onClick={() => handleClientClick(client.name)}
                   className={`w-full flex items-center p-3 rounded-xl text-sm transition-all ${activeClient === client.name ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'} ${isCollapsed ? 'justify-center' : ''}`}
                 >
                   <div className={`w-2 h-2 rounded-full mr-1.5 transition-colors shrink-0 ${activeClient === client.name ? 'bg-primary' : 'bg-primary/40 group-hover/item:bg-primary'}`} />
