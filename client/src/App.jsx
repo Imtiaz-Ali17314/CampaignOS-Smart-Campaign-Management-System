@@ -5,6 +5,7 @@ import BriefBuilder from './pages/brief-builder';
 import Settings from './pages/Settings';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import { NotificationProvider } from './context/NotificationContext';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -14,33 +15,35 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/brief-builder" element={
-          <ProtectedRoute>
-            <BriefBuilder />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/settings" element={
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        } />
+    <NotificationProvider>
+        <Router>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                
+                <Route path="/" element={
+                <ProtectedRoute>
+                    <Dashboard />
+                </ProtectedRoute>
+                } />
+                
+                <Route path="/brief-builder" element={
+                <ProtectedRoute>
+                    <BriefBuilder />
+                </ProtectedRoute>
+                } />
+                
+                <Route path="/settings" element={
+                <ProtectedRoute>
+                    <Settings />
+                </ProtectedRoute>
+                } />
 
-        <Route path="/brief" element={<Navigate to="/brief-builder" replace />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+                <Route path="/brief" element={<Navigate to="/brief-builder" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
+    </NotificationProvider>
   );
 }
 

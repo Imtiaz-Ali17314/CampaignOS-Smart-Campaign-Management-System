@@ -50,11 +50,10 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center p-6 font-sans relative">
+        <div className="min-h-screen bg-background overflow-hidden flex items-center justify-center p-6 font-sans relative transition-colors duration-500">
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05]" />
+                <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
             </div>
 
             <motion.div 
@@ -66,19 +65,19 @@ const Register = () => {
                     <motion.div 
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
-                        className="inline-flex p-4 bg-white/5 border border-white/10 rounded-[2rem] shadow-2xl mb-6 backdrop-blur-xl"
+                        className="inline-flex p-4 bg-card border border-border/40 rounded-[2rem] shadow-2xl mb-6 backdrop-blur-xl"
                     >
                          <div className="h-14 w-14 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center">
                             <UserPlus size={32} className="text-white" />
                          </div>
                     </motion.div>
-                    <h1 className="text-4xl font-black tracking-tight text-white mb-3">
+                    <h1 className="text-4xl font-black tracking-tight text-foreground mb-3">
                         Create <span className="gradient-text">Account</span>
                     </h1>
                     <p className="text-muted-foreground font-medium uppercase tracking-[0.2em] text-[10px]">Initialize your strategic position</p>
                 </div>
 
-                <div className="glass-card rounded-[2.5rem] p-10 border-white/5 shadow-2xl relative overflow-hidden">
+                <div className="glass-card rounded-[2.5rem] p-10 border-border/40 shadow-2xl relative overflow-hidden">
                     <form onSubmit={handleRegister} className="relative space-y-6">
                         <div className="space-y-4">
                             <div className="space-y-2">

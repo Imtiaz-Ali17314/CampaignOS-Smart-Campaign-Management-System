@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Mail, Lock, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, BarChart3 } from 'lucide-react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -40,12 +40,11 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center p-6 font-sans relative">
-            {/* Background elements */}
+        <div className="min-h-screen bg-background overflow-hidden flex items-center justify-center p-6 font-sans relative transition-colors duration-500">
+            {/* Ambient Background Elements */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]" />
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]" />
+                <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[120px]" />
             </div>
 
             <motion.div 
@@ -53,25 +52,23 @@ const Login = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-[480px] relative z-10"
             >
-                {/* Brand Header */}
                 <div className="text-center mb-10">
                     <motion.div 
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
-                        className="inline-flex p-4 bg-white/5 border border-white/10 rounded-[2rem] shadow-2xl mb-6 backdrop-blur-xl"
+                        className="inline-flex p-4 bg-card border border-border/40 rounded-[2rem] shadow-2xl mb-6 backdrop-blur-xl"
                     >
                          <div className="h-14 w-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center">
-                            <Zap size={32} className="text-white fill-white" />
+                            <BarChart3 size={32} className="text-white" />
                          </div>
                     </motion.div>
-                    <h1 className="text-4xl font-black tracking-tight text-white mb-3">
-                        Campaign<span className="gradient-text">OS</span>
+                    <h1 className="text-4xl font-black tracking-tight text-foreground mb-3">
+                        Strategic <span className="gradient-text">Access</span>
                     </h1>
-                    <p className="text-muted-foreground font-medium uppercase tracking-[0.2em] text-[10px]">Strategic Management Interface</p>
+                    <p className="text-muted-foreground font-medium uppercase tracking-[0.2em] text-[10px]">Secure Gateway to CampaignOS</p>
                 </div>
 
-                {/* Login Card */}
-                <div className="glass-card rounded-[2.5rem] p-10 border-white/5 shadow-2xl relative overflow-hidden">
+                <div className="glass-card rounded-[2.5rem] p-10 border-border/40 shadow-2xl relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50 pointer-events-none" />
                     
                     <form onSubmit={handleLogin} className="relative space-y-8">
@@ -171,8 +168,8 @@ const Login = () => {
                     </div>
                     <div className="w-1 h-1 bg-white/10 rounded-full" />
                     <div className="flex items-center gap-2">
-                        <Zap size={14} className="text-secondary" />
-                        H-Sync Real-time
+                        <BarChart3 size={14} className="text-primary" />
+                        System Ready
                     </div>
                 </div>
             </motion.div>

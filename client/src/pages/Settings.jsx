@@ -9,14 +9,18 @@ import {
   Cloud, 
   Cpu,
   Save,
-  Trash2
+  Trash2,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import Sidebar from '../components/dashboard/Sidebar';
 import campaignData from '../data/campaigns.json';
+import { useNotification } from '../context/NotificationContext';
 
 const Settings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'profile';
+  const { showNotification } = useNotification();
 
   const sections = [
     { id: 'profile', icon: User, label: 'Profile Details', desc: 'Strategist personal configuration' },
@@ -37,23 +41,38 @@ const Settings = () => {
     };
   });
 
+  const [aiSettings, setAiSettings] = useState({
+    model: 'gpt-4o-mini (Optimized Velocity)',
+    streaming: true,
+    creativity: 85,
+    persona: 'You are the lead marketing strategist at CampaignOS. Your output must be data-driven, punchy, and highly tactical.'
+  });
+
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+
   const handleSaveProfile = () => {
     const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-    const updatedUser = { ...savedUser, ...profileData };
+    const updatedUser = { ...savedUser, ...profileData, aiSettings };
     localStorage.setItem('user', JSON.stringify(updatedUser));
-    alert('Strategist Intel Synchronized Successfully');
+    showNotification('Strategist Intel Synchronized', 'success');
   };
 
-  const handleResetProfile = () => {
-    if (window.confirm('Initialize Strategic Reset? This will revert unsaved changes to defaults.')) {
-        setProfileData({
-            name: 'Lead Strategist',
-            email: profileData.email,
-            rank: 'Commander',
-            specialty: 'Performance Marketing',
-            bio: 'Architecting high-conversion campaign systems.'
-        });
-    }
+  const handleResetConfirm = () => {
+    setProfileData({
+        name: 'Lead Strategist',
+        email: profileData.email,
+        rank: 'Commander',
+        specialty: 'Performance Marketing',
+        bio: 'Architecting high-conversion campaign systems.'
+    });
+    setAiSettings({
+        model: 'gpt-4o-mini (Optimized Velocity)',
+        streaming: true,
+        creativity: 85,
+        persona: 'You are the lead marketing strategist at CampaignOS. Your output must be data-driven, punchy, and highly tactical.'
+    });
+    setShowResetConfirm(false);
+    showNotification('Strategic Matrix Initialized', 'warning');
   };
 
   const renderContent = () => {
@@ -122,22 +141,72 @@ const Settings = () => {
         );
       case 'ai':
         return (
-          <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+          <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="space-y-10">
              <div className="absolute top-0 right-0 p-8 opacity-5">
                 <Cpu size={120} className="text-primary" />
             </div>
-            <h2 className="text-xl font-black mb-1">AI Engine Configuration</h2>
-            <div className="space-y-6 relative">
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Primary Intelligence Model</label>
-                    <select className="input-field bg-card font-bold text-sm">
-                        <option>gpt-4o-mini (Optimal Speed)</option>
-                        <option>gpt-4o (High Precision)</option>
-                    </select>
+            
+            <div>
+                <h2 className="text-2xl font-black mb-1">AI Intelligence Core</h2>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-60">Tuning the Neural Strategic Engine</p>
+            </div>
+
+            <div className="space-y-8 relative">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Standard Intelligence Model</label>
+                        <select 
+                            value={aiSettings.model}
+                            onChange={(e) => setAiSettings(prev => ({ ...prev, model: e.target.value }))}
+                            className="input-field bg-card font-bold text-sm h-14 rounded-2xl border-border/40 focus:ring-primary/20 transition-all outline-none appearance-none"
+                        >
+                            <option>gpt-4o-mini (Optimized Velocity)</option>
+                            <option>gpt-4o (Superior Precision)</option>
+                            <option>o1-preview (Logical Reasoning)</option>
+                        </select>
+                    </div>
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Response Velocity</label>
+                        <div className="h-14 bg-card border border-border/40 rounded-2xl px-6 flex items-center justify-between">
+                            <span className="text-xs font-black uppercase tracking-widest opacity-40">Streaming Mode</span>
+                            <div 
+                                onClick={() => setAiSettings(prev => ({ ...prev, streaming: !prev.streaming }))}
+                                className={`w-10 h-5 rounded-full relative cursor-pointer transition-all duration-300 ${aiSettings.streaming ? 'bg-primary/20' : 'bg-muted/10'}`}
+                            >
+                                <motion.div 
+                                    animate={{ x: aiSettings.streaming ? 20 : 0 }}
+                                    className={`absolute top-1 left-1 w-3 h-3 rounded-full shadow-lg ${aiSettings.streaming ? 'bg-primary shadow-primary/40' : 'bg-muted/40'}`} 
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Creativity Index</label>
-                    <input type="range" className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary" />
+
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">Creativity Index (Temperature)</label>
+                        <span className="text-[10px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-lg tracking-widest">{aiSettings.creativity / 100} (Dynamic)</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        value={aiSettings.creativity}
+                        onChange={(e) => setAiSettings(prev => ({ ...prev, creativity: parseInt(e.target.value) }))}
+                        className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-primary" 
+                    />
+                    <div className="flex justify-between text-[8px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] px-1">
+                        <span>Literal</span>
+                        <span>Hallucinatory</span>
+                    </div>
+                </div>
+
+                <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">System Persona / Instructions</label>
+                    <textarea 
+                        value={aiSettings.persona}
+                        onChange={(e) => setAiSettings(prev => ({ ...prev, persona: e.target.value }))}
+                        className="w-full h-32 bg-card border border-border/40 rounded-3xl p-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none leading-relaxed"
+                        placeholder="Describe the AI's persona..."
+                    />
                 </div>
             </div>
           </motion.div>
@@ -203,7 +272,7 @@ const Settings = () => {
                                 Apply Sync
                             </button>
                             <button 
-                                onClick={handleResetProfile}
+                                onClick={() => setShowResetConfirm(true)}
                                 className="px-6 py-4 border border-border/60 hover:bg-rose-500/10 hover:border-rose-500/20 text-muted-foreground hover:text-rose-500 rounded-2xl transition-all"
                             >
                                 <Trash2 size={16} />
@@ -213,6 +282,57 @@ const Settings = () => {
                 </div>
             </div>
         </div>
+
+        {/* Strategic Reset Modal */}
+        <AnimatePresence>
+            {showResetConfirm && (
+                <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowResetConfirm(false)}
+                        className="absolute inset-0 bg-background/80 backdrop-blur-xl"
+                    />
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="relative w-full max-w-md bg-card border border-border/40 rounded-[3rem] p-10 shadow-2xl overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                            <Trash2 size={120} className="text-rose-500" />
+                        </div>
+                        
+                        <div className="relative">
+                            <div className="h-16 w-16 bg-rose-500/10 rounded-[1.5rem] flex items-center justify-center mb-8">
+                                <AlertCircle size={32} className="text-rose-500" />
+                            </div>
+                            
+                            <h3 className="text-2xl font-black mb-4 tracking-tight">Initialize Strategic <span className="text-rose-500">Wipe?</span></h3>
+                            <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-10">
+                                This will permanently revert all strategist details and AI configurations to factory defaults. This action cannot be reversed within the current session.
+                            </p>
+                            
+                            <div className="flex flex-col gap-3">
+                                <button 
+                                    onClick={handleResetConfirm}
+                                    className="w-full py-4 bg-rose-500 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:shadow-xl hover:shadow-rose-500/20 transition-all"
+                                >
+                                    Confirm Strategic Wipe
+                                </button>
+                                <button 
+                                    onClick={() => setShowResetConfirm(false)}
+                                    className="w-full py-4 bg-muted/10 text-muted-foreground font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-muted/20 transition-all"
+                                >
+                                    Abort Operation
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
       </main>
     </div>
   );
