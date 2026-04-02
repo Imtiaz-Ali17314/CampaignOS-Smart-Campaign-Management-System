@@ -238,12 +238,13 @@ const Dashboard = () => {
   const metricsInRange = useMemo(() => {
     const metrics = [];
     campaigns
-      .filter(c => !selectedClient || c.client === selectedClient)
+      .filter(c => !selectedClient || c.client_name === selectedClient)
       .forEach(c => {
-        c.dailyMetrics.forEach(m => {
+        // DEFENSIVE GUARD FOR LIVE CAMPAIGNS WITHOUT ANALYTICS
+        (c.dailyMetrics || []).forEach(m => {
           const mDate = new Date(m.date);
           if (mDate >= viewRange.start && mDate <= viewRange.end) {
-            metrics.push({ ...m, campaignId: c.id, budget: c.budget / c.dailyMetrics.length }); // Mock budget per day
+            metrics.push({ ...m, campaignId: c.id, budget: c.budget / (c.dailyMetrics?.length || 1) });
           }
         });
       });
@@ -278,9 +279,10 @@ const Dashboard = () => {
 
   const campaignsWithRangeStats = useMemo(() => {
     return campaigns
-      .filter(c => !selectedClient || c.client === selectedClient)
+      .filter(c => !selectedClient || c.client_name === selectedClient)
       .map(c => {
-        const rangeMetrics = c.dailyMetrics.filter(m => {
+        // DEFENSIVE GUARD FOR LIVE CAMPAIGNS
+        const rangeMetrics = (c.dailyMetrics || []).filter(m => {
           const mDate = new Date(m.date);
           return mDate >= viewRange.start && mDate <= viewRange.end;
         });
@@ -291,9 +293,8 @@ const Dashboard = () => {
           clicks: rangeMetrics.reduce((acc, m) => acc + m.clicks, 0),
           conversions: rangeMetrics.reduce((acc, m) => acc + m.conversions, 0),
           spend: rangeMetrics.reduce((acc, m) => acc + m.spend, 0)
-          // Note: we keep the original budget for the campaign
         };
-      }).filter(c => c.impressions > 0 || c.spend > 0); // Only show active campaigns in this range
+      }).filter(c => c.is_mock || c.impressions > 0 || c.spend > 0);
   }, [campaigns, viewRange, selectedClient]);
 
   // Combined daily metrics for the chart

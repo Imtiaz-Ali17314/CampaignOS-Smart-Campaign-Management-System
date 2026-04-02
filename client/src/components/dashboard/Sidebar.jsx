@@ -15,9 +15,9 @@ const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
   
-  const clients = Array.from(new Set(campaigns.map(c => c.client))).map(clientName => ({
+  const clients = Array.from(new Set(campaigns.map(c => c.client_name || c.client))).filter(Boolean).map(clientName => ({
     name: clientName,
-    campaigns: campaigns.filter(c => c.client === clientName)
+    campaigns: campaigns.filter(c => (c.client_name || c.client) === clientName)
   }));
 
   const handleClientClick = (clientName) => {

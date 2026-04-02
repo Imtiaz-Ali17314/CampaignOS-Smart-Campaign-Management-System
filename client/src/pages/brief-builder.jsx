@@ -6,8 +6,10 @@ import Step2CampaignObjective from '../components/brief-builder/Step2CampaignObj
 import Step3CreativePreferences from '../components/brief-builder/Step3CreativePreferences';
 import Step4ReviewSubmit from '../components/brief-builder/Step4ReviewSubmit';
 import BriefOutput from '../components/brief-builder/BriefOutput';
-
 import Sidebar from '../components/dashboard/Sidebar';
+import { useNotification } from '../context/NotificationContext';
+import { useNavigate } from 'react-router-dom';
+
 import campaignData from '../data/campaigns.json';
 
 const STEPS = [
@@ -36,6 +38,41 @@ const BriefBuilder = () => {
   const [errors, setErrors] = useState({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState(null);
+  const [campaigns, setCampaigns] = useState([]);
+  const { showNotification } = useNotification();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    fetchCampaigns();
+  }, []);
+
+  const fetchCampaigns = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${apiUrl}/campaigns?limit=10`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      let backendCampaigns = [];
+      if (response.ok) {
+        const data = await response.json();
+        backendCampaigns = data.campaigns;
+      }
+
+      // MERGE LOCAL MOCKS
+      const normalizedMocks = campaignData.campaigns.map(c => ({
+        ...c,
+        client_name: c.client,
+        is_mock: true
+      }));
+
+      setCampaigns([...normalizedMocks, ...backendCampaigns]);
+    } catch (err) {
+      console.error('Sidebar sync failed:', err);
+      setCampaigns(campaignData.campaigns.map(c => ({ ...c, client_name: c.client, is_mock: true })));
+    }
+  };
 
   const validateStep = (step) => {
     const newErrors = {};
@@ -104,6 +141,42 @@ const BriefBuilder = () => {
     }
   };
 
+  const handleLaunchCampaign = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      
+      // Fetch clients to find the ID for the manual name or create a default relation
+      const clientRes = await fetch(`${apiUrl}/clients`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const clientData = await clientRes.json();
+      const client = clientData.clients.find(c => c.name.toLowerCase() === formData.clientName.toLowerCase()) || clientData.clients[0];
+
+      const response = await fetch(`${apiUrl}/campaigns`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: result.campaignTitle,
+          client_id: client ? client.id : null,
+          budget: formData.budget,
+          status: 'active',
+          start_date: new Date().toISOString().split('T')[0]
+        })
+      });
+
+      if (response.ok) {
+        showNotification('Strategic Intelligence Synchronized: Campaign Live', 'success');
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      showNotification('Launch Failure: Strategic Collision', 'error');
+    }
+  };
+
   const resetForm = () => {
     setResult(null);
     setCurrentStep(0);
@@ -127,7 +200,7 @@ const BriefBuilder = () => {
 
   return (
     <div className="flex bg-background min-h-screen text-foreground">
-      <Sidebar campaigns={campaignData.campaigns} />
+      <Sidebar campaigns={campaigns} />
       
       <main className="flex-1 overflow-x-hidden pt-10 px-6 md:px-12 pb-20 scrollbar-hide">
         <div className="max-w-4xl mx-auto">
@@ -146,7 +219,7 @@ const BriefBuilder = () => {
           </header>
 
           {result ? (
-            <BriefOutput result={result} onReset={resetForm} />
+            <BriefOutput result={result} onReset={resetForm} onLaunch={handleLaunchCampaign} />
           ) : (
             <>
               {/* Stepper */}

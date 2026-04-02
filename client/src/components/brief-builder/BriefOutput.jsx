@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas';
 import { Download, Share2, Printer, Sparkles, Layout, MessageSquare, Target, Palette } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const BriefOutput = ({ result, onReset }) => {
+const BriefOutput = ({ result, onReset, onLaunch }) => {
   const briefRef = useRef();
 
   const exportPDF = async () => {
@@ -117,6 +117,13 @@ const BriefOutput = ({ result, onReset }) => {
           >
             <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
             Archive PDF
+          </button>
+          <button
+            onClick={onLaunch}
+            className="btn-premium bg-emerald-500/10 text-emerald-500 border-emerald-500/20 py-2.5 px-6 text-[10px] uppercase tracking-widest group"
+          >
+            <Sparkles className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+            Initialize Live Campaign
           </button>
           <button
             onClick={() => window.print()}
