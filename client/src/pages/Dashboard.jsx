@@ -10,7 +10,7 @@ import {
   Menu,
   BarChart3
 } from 'lucide-react';
-import { subDays } from 'date-fns';
+import { subDays, format } from 'date-fns';
 import { motion } from 'framer-motion';
 
 
@@ -26,22 +26,43 @@ import campaignData from '../data/campaigns.json';
 
 const Dashboard = () => {
   const [dark, setDark] = useDarkMode();
-  const [, setViewRange] = React.useState({
-    start: subDays(new Date(), 30),
-    end: new Date()
+  const [viewRange, setViewRange] = React.useState(() => {
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+    const start = subDays(end, 30);
+    start.setHours(0, 0, 0, 0);
+    return { start, end };
   });
 
   const campaigns = campaignData.campaigns;
 
-  const stats = useMemo(() => {
-    const totalImpressions = campaigns.reduce((acc, c) => acc + c.impressions, 0);
-    const totalClicks = campaigns.reduce((acc, c) => acc + c.clicks, 0);
-    const totalConversions = campaigns.reduce((acc, c) => acc + c.conversions, 0);
-    const totalSpend = campaigns.reduce((acc, c) => acc + c.spend, 0);
-    const totalBudget = campaigns.reduce((acc, c) => acc + c.budget, 0);
+  const metricsInRange = useMemo(() => {
+    const metrics = [];
+    campaigns.forEach(c => {
+      c.dailyMetrics.forEach(m => {
+        const mDate = new Date(m.date);
+        if (mDate >= viewRange.start && mDate <= viewRange.end) {
+          metrics.push({ ...m, campaignId: c.id, budget: c.budget / c.dailyMetrics.length }); // Mock budget per day
+        }
+      });
+    });
+    return metrics;
+  }, [campaigns, viewRange]);
 
-    const ctr = (totalClicks / totalImpressions) * 100;
-    const roas = totalSpend > 0 ? (totalConversions * 50) / totalSpend : 0; // Assuming $50/conv average
+  const stats = useMemo(() => {
+    const totalImpressions = metricsInRange.reduce((acc, m) => acc + m.impressions, 0);
+    const totalClicks = metricsInRange.reduce((acc, m) => acc + m.clicks, 0);
+    const totalConversions = metricsInRange.reduce((acc, m) => acc + m.conversions, 0);
+    const totalSpend = metricsInRange.reduce((acc, m) => acc + m.spend, 0);
+    
+    // For budget, we'll use the total budget of campaigns that have metrics in this range
+    const activeCampaignIds = new Set(metricsInRange.map(m => m.campaignId));
+    const totalBudget = campaigns
+      .filter(c => activeCampaignIds.has(c.id))
+      .reduce((acc, c) => acc + c.budget, 0);
+
+    const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+    const roas = totalSpend > 0 ? (totalConversions * 50) / totalSpend : 0;
 
     return {
       impressions: totalImpressions,
@@ -50,32 +71,57 @@ const Dashboard = () => {
       spend: totalSpend,
       ctr: ctr.toFixed(2),
       roas: roas.toFixed(2),
-      budgetUtilization: ((totalSpend / totalBudget) * 100).toFixed(1)
+      budgetUtilization: totalBudget > 0 ? ((totalSpend / totalBudget) * 100).toFixed(1) : 0
     };
-  }, [campaigns]);
+  }, [metricsInRange, campaigns]);
+
+  const campaignsWithRangeStats = useMemo(() => {
+    return campaigns.map(c => {
+      const rangeMetrics = c.dailyMetrics.filter(m => {
+        const mDate = new Date(m.date);
+        return mDate >= viewRange.start && mDate <= viewRange.end;
+      });
+
+      return {
+        ...c,
+        impressions: rangeMetrics.reduce((acc, m) => acc + m.impressions, 0),
+        clicks: rangeMetrics.reduce((acc, m) => acc + m.clicks, 0),
+        conversions: rangeMetrics.reduce((acc, m) => acc + m.conversions, 0),
+        spend: rangeMetrics.reduce((acc, m) => acc + m.spend, 0)
+        // Note: we keep the original budget for the campaign
+      };
+    }).filter(c => c.impressions > 0 || c.spend > 0); // Only show active campaigns in this range
+  }, [campaigns, viewRange]);
 
   // Combined daily metrics for the chart
   const combinedChartData = useMemo(() => {
     const dailyMap = {};
-    campaigns.forEach(c => {
-      c.dailyMetrics.forEach(m => {
-        if (!dailyMap[m.date]) {
-          dailyMap[m.date] = { date: m.date, impressions: 0, clicks: 0, spend: 0 };
-        }
+    
+    // Initialize the map with 0s for every day in the range
+    let current = new Date(viewRange.start);
+    while (current <= viewRange.end) {
+      const dateStr = format(current, 'yyyy-MM-dd');
+      dailyMap[dateStr] = { date: dateStr, impressions: 0, clicks: 0, spend: 0 };
+      current.setDate(current.getDate() + 1);
+    }
+
+    metricsInRange.forEach(m => {
+      if (dailyMap[m.date]) {
         dailyMap[m.date].impressions += m.impressions;
         dailyMap[m.date].clicks += m.clicks;
         dailyMap[m.date].spend += m.spend;
-      });
+      }
     });
+
     return Object.values(dailyMap).sort((a, b) => new Date(a.date) - new Date(b.date));
-  }, [campaigns]);
+  }, [metricsInRange, viewRange]);
 
   return (
     <div className="flex bg-background min-h-screen text-foreground selection:bg-primary/20">
       <Sidebar campaigns={campaigns} />
       
       <main className="flex-1 overflow-x-hidden pt-6 sm:pt-10">
-        <header className="max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center justify-between mb-12 gap-8">
+        <header className="max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center justify-between mb-12 gap-8 relative z-50">
           <div className="flex items-center gap-5">
              <motion.div 
                whileHover={{ rotate: 90 }}
@@ -235,7 +281,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="glass-card rounded-[2.5rem] border-border/40 overflow-hidden shadow-2xl shadow-black/5">
-                <CampaignTable campaigns={campaigns} />
+                <CampaignTable campaigns={campaignsWithRangeStats} />
             </div>
           </div>
         </div>
