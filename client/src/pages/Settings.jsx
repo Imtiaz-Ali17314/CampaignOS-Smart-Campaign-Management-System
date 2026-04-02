@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
@@ -11,7 +11,9 @@ import {
   Save,
   Trash2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  ChevronLeft,
+  X
 } from 'lucide-react';
 import Sidebar from '../components/dashboard/Sidebar';
 import campaignData from '../data/campaigns.json';
@@ -19,6 +21,7 @@ import { useNotification } from '../context/NotificationContext';
 
 const Settings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const activeTab = searchParams.get('tab') || 'profile';
   const { showNotification } = useNotification();
 
@@ -225,22 +228,31 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex bg-background min-h-screen text-foreground">
+    <div className="flex bg-background min-h-screen text-foreground transition-colors duration-500">
       <Sidebar campaigns={campaignData.campaigns} />
       
       <main className="flex-1 overflow-x-hidden pt-10 px-6 md:px-12 pb-20">
         <header className="max-w-4xl mx-auto mb-12 flex items-center justify-between">
-            <div>
-                <motion.h1 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-4xl font-black tracking-tight mb-2 uppercase italic"
+            <div className="flex items-center gap-6">
+                <motion.button 
+                    whileHover={{ x: -5 }}
+                    onClick={() => navigate('/')}
+                    className="p-3 bg-card border border-border/40 rounded-2xl text-muted-foreground hover:text-primary transition-all shadow-sm"
                 >
-                    Config <span className="gradient-text">Matrix</span>
-                </motion.h1>
-                <p className="text-muted-foreground font-medium text-xs tracking-widest uppercase">Operational Parameters for CampaignOS</p>
+                    <ChevronLeft size={20} strokeWidth={3} />
+                </motion.button>
+                <div>
+                    <motion.h1 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-4xl font-black tracking-tight mb-1 uppercase italic"
+                    >
+                        Config <span className="gradient-text">Matrix</span>
+                    </motion.h1>
+                    <p className="text-muted-foreground font-medium text-[10px] tracking-widest uppercase">Operational Parameters for CampaignOS</p>
+                </div>
             </div>
-            <div className="p-4 bg-muted/10 border border-border/40 rounded-2xl">
+            <div className="p-4 bg-muted/10 border border-border/40 rounded-2xl hidden sm:block">
                  <Shield size={24} className="text-primary" />
             </div>
         </header>
