@@ -25,6 +25,7 @@ import DateRangePicker from '../components/dashboard/DateRangePicker';
 import Sidebar from '../components/dashboard/Sidebar';
 import NotificationBell from '../components/notifications/NotificationBell';
 import useDarkMode from '../hooks/useDarkMode';
+import BudgetAuditModal from '../components/dashboard/BudgetAuditModal';
 
 import campaignData from '../data/campaigns.json';
 
@@ -32,6 +33,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [dark, setDark] = useDarkMode();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{"email": "Guest"}');
   const [viewRange, setViewRange] = React.useState(() => {
     const end = new Date();
@@ -311,9 +313,10 @@ const Dashboard = () => {
                 </div>
                 
                 <motion.button 
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.02, backgroundColor: 'var(--color-primary)', color: 'white' }}
                   whileTap={{ scale: 0.98 }}
-                  className="mt-10 w-full py-4 bg-foreground text-background font-black rounded-2xl shadow-2xl hover:shadow-primary/20 transition-all text-xs uppercase tracking-widest"
+                  onClick={() => setIsAuditOpen(true)}
+                  className="mt-8 w-full py-4 bg-foreground text-background font-black rounded-2xl shadow-xl hover:shadow-primary/20 transition-all text-[10px] uppercase tracking-widest relative z-10"
                 >
                   Deep Budget Audit
                 </motion.button>
@@ -342,6 +345,16 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
+
+      <AnimatePresence>
+        {isAuditOpen && (
+          <BudgetAuditModal 
+            onClose={() => setIsAuditOpen(false)} 
+            stats={stats}
+            campaigns={campaignsWithRangeStats}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
