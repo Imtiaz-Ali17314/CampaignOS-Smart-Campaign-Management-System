@@ -26,10 +26,12 @@ import Sidebar from '../components/dashboard/Sidebar';
 import NotificationBell from '../components/notifications/NotificationBell';
 import useDarkMode from '../hooks/useDarkMode';
 import BudgetAuditModal from '../components/dashboard/BudgetAuditModal';
+import { useNotification } from '../context/NotificationContext';
 
 import campaignData from '../data/campaigns.json';
 
 const Dashboard = () => {
+  const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [dark, setDark] = useDarkMode();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -124,6 +126,37 @@ const Dashboard = () => {
 
     return Object.values(dailyMap).sort((a, b) => new Date(a.date) - new Date(b.date));
   }, [metricsInRange, viewRange]);
+
+  const handleExportAnalytics = () => {
+    try {
+        const headers = ["Date", "Impressions", "Clicks", "Spend ($)"];
+        const rows = combinedChartData.map(d => [
+            d.date, 
+            d.impressions, 
+            d.clicks, 
+            d.spend
+        ]);
+        
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.join(','))
+        ].join('\n');
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `CampaignOS_Analytics_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showNotification("Analytics Ledger Synchronized: CSV Export Complete", "success");
+    } catch (error) {
+        showNotification("Export initialization failed.", "error");
+    }
+  };
 
   return (
     <div className="flex bg-background min-h-screen text-foreground selection:bg-primary/20">
@@ -260,7 +293,12 @@ const Dashboard = () => {
                         <h2 className="text-xl font-black tracking-tight">Performance Stream</h2>
                         <p className="text-xs text-muted-foreground font-medium">Real-time engagement metrics across all active channels</p>
                     </div>
-                    <button className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors border-b-2 border-primary/20 pb-0.5">Export Analytics</button>
+                    <button 
+                      onClick={handleExportAnalytics}
+                      className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors border-b-2 border-primary/20 pb-0.5"
+                    >
+                      Export Analytics
+                    </button>
                 </div>
                 <PerformanceTrend data={combinedChartData} />
               </div>
