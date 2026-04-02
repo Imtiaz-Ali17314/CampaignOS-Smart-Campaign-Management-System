@@ -67,19 +67,22 @@ const BriefBuilder = () => {
   const handleGenerate = async () => {
     setIsGenerating(true);
     
-    // Simulate AI Generation / Connect to AI Microservice
+    // Connect to AI Microservice
     try {
-      // In a real scenario, we'd call the AI service here:
-      // const response = await fetch(`${import.meta.env.VITE_AI_SERVICE_URL}/generate/brief`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // });
-      // const data = await response.json();
+      const apiUrl = import.meta.env.VITE_AI_SERVICE_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/generate/brief`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
       
-      // Mocking the result for demonstration as per prompt strategy in plan
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      if (!response.ok) throw new Error('API request failed');
+      const data = await response.json();
+      setResult(data);
+    } catch (error) {
+      console.error('AI Service unavailable, using mock data:', error);
+      // Fallback to mock for local dev without AI service running
+      await new Promise(resolve => setTimeout(resolve, 2000));
       const mockResult = {
         campaignTitle: `${formData.clientName} ${formData.objective.charAt(0).toUpperCase() + formData.objective.slice(1)} Performance 2025`,
         headlines: [
@@ -95,10 +98,7 @@ const BriefBuilder = () => {
         ],
         visualDirection: `${formData.imageryStyle} aesthetics dominated by ${formData.colorDirection} accents. Imagery should focus on modern, clean environments that showcase the human element within ${formData.industry}.`
       };
-      
       setResult(mockResult);
-    } catch (error) {
-      console.error('Failed to generate brief:', error);
     } finally {
       setIsGenerating(false);
     }
