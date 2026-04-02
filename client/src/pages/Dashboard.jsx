@@ -26,6 +26,7 @@ import Sidebar from '../components/dashboard/Sidebar';
 import NotificationBell from '../components/notifications/NotificationBell';
 import useDarkMode from '../hooks/useDarkMode';
 import BudgetAuditModal from '../components/dashboard/BudgetAuditModal';
+import CampaignManagerModal from '../components/dashboard/CampaignManagerModal';
 import { useNotification } from '../context/NotificationContext';
 
 import campaignData from '../data/campaigns.json';
@@ -38,8 +39,50 @@ const Dashboard = () => {
   const [isAuditOpen, setIsAuditOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const urlClient = searchParams.get('client');
-  const [campaigns, setCampaigns] = useState(campaignData.campaigns);
+  const [campaigns, setCampaigns] = useState([]);
   const [selectedClient, setSelectedClient] = useState(urlClient || null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // CRUD STATES
+  const [isManagerOpen, setIsManagerOpen] = useState(false);
+  const [editingCampaign, setEditingCampaign] = useState(null);
+
+  const fetchCampaigns = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      
+      const response = await fetch(`${apiUrl}/campaigns?limit=50`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      let backendCampaigns = [];
+      if (response.ok) {
+        const data = await response.json();
+        backendCampaigns = data.campaigns;
+      }
+
+      // MERGE LOCAL MOCKS WITH BACKEND RECORDS
+      // Normalize client mappings for visual consistency
+      const normalizedMocks = campaignData.campaigns.map(c => ({
+        ...c,
+        client_name: c.client, // Map mock 'client' to relational 'client_name'
+        is_mock: true
+      }));
+
+      setCampaigns([...normalizedMocks, ...backendCampaigns]);
+    } catch (err) {
+      console.error('Strategic Data Hybridization Failed:', err);
+      // Fallback only to mocks if infrastructure is offline
+      setCampaigns(campaignData.campaigns.map(c => ({ ...c, client_name: c.client, is_mock: true })));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchCampaigns();
+  }, []);
 
   React.useEffect(() => {
     setSelectedClient(urlClient || null);
@@ -84,27 +127,112 @@ const Dashboard = () => {
     fetchProfile();
   }, []);
 
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = async (id) => {
     const campaign = campaigns.find(c => c.id === id);
     if (!campaign) return;
     
-    const newStatus = campaign.status === 'active' ? 'paused' : 'active';
-    setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
-    showNotification(`Strategic Pulse Update: ${campaign.name} set to ${newStatus}`, "info");
+    // GUARD MOCK DATA
+    if (campaign.is_mock) {
+        const newMockStatus = campaign.status === 'active' ? 'paused' : 'active';
+        setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: newMockStatus } : c));
+        showNotification(`[Mock Pivot] Strategic Pulse Update: ${campaign.name} set to ${newMockStatus}`, "info");
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('token');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const newStatus = campaign.status === 'active' ? 'paused' : 'active';
+
+        const response = await fetch(`${apiUrl}/campaigns/${id}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (response.ok) {
+            setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
+            showNotification(`Strategic Pulse Update: ${campaign.name} set to ${newStatus}`, "info");
+        }
+    } catch (err) {
+        showNotification("Pulse Update failed: Connection collision.", "error");
+    }
   };
 
-  const handleComplete = (id) => {
+  const handleComplete = async (id) => {
     const campaign = campaigns.find(c => c.id === id);
     if (!campaign) return;
-    
-    setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: 'completed' } : c));
-    showNotification(`Objective Met: ${campaign.name} protocol marked as Complete.`, "success");
+
+    // GUARD MOCK DATA
+    if (campaign.is_mock) {
+        setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: 'completed' } : c));
+        showNotification(`[Mock Objective] ${campaign.name} protocol marked as Complete.`, "success");
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('token');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+        const response = await fetch(`${apiUrl}/campaigns/${id}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ status: 'completed' })
+        });
+
+        if (response.ok) {
+            setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: 'completed' } : c));
+            showNotification(`Objective Met: ${campaign.name} protocol marked as Complete.`, "success");
+        }
+    } catch (err) {
+        showNotification("Operational Completion failed: Bridge Error.", "error");
+    }
   };
 
-  const handleArchive = (id) => {
+  const handleArchive = async (id) => {
+    // PROTECT MOCK DATA INTEGRITY
     const campaign = campaigns.find(c => c.id === id);
-    setCampaigns(prev => prev.filter(c => c.id !== id));
-    showNotification(`Archiving Protocol Complete: ${campaign?.name || 'Protocol'} moved to cold storage.`, "error");
+    if (campaign?.is_mock) {
+        showNotification("Institutional Metadata Guard: Local Mocks cannot be retired from the Vault.", "info");
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('token');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        
+        const response = await fetch(`${apiUrl}/campaigns/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            setCampaigns(prev => prev.filter(c => c.id !== id));
+            showNotification(`Strategic Decommission Complete. Record Archived.`, "success");
+        }
+    } catch (err) {
+        showNotification("Decommission failed: Connection collision.", "error");
+    }
+  };
+
+  const handleLaunch = () => {
+    setEditingCampaign(null);
+    setIsManagerOpen(true);
+  };
+
+  const handleEdit = (campaign) => {
+    if (campaign.is_mock) {
+        showNotification("Institutional Metadata Guard: Local Mocks are in the 'Read-Only' vault.", "info");
+        return;
+    }
+    setEditingCampaign(campaign);
+    setIsManagerOpen(true);
   };
 
   const metricsInRange = useMemo(() => {
@@ -436,16 +564,25 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2.5 bg-card border border-border rounded-xl">
-                        <BarChart3 size={18} className="text-primary" />
+                         <BarChart3 size={18} className="text-primary" />
                     </div>
                     <div>
                         <h2 className="font-black text-xl tracking-tight">Active Campaigns</h2>
                         <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">Operational Monitoring</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{campaigns.length} Active Records</span>
+                <div className="flex items-center gap-4">
+                    <button 
+                        onClick={handleLaunch}
+                        className="btn-premium btn-primary py-2 px-6 text-[10px] font-black uppercase tracking-widest hidden sm:flex items-center gap-2"
+                    >
+                        <TrendingUp size={14} />
+                        Launch New Strategy
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{campaigns.length} Active Records</span>
+                    </div>
                 </div>
             </div>
             {/* Campaigns Section */}
@@ -457,6 +594,9 @@ const Dashboard = () => {
                 onToggleStatus={handleToggleStatus}
                 onComplete={handleComplete}
                 onArchive={handleArchive}
+                onLaunch={handleLaunch}
+                onEdit={handleEdit}
+                onDelete={handleArchive}
             />
           </div>
           </div>
@@ -469,6 +609,17 @@ const Dashboard = () => {
             onClose={() => setIsAuditOpen(false)} 
             stats={stats}
             campaigns={campaignsWithRangeStats}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isManagerOpen && (
+          <CampaignManagerModal 
+            isOpen={isManagerOpen}
+            onClose={() => setIsManagerOpen(false)}
+            campaign={editingCampaign}
+            onComplete={fetchCampaigns}
           />
         )}
       </AnimatePresence>

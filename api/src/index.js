@@ -7,6 +7,7 @@ dotenv.config();
 
 const authRoutes = require('./routes/auth');
 const campaignRoutes = require('./routes/campaigns');
+const clientRoutes = require('./routes/clients');
 const userRoutes = require('./routes/user');
 const rateLimit = require('./middleware/rateLimit');
 const { runMigrations } = require('./db/migration');
@@ -26,6 +27,7 @@ app.use(rateLimit);
 // Routes
 app.use('/auth', authRoutes);
 app.use('/campaigns', campaignRoutes);
+app.use('/clients', clientRoutes);
 app.use('/user', userRoutes);
 
 // Basic health check

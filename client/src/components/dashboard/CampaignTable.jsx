@@ -5,19 +5,22 @@ import {
   Search, 
   Filter, 
   MoreVertical,
+  Target, 
   Activity,
   CheckCircle2,
   Clock,
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
-  LogOut
+  LogOut,
+  TrendingUp,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/NotificationContext';
 
-const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchive }) => {
+const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchive, onLaunch, onEdit, onDelete }) => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,7 +41,7 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
     return campaigns
       .filter(c => 
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        c.client.toLowerCase().includes(searchTerm.toLowerCase())
+        (c.client_name || '').toLowerCase().includes(searchTerm.toLowerCase())
       )
       .sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -76,6 +79,12 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
         text: 'text-gray-700 dark:text-gray-400',
         dot: 'bg-gray-500',
         icon: CheckCircle2 
+      },
+      draft: {
+        bg: 'bg-blue-100 dark:bg-blue-900/30',
+        text: 'text-blue-700 dark:text-blue-400',
+        dot: 'bg-blue-500',
+        icon: Clock
       }
     };
     const { bg, text, dot, icon: Icon } = config[status] || config.completed;
@@ -108,9 +117,10 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
                 <Filter size={16} strokeWidth={2.5} />
             </button>
             <button 
-              onClick={() => navigate('/brief')}
-              className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+              onClick={onLaunch}
+              className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
             >
+                <TrendingUp size={14} />
                 Launch Campaign
             </button>
         </div>
@@ -142,18 +152,18 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
               <tr key={campaign.id} className="hover:bg-primary/[0.02] transition-colors group">
                 <td className="px-8 py-6">
                   <div className="font-black text-sm tracking-tight text-foreground group-hover:text-primary transition-colors">{campaign.name}</div>
-                  <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-0.5">{campaign.client}</div>
+                  <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-0.5">{campaign.client_name}</div>
                 </td>
                 <td className="px-8 py-6">
                   <StatusPill status={campaign.status} />
                 </td>
-                <td className="px-8 py-6 font-black text-xs tracking-tighter opacity-80">${campaign.budget.toLocaleString()}</td>
-                <td className="px-8 py-6 font-black text-xs tracking-tighter opacity-80">${campaign.spend.toLocaleString()}</td>
+                <td className="px-8 py-6 font-black text-xs tracking-tighter opacity-80">${(campaign.budget || 0).toLocaleString()}</td>
+                <td className="px-8 py-6 font-black text-xs tracking-tighter opacity-80">${(campaign.spend || 0).toLocaleString()}</td>
                 <td className="px-8 py-6">
                     <div className="flex items-center gap-2">
-                        <span className="font-black text-sm text-primary tracking-tighter">{campaign.conversions.toLocaleString()}</span>
+                        <span className="font-black text-sm text-primary tracking-tighter">{(campaign.conversions || 0).toLocaleString()}</span>
                         <div className="w-12 h-1.5 bg-muted/20 rounded-full overflow-hidden hidden sm:block">
-                            <div className="h-full bg-primary" style={{ width: `${Math.min((campaign.conversions / 1000) * 100, 100)}%` }} />
+                            <div className="h-full bg-primary" style={{ width: `${Math.min(((campaign.conversions || 0) / 1000) * 100, 100)}%` }} />
                         </div>
                     </div>
                 </td>
@@ -180,12 +190,22 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
                             >
                                 <button 
                                     onClick={() => {
+                                        onEdit(campaign);
+                                        setActiveMenu(null);
+                                    }}
+                                    className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl transition-all flex items-center gap-3"
+                                >
+                                    <SettingsIcon size={14} />
+                                    Edit Settings
+                                </button>
+                                <button 
+                                    onClick={() => {
                                         onAudit(campaign.id);
                                         setActiveMenu(null);
                                     }}
                                     className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl transition-all flex items-center gap-3"
                                 >
-                                    <Activity size={14} />
+                                    <Target size={14} />
                                     Deep Audit
                                 </button>
                                 <button 
@@ -213,13 +233,13 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
                                 <div className="h-px bg-border/20 my-1 mx-2" />
                                 <button 
                                     onClick={() => {
-                                        onArchive(campaign.id);
+                                        onDelete(campaign.id);
                                         setActiveMenu(null);
                                     }}
                                     className="w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-500/5 rounded-xl transition-all flex items-center gap-3"
                                 >
                                     <LogOut size={14} />
-                                    Archive Protocol
+                                    Retire Strategy
                                 </button>
                             </motion.div>
                         </>

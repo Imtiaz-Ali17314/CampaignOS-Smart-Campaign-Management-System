@@ -15,12 +15,14 @@ router.get('/', async (req, res) => {
   try {
     let sql = `
       SELECT 
-        *,
-        (CASE WHEN impressions > 0 THEN (clicks::numeric / impressions::numeric) * 100 ELSE 0 END) as ctr,
-        (CASE WHEN spend > 0 THEN (conversions::numeric * 50 / spend::numeric) ELSE 0 END) as roas,
-        (CASE WHEN budget > 0 THEN (spend::numeric / budget::numeric) * 100 ELSE 0 END) as spend_pct
-      FROM campaigns 
-      WHERE deleted_at IS NULL
+        c.*,
+        cl.name as client_name,
+        (CASE WHEN c.impressions > 0 THEN (c.clicks::numeric / c.impressions::numeric) * 100 ELSE 0 END) as ctr,
+        (CASE WHEN c.spend > 0 THEN (c.conversions::numeric * 50 / c.spend::numeric) ELSE 0 END) as roas,
+        (CASE WHEN c.budget > 0 THEN (c.spend::numeric / c.budget::numeric) * 100 ELSE 0 END) as spend_pct
+      FROM campaigns c
+      JOIN clients cl ON c.client_id = cl.id
+      WHERE c.deleted_at IS NULL
     `;
     const params = [];
 
@@ -67,11 +69,13 @@ router.get('/:id', async (req, res) => {
   try {
     const result = await db.query(`
       SELECT 
-        *,
-        (CASE WHEN impressions > 0 THEN (clicks::numeric / impressions::numeric) * 100 ELSE 0 END) as ctr,
-        (CASE WHEN spend > 0 THEN (conversions::numeric * 50 / spend::numeric) ELSE 0 END) as roas
-      FROM campaigns 
-      WHERE id = $1 AND deleted_at IS NULL
+        c.*,
+        cl.name as client_name,
+        (CASE WHEN c.impressions > 0 THEN (c.clicks::numeric / c.impressions::numeric) * 100 ELSE 0 END) as ctr,
+        (CASE WHEN c.spend > 0 THEN (c.conversions::numeric * 50 / c.spend::numeric) ELSE 0 END) as roas
+      FROM campaigns c
+      JOIN clients cl ON c.client_id = cl.id
+      WHERE c.id = $1 AND c.deleted_at IS NULL
     `, [req.params.id]);
 
     if (result.rows.length === 0) return res.status(404).json({ error: 'Campaign not found' });
