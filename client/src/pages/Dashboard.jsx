@@ -53,7 +53,36 @@ const Dashboard = () => {
     return { start, end };
   });
   
-  const user = JSON.parse(localStorage.getItem('user') || '{"email": "Guest"}');
+  const [userProfile, setUserProfile] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : { email: 'Guest', name: 'Lead Strategist' };
+  });
+
+  // FETCH STRATEGIC PROFILE ON MOUNT
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        
+        const response = await fetch(`${apiUrl}/user/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserProfile(data.user);
+          // Sync back to local storage for quick cache
+          const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+          localStorage.setItem('user', JSON.stringify({ ...savedUser, ...data.user }));
+        }
+      } catch (err) {
+        console.error('Strategic Context Sync Failed:', err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleToggleStatus = (id) => {
     const campaign = campaigns.find(c => c.id === id);
@@ -248,7 +277,7 @@ const Dashboard = () => {
             <NotificationBell />
 
             <div className="relative">
-              <motion.div 
+               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -256,7 +285,7 @@ const Dashboard = () => {
               >
                   <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[2px]">
                       <div className="h-full w-full bg-card rounded-[14px] flex items-center justify-center font-black text-foreground group-hover:bg-transparent group-hover:text-white transition-all text-sm uppercase">
-                          {user.email.substring(0, 2)}
+                          {userProfile.name ? userProfile.name.substring(0, 2) : userProfile.email.substring(0, 2)}
                       </div>
                   </div>
               </motion.div>
@@ -270,8 +299,8 @@ const Dashboard = () => {
                     className="absolute right-0 mt-3 w-64 bg-card border border-border/60 rounded-3xl shadow-2xl z-[100] p-3 backdrop-blur-xl"
                   >
                     <div className="p-4 mb-2 border-b border-border/40">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Session Active</p>
-                      <p className="text-sm font-black text-foreground truncate">{user.email}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">{userProfile.rank || 'Strategist'}</p>
+                      <p className="text-sm font-black text-foreground truncate">{userProfile.name || userProfile.email}</p>
                     </div>
                     
                     <div className="space-y-1">

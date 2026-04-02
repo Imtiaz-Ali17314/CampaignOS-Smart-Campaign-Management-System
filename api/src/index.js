@@ -7,10 +7,15 @@ dotenv.config();
 
 const authRoutes = require('./routes/auth');
 const campaignRoutes = require('./routes/campaigns');
+const userRoutes = require('./routes/user');
 const rateLimit = require('./middleware/rateLimit');
+const { runMigrations } = require('./db/migration');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Run Strategic Migrations
+runMigrations();
 
 // Security and utility middleware
 app.use(helmet());
@@ -21,6 +26,7 @@ app.use(rateLimit);
 // Routes
 app.use('/auth', authRoutes);
 app.use('/campaigns', campaignRoutes);
+app.use('/user', userRoutes);
 
 // Basic health check
 app.get('/health', (req, res) => {
