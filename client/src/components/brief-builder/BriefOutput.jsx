@@ -8,68 +8,51 @@ const BriefOutput = ({ result, onReset }) => {
   const briefRef = useRef();
 
   const exportPDF = async () => {
-    const canvas = await html2canvas(briefRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      onclone: (clonedDoc) => {
-        const container = clonedDoc.getElementById('brief-output');
-        if (!container) return;
+    // ULTIMATE PROJECT-WIDE STABILIZATION: HYBRID SYNC-PURGE
+    const styleTags = Array.from(document.querySelectorAll('style'));
+    const linkTags = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+    const originalStyles = styleTags.map(s => s.innerHTML);
+    const originalLinks = linkTags.map(l => ({ node: l, parent: l.parentNode, next: l.nextSibling }));
 
-        // NUCLEAR OPTION: Identify all stylable elements before clearing global styles
-        const elements = container.querySelectorAll('*');
-        const computedStyles = Array.from(elements).map(el => {
-          const style = window.getComputedStyle(el);
-          return {
-            color: style.color,
-            backgroundColor: style.backgroundColor,
-            borderColor: style.borderColor,
-            fontSize: style.fontSize,
-            fontFamily: style.fontFamily,
-            padding: style.padding,
-            margin: style.margin,
-            display: style.display,
-            width: style.width,
-            height: style.height,
-            opacity: style.opacity,
-            // Convert any 'okl' colors to safe RGB strings
-            colorText: style.color.replace(/okl[chb]\([^)]+\)/g, '#8b5cf6'),
-            bgText: style.backgroundColor.replace(/okl[chb]\([^)]+\)/g, '#ffffff')
-          };
-        });
+    try {
+      // 1. PROJECT-WIDE NEUTRALIZATION
+      // Detach links (can't regex them) and sanitize local styles
+      linkTags.forEach(l => l.remove());
+      styleTags.forEach(s => {
+        s.innerHTML = s.innerHTML.replace(/okl[chb]\([^)]+\)/g, '#8b5cf6');
+      });
 
-        // 1. Purge ALL styles to stop the html2canvas internal CSS parser from crashing
-        const allStyles = clonedDoc.querySelectorAll('style, link');
-        allStyles.forEach(s => s.remove());
+      const canvas = await html2canvas(briefRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        onclone: (clonedDoc) => {
+          const container = clonedDoc.getElementById('brief-output');
+          if (!container) return;
+          const allElements = container.querySelectorAll('*');
+          allElements.forEach(el => {
+            const s = window.getComputedStyle(el);
+            // Force resolved HEX colors into the clone for rendering
+            el.style.color = s.color.replace(/okl[chb]\([^)]+\)/g, '#000000');
+            el.style.backgroundColor = s.backgroundColor.replace(/okl[chb]\([^)]+\)/g, '#ffffff');
+            el.style.borderColor = s.borderColor.replace(/okl[chb]\([^)]+\)/g, '#dddddd');
+          });
+        }
+      });
 
-        // 2. "Bake" the pre-resolved computed styles into each element as safe inline HEX/RGB
-        elements.forEach((el, i) => {
-          const cs = computedStyles[i];
-          el.style.cssText = `
-            color: ${cs.colorText} !important;
-            background-color: ${cs.bgText} !important;
-            border-color: ${cs.borderColor} !important;
-            font-size: ${cs.fontSize} !important;
-            font-family: ${cs.fontFamily} !important;
-            padding: ${cs.padding} !important;
-            margin: ${cs.margin} !important;
-            display: ${cs.display} !important;
-            width: ${cs.width} !important;
-            height: ${cs.height} !important;
-            opacity: ${cs.opacity} !important;
-            transition: none !important;
-            animation: none !important;
-          `;
-        });
-      }
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${result.campaignTitle.replace(/\s+/g, '_').toLowerCase()}_brief.pdf`);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${result.campaignTitle.replace(/\s+/g, '_').toLowerCase()}_brief.pdf`);
+    } catch (err) {
+      console.error('PDF Export Error:', err);
+    } finally {
+      // 2. COMPULSORY PROJECT-WIDE RESTORATION
+      styleTags.forEach((s, idx) => { s.innerHTML = originalStyles[idx]; });
+      originalLinks.forEach(l => { if (l.parent) l.parent.insertBefore(l.node, l.next); });
+    }
   };
 
   if (!result) return null;

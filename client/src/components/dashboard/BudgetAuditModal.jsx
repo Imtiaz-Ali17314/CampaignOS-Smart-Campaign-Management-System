@@ -71,13 +71,25 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
     }, 3500);
   };
 
-  const handleShowBreakdown = async () => {
+    const handleShowBreakdown = async () => {
     showNotification("Compiling Deep Metric Audit Report...", "info");
     
-    // Synthetic delay to allow UI to settle and SVG animations to finish
+    // Synthetic delay to allow UI to settle
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
+    // ULTIMATE PROJECT-WIDE STABILIZATION: HYBRID SYNC-PURGE
+    const styleTags = Array.from(document.querySelectorAll('style'));
+    const linkTags = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+    const originalStyles = styleTags.map(s => s.innerHTML);
+    const originalLinks = linkTags.map(l => ({ node: l, parent: l.parentNode, next: l.nextSibling }));
+
     try {
+        // 1. PROJECT-WIDE NEUTRALIZATION
+        linkTags.forEach(l => l.remove());
+        styleTags.forEach(s => {
+          s.innerHTML = s.innerHTML.replace(/okl[chb]\([^)]+\)/g, '#8b5cf6');
+        });
+
         const canvas = await html2canvas(modalRef.current, {
             scale: 2,
             useCORS: true,
@@ -86,50 +98,17 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
             width: modalRef.current.offsetWidth,
             height: modalRef.current.scrollHeight,
             onclone: (clonedDoc) => {
-              // 1. Identify all elements in the clone
+              // Now we bake resolved layout for rendering fidelity
               const allElements = clonedDoc.querySelectorAll('*');
-              
-              // 2. Capture and resolve all computed styles into safe HEX/RGB strings
-              const styles = Array.from(allElements).map(el => {
+              allElements.forEach(el => {
                 const s = window.getComputedStyle(el);
-                return {
-                  color: s.color.replace(/okl[chb]\([^)]+\)/g, '#ffffff'),
-                  bg: s.backgroundColor.replace(/okl[chb]\([^)]+\)/g, '#0b0c10'),
-                  border: s.borderColor.replace(/okl[chb]\([^)]+\)/g, '#232530'),
-                  font: s.fontFamily,
-                  size: s.fontSize,
-                  weight: s.fontWeight,
-                  display: s.display,
-                  opacity: s.opacity,
-                  width: s.width,
-                  height: s.height
-                };
+                el.style.color = s.color.replace(/okl[chb]\([^)]+\)/g, '#ffffff');
+                el.style.backgroundColor = s.backgroundColor.replace(/okl[chb]\([^)]+\)/g, '#0b0c10');
+                el.style.borderColor = s.borderColor.replace(/okl[chb]\([^)]+\)/g, '#232530');
+                el.style.transition = 'none';
+                el.style.animation = 'none';
               });
 
-              // 3. NUCLEAR OPTION: Purge all global stylesheets to prevent engine parser crashes
-              const styleNodes = clonedDoc.querySelectorAll('style, link');
-              styleNodes.forEach(s => s.remove());
-
-              // 4. Bake resolved styles into elements as safe inline values
-              allElements.forEach((el, idx) => {
-                const s = styles[idx];
-                el.style.cssText = `
-                  color: ${s.color} !important;
-                  background-color: ${s.bg} !important;
-                  border-color: ${s.border} !important;
-                  font-family: ${s.font} !important;
-                  font-size: ${s.size} !important;
-                  font-weight: ${s.weight} !important;
-                  display: ${s.display} !important;
-                  opacity: ${s.opacity} !important;
-                  width: ${s.width} !important;
-                  height: ${s.height} !important;
-                  transition: none !important;
-                  animation: none !important;
-                `;
-              });
-
-              // 5. Special handling for Recharts SVG sectors
               const sectors = clonedDoc.querySelectorAll('.recharts-pie-sector');
               sectors.forEach((s, i) => {
                 const colors = ['#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#3b82f6'];
@@ -137,6 +116,7 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
               });
             }
         });
+
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('l', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -149,6 +129,10 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
     } catch (error) {
         console.error("PDF Component Export Collision Error:", error);
         showNotification("Report generation failed.", "error");
+    } finally {
+        // 2. COMPULSORY PROJECT-WIDE RESTORATION
+        styleTags.forEach((s, idx) => { s.innerHTML = originalStyles[idx]; });
+        originalLinks.forEach(l => { if (l.parent) l.parent.insertBefore(l.node, l.next); });
     }
   };
 
