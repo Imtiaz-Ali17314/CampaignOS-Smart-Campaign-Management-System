@@ -77,4 +77,37 @@ router.post('/hashtags', async (req, res) => {
   }
 });
 
+// POST /generate/brief - Generates a full creative brief
+router.post('/brief', async (req, res) => {
+  const { clientName, industry, objective, targetAudience, tone, imageryStyle } = req.body;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: model,
+      messages: [
+        { 
+          role: 'system', 
+          content: `You are an expert marketing strategist. Generate a structured JSON creative brief.
+          Return a JSON object ONLY with the following keys:
+          - campaignTitle: string
+          - headlines: [string, string, string]
+          - toneGuide: string
+          - channels: [{ name, budgetPct }] (at least 3 channels totalling 100%)
+          - visualDirection: string` 
+        },
+        { 
+          role: 'user', 
+          content: `Client: ${clientName}, Industry: ${industry}, Objective: ${objective}, Audience: ${targetAudience}, Tone: ${tone}, Visual Style: ${imageryStyle}` 
+        }
+      ],
+      response_format: { type: "json_object" }
+    });
+
+    res.json(JSON.parse(completion.choices[0].message.content));
+  } catch (err) {
+    console.error('Brief generation error:', err);
+    res.status(500).json({ error: 'Failed to generate creative brief' });
+  }
+});
+
 module.exports = router;
