@@ -8,9 +8,10 @@ import {
   Activity,
   CheckCircle2,
   Clock,
-  ArrowUpDown
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
-import { format } from 'date-fns';
 
 const CampaignTable = ({ campaigns }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,61 +81,72 @@ const CampaignTable = ({ campaigns }) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden mt-8">
-      <div className="p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold tracking-tight">Campaign List</h2>
-          <p className="text-sm text-muted-foreground">Manage and track all campaigns</p>
-        </div>
-        <div className="relative group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />
+    <div className="bg-transparent overflow-hidden">
+      <div className="p-8 border-b border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div className="relative group flex-1 max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-colors" size={16} />
           <input 
             type="text" 
-            placeholder="Search campaigns..." 
-            className="pl-10 pr-4 py-2 bg-muted/50 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all w-full sm:w-64"
+            placeholder="Search campaigns, clients or strategies..." 
+            className="w-full pl-12 pr-4 py-3 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary/40 transition-all placeholder:text-muted-foreground/30 placeholder:uppercase placeholder:tracking-widest"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <div className="flex items-center gap-3">
+            <button className="p-3 bg-card border border-border/60 rounded-xl text-muted-foreground hover:text-primary transition-all shadow-sm">
+                <Filter size={16} strokeWidth={2.5} />
+            </button>
+            <button className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest">
+                Launch Campaign
+            </button>
+        </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto scrollbar-hide">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-muted/30">
+            <tr className="border-b border-border/20">
               {['name', 'status', 'budget', 'spend', 'conversions'].map((key) => (
                 <th 
                   key={key} 
-                  className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors"
+                  className="px-8 py-5 text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors"
                   onClick={() => handleSort(key)}
                 >
                   <div className="flex items-center gap-2">
-                    {key}
+                    {key.replace('_', ' ')}
                     {sortConfig.key === key ? (
-                      sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />
-                    ) : <ArrowUpDown size={12} className="opacity-30" />}
+                      sortConfig.direction === 'asc' ? <ChevronUp size={12} className="text-primary" /> : <ChevronDown size={12} className="text-primary" />
+                    ) : <ArrowUpDown size={10} className="opacity-20" />}
                   </div>
                 </th>
               ))}
-              <th className="px-6 py-4"></th>
+              <th className="px-8 py-5"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-border/10">
             {paginatedCampaigns.map((campaign) => (
-              <tr key={campaign.id} className="hover:bg-muted/20 transition-colors group">
-                <td className="px-6 py-4">
-                  <div className="font-semibold text-sm">{campaign.name}</div>
-                  <div className="text-xs text-muted-foreground">{campaign.client}</div>
+              <tr key={campaign.id} className="hover:bg-primary/[0.02] transition-colors group">
+                <td className="px-8 py-6">
+                  <div className="font-black text-sm tracking-tight text-foreground group-hover:text-primary transition-colors">{campaign.name}</div>
+                  <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-0.5">{campaign.client}</div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-8 py-6">
                   <StatusPill status={campaign.status} />
                 </td>
-                <td className="px-6 py-4 font-mono text-sm">${campaign.budget.toLocaleString()}</td>
-                <td className="px-6 py-4 font-mono text-sm">${campaign.spend.toLocaleString()}</td>
-                <td className="px-6 py-4 font-mono text-sm font-bold text-primary">{campaign.conversions.toLocaleString()}</td>
-                <td className="px-6 py-4 text-right">
-                  <button className="p-2 hover:bg-muted rounded-lg transition-colors opacity-0 group-hover:opacity-100">
-                    <MoreVertical size={18} className="text-muted-foreground" />
+                <td className="px-8 py-6 font-black text-xs tracking-tighter opacity-80">${campaign.budget.toLocaleString()}</td>
+                <td className="px-8 py-6 font-black text-xs tracking-tighter opacity-80">${campaign.spend.toLocaleString()}</td>
+                <td className="px-8 py-6">
+                    <div className="flex items-center gap-2">
+                        <span className="font-black text-sm text-primary tracking-tighter">{campaign.conversions.toLocaleString()}</span>
+                        <div className="w-12 h-1.5 bg-muted/20 rounded-full overflow-hidden hidden sm:block">
+                            <div className="h-full bg-primary" style={{ width: `${Math.min((campaign.conversions / 1000) * 100, 100)}%` }} />
+                        </div>
+                    </div>
+                </td>
+                <td className="px-8 py-6 text-right">
+                  <button className="p-2.5 hover:bg-muted rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                    <MoreVertical size={16} className="text-muted-foreground" />
                   </button>
                 </td>
               </tr>
@@ -143,24 +155,24 @@ const CampaignTable = ({ campaigns }) => {
         </table>
       </div>
 
-      <div className="p-4 border-t border-border flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          Showing {((currentPage - 1) * rowsPerPage) + 1} to {Math.min(currentPage * rowsPerPage, filteredCampaigns.length)} of {filteredCampaigns.length} results
+      <div className="p-6 bg-muted/5 border-t border-border/20 flex items-center justify-between">
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+          Viewing <span className="text-foreground">{((currentPage - 1) * rowsPerPage) + 1}</span> - <span className="text-foreground">{Math.min(currentPage * rowsPerPage, filteredCampaigns.length)}</span> of <span className="text-foreground">{filteredCampaigns.length}</span> strategies
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button 
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(p => p - 1)}
-            className="px-3 py-1 bg-card border border-border rounded-lg text-xs font-medium hover:bg-muted disabled:opacity-50 transition-colors"
+            className="p-2 bg-card border border-border/60 rounded-xl text-muted-foreground hover:text-primary disabled:opacity-0 transition-all font-black text-[10px] uppercase tracking-widest"
           >
-            Previous
+            <ChevronLeft size={16} />
           </button>
           <button 
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(p => p + 1)}
-            className="px-3 py-1 bg-card border border-border rounded-lg text-xs font-medium hover:bg-muted disabled:opacity-50 transition-colors"
+            className="p-2 bg-card border border-border/60 rounded-xl text-muted-foreground hover:text-primary disabled:opacity-0 transition-all font-black text-[10px] uppercase tracking-widest"
           >
-            Next
+            <ChevronRight size={16} />
           </button>
         </div>
       </div>

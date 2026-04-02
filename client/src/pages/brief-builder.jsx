@@ -7,11 +7,14 @@ import Step3CreativePreferences from '../components/brief-builder/Step3CreativeP
 import Step4ReviewSubmit from '../components/brief-builder/Step4ReviewSubmit';
 import BriefOutput from '../components/brief-builder/BriefOutput';
 
+import Sidebar from '../components/dashboard/Sidebar';
+import campaignData from '../data/campaigns.json';
+
 const STEPS = [
-  'Client Details',
-  'Campaign Objectives',
-  'Creative Direction',
-  'Final Review'
+  'Client Context',
+  'Campaign Goal',
+  'Creative DNA',
+  'Final Submission'
 ];
 
 const BriefBuilder = () => {
@@ -26,7 +29,7 @@ const BriefBuilder = () => {
     budget: '',
     tone: 'Professional',
     imageryStyle: 'Photorealistic',
-    colorDirection: '#4f46e5',
+    colorDirection: '#8b5cf6',
     dos: '',
     donts: ''
   });
@@ -40,7 +43,6 @@ const BriefBuilder = () => {
       if (!formData.clientName) newErrors.clientName = 'Client name is required';
       if (!formData.industry) newErrors.industry = 'Industry is required';
       if (!formData.website) newErrors.website = 'Website is required';
-      else if (!/^https?:\/\/.+/.test(formData.website)) newErrors.website = 'Enter a valid URL (including http/https)';
     } else if (step === 1) {
       if (!formData.objective) newErrors.objective = 'Please select an objective';
       if (!formData.targetAudience) newErrors.targetAudience = 'Briefly describe your target audience';
@@ -67,7 +69,6 @@ const BriefBuilder = () => {
   const handleGenerate = async () => {
     setIsGenerating(true);
     
-    // Connect to AI Microservice
     try {
       const apiUrl = import.meta.env.VITE_AI_SERVICE_URL || 'http://localhost:3001';
       const response = await fetch(`${apiUrl}/generate/brief`, {
@@ -81,7 +82,6 @@ const BriefBuilder = () => {
       setResult(data);
     } catch (error) {
       console.error('AI Service unavailable, using mock data:', error);
-      // Fallback to mock for local dev without AI service running
       await new Promise(resolve => setTimeout(resolve, 2000));
       const mockResult = {
         campaignTitle: `${formData.clientName} ${formData.objective.charAt(0).toUpperCase() + formData.objective.slice(1)} Performance 2025`,
@@ -108,157 +108,133 @@ const BriefBuilder = () => {
     setResult(null);
     setCurrentStep(0);
     setFormData({
-      clientName: '',
-      industry: '',
-      website: '',
-      keyCompetitors: '',
-      objective: '',
-      targetAudience: '',
-      budget: '',
-      tone: 'Professional',
-      imageryStyle: 'Photorealistic',
-      colorDirection: '#4f46e5',
-      dos: '',
-      donts: ''
+      clientName: '', industry: '', website: '', keyCompetitors: '',
+      objective: '', targetAudience: '', budget: '',
+      tone: 'Professional', imageryStyle: 'Photorealistic', colorDirection: '#8b5cf6',
+      dos: '', donts: ''
     });
   };
 
   const renderStep = () => {
     switch (currentStep) {
-      case 0:
-        return <Step1ClientDetails formData={formData} setFormData={setFormData} errors={errors} />;
-      case 1:
-        return <Step2CampaignObjective formData={formData} setFormData={setFormData} errors={errors} />;
-      case 2:
-        return <Step3CreativePreferences formData={formData} setFormData={setFormData} />;
-      case 3:
-        return <Step4ReviewSubmit formData={formData} />;
-      default:
-        return null;
+      case 0: return <Step1ClientDetails formData={formData} setFormData={setFormData} errors={errors} />;
+      case 1: return <Step2CampaignObjective formData={formData} setFormData={setFormData} errors={errors} />;
+      case 2: return <Step3CreativePreferences formData={formData} setFormData={setFormData} />;
+      case 3: return <Step4ReviewSubmit formData={formData} />;
+      default: return null;
     }
   };
 
-  if (result) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-8">
-        <BriefOutput result={result} onReset={resetForm} />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <header className="mb-12 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-sm font-bold tracking-tight uppercase">
-            <Sparkles className="w-4 h-4" />
-            AI Creative Assistant
-          </div>
-          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl tracking-tight">
-            Creative Brief <span className="text-indigo-600 dark:text-indigo-500">Builder</span>
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
-            Generate high-performing, agency-grade creative briefs in seconds using our specialized AI models.
-          </p>
-        </header>
-
-        {/* Stepper */}
-        <nav className="mb-12 relative">
-          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0" />
-          <ul className="flex justify-between items-center relative z-10 w-full">
-            {STEPS.map((stepName, idx) => (
-              <li key={idx} className="flex flex-col items-center">
-                <div 
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 border-2 ${
-                    currentStep === idx 
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-500/30' 
-                      : currentStep > idx 
-                      ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600'
-                  }`}
-                >
-                  {currentStep > idx ? '✓' : idx + 1}
-                </div>
-                <span className={`mt-3 text-[10px] font-bold uppercase tracking-widest hidden md:block transition-colors duration-200 ${
-                  currentStep === idx ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'
-                }`}>
-                  {stepName}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Form Area */}
-        <main className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden min-h-[500px] flex flex-col">
-          <div className="p-8 md:p-12 flex-grow">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {renderStep()}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Footer Controls */}
-          <footer className="p-8 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 0 || isGenerating}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all duration-200 tracking-tight ${
-                currentStep === 0 || isGenerating
-                  ? 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <ChevronLeft className="w-5 h-5" />
-              Back
-            </button>
-
-            {currentStep === STEPS.length - 1 ? (
-              <button
-                onClick={handleGenerate}
-                disabled={isGenerating}
-                className="flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-75 disabled:cursor-not-allowed group"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Analyzing Data...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                    Submit to AI
-                  </>
-                )}
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                className="flex items-center gap-2 px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-2xl font-bold transition-all duration-200 shadow-lg hover:-translate-y-0.5 active:translate-y-0 group"
-              >
-                Continue
-                <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </button>
-            )}
-          </footer>
-        </main>
-
-        <div className="mt-8 text-center">
-            <p className="text-slate-400 dark:text-slate-600 text-xs font-medium uppercase tracking-[0.2em] flex items-center justify-center gap-4">
-                <span className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800" />
-                Trusted by 500+ Content Agencies
-                <span className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800" />
+    <div className="flex bg-background min-h-screen text-foreground">
+      <Sidebar campaigns={campaignData.campaigns} />
+      
+      <main className="flex-1 overflow-x-hidden pt-10 px-6 md:px-12 pb-20 scrollbar-hide">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <header className="mb-12 space-y-4">
+            <div className="status-pill bg-primary/10 text-primary">
+              <Sparkles className="w-3 h-3" />
+              Creative Intelligence Core
+            </div>
+            <h1 className="text-4xl font-black tracking-tight leading-none">
+              Strategize <span className="gradient-text">Anywhere.</span>
+            </h1>
+            <p className="text-muted-foreground font-medium max-w-xl">
+              Construct agency-grade creative briefs powered by real-time industry intelligence.
             </p>
+          </header>
+
+          {result ? (
+            <BriefOutput result={result} onReset={resetForm} />
+          ) : (
+            <>
+              {/* Stepper */}
+              <nav className="mb-10 flex flex-wrap items-center gap-4">
+                {STEPS.map((stepName, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div 
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs transition-all duration-300 border-2 ${
+                        currentStep === idx 
+                          ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-110' 
+                          : currentStep > idx 
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
+                          : 'bg-card border-border text-muted-foreground/40'
+                      }`}
+                    >
+                      {currentStep > idx ? '✓' : idx + 1}
+                    </div>
+                    {currentStep === idx && (
+                      <span className="text-xs font-black uppercase tracking-widest text-primary animate-fadeIn">
+                        {stepName}
+                      </span>
+                    )}
+                    {idx < STEPS.length - 1 && (
+                      <div className="w-4 h-px bg-border/40 mx-1 hidden sm:block" />
+                    )}
+                  </div>
+                ))}
+              </nav>
+
+              {/* Form Area */}
+              <div className="glass-card rounded-[3rem] p-1 shadow-2xl shadow-primary/5 min-h-[550px] flex flex-col border-primary/5">
+                <div className="p-8 md:p-12 flex-grow overflow-y-auto max-h-[60vh] scrollbar-hide">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentStep}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, ease: 'circOut' }}
+                    >
+                      {renderStep()}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                {/* Footer Controls */}
+                <footer className="p-8 bg-muted/5 border-t border-border/40 flex items-center justify-between rounded-b-[2.9rem]">
+                  <button
+                    onClick={handleBack}
+                    disabled={currentStep === 0 || isGenerating}
+                    className="btn-premium py-2 content-center font-black text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground disabled:opacity-0 transition-opacity"
+                  >
+                    Previous Phase
+                  </button>
+
+                  {currentStep === STEPS.length - 1 ? (
+                    <button
+                      onClick={handleGenerate}
+                      disabled={isGenerating}
+                      className="btn-premium btn-primary px-10 group"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span className="text-xs uppercase tracking-widest">Building Brief...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                          <span className="text-xs uppercase tracking-widest">Generate Strategy</span>
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleNext}
+                      className="btn-premium bg-foreground text-background px-10 group"
+                    >
+                      <span className="text-xs uppercase tracking-widest">Next Phase</span>
+                      <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  )}
+                </footer>
+              </div>
+            </>
+          )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

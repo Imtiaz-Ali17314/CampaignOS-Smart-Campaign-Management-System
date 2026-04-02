@@ -7,9 +7,12 @@ import {
   Sun, 
   Moon,
   Bell,
-  Menu
+  Menu,
+  BarChart3
 } from 'lucide-react';
 import { subDays } from 'date-fns';
+import { motion } from 'framer-motion';
+
 
 import KPICard from '../components/dashboard/KPICard';
 import PerformanceTrend from '../components/dashboard/PerformanceTrend';
@@ -68,133 +71,172 @@ const Dashboard = () => {
   }, [campaigns]);
 
   return (
-    <div className="flex bg-[var(--background)] min-h-screen">
+    <div className="flex bg-background min-h-screen text-foreground selection:bg-primary/20">
       <Sidebar campaigns={campaigns} />
       
-      <main className="flex-1 overflow-x-hidden pt-4 sm:pt-8">
-        <header className="px-6 md:px-12 flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-6">
-          <div className="flex items-center gap-4">
-             <div className="p-3 bg-primary/10 rounded-2xl sm:hidden">
-              <Menu size={20} className="text-primary" />
-            </div>
+      <main className="flex-1 overflow-x-hidden pt-6 sm:pt-10">
+        <header className="max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row lg:items-center justify-between mb-12 gap-8">
+          <div className="flex items-center gap-5">
+             <motion.div 
+               whileHover={{ rotate: 90 }}
+               className="p-3.5 bg-primary rounded-2xl lg:hidden shadow-lg shadow-primary/20 cursor-pointer"
+             >
+              <Menu size={20} className="text-white" />
+            </motion.div>
             <div>
               <motion.h1 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-2xl sm:text-3xl font-bold tracking-tight mb-1"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-3xl sm:text-4xl font-black tracking-tight mb-2 leading-none"
               >
-                Campaign Overview
+                Strategy <span className="gradient-text">Overview</span>
               </motion.h1>
-              <p className="text-sm text-muted-foreground flex items-center">
-                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                Live dashboard • Updated 2m ago
-              </p>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live System
+                </div>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">Last Sync: 2m ago</span>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-auto">
+          <div className="flex items-center gap-3 sm:gap-4 self-end lg:self-auto bg-card/40 p-2 rounded-3xl border border-border/40 backdrop-blur-md">
             <DateRangePicker onRangeChange={setViewRange} />
             
+            <div className="w-px h-8 bg-border/40 mx-1 hidden sm:block" />
+
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setDark(!dark)}
-              className="p-2 sm:p-3 bg-card border border-border rounded-xl text-muted-foreground hover:bg-muted transition-all"
+              className="p-3 bg-card border border-border/60 rounded-2xl text-muted-foreground hover:bg-muted/50 hover:text-primary transition-all shadow-sm"
             >
-              {dark ? <Sun size={20} /> : <Moon size={20} />}
+              {dark ? <Sun size={18} strokeWidth={2.5} /> : <Moon size={18} strokeWidth={2.5} />}
             </motion.button>
 
             <NotificationBell />
 
-            <div className="h-10 sm:h-12 w-10 sm:w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary cursor-pointer hover:bg-primary/20 transition-all">
-              IA
-            </div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="group relative cursor-pointer"
+            >
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[2px]">
+                    <div className="h-full w-full bg-card rounded-[14px] flex items-center justify-center font-black text-foreground group-hover:bg-transparent group-hover:text-white transition-all text-sm">
+                        IA
+                    </div>
+                </div>
+            </motion.div>
           </div>
         </header>
 
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12 pb-12">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-12 pb-20 space-y-12 page-transition">
           {/* KPI Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
-            <KPICard 
-              title="Total Impressions" 
-              value={stats.impressions} 
-              icon={TrendingUp} 
-              trend={12.4} 
-              color="text-primary" 
-            />
-            <KPICard 
-              title="Total Clicks" 
-              value={stats.clicks} 
-              icon={MousePointer2} 
-              trend={-3.2} 
-              color="text-green-500" 
-            />
-            <KPICard 
-              title="Avg CTR" 
-              value={stats.ctr} 
-              suffix="%" 
-              icon={Target} 
-              trend={0.8} 
-              color="text-secondary" 
-            />
-            <KPICard 
-              title="Total Spend" 
-              value={stats.spend} 
-              icon={DollarSign} 
-              color="text-orange-500" 
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <KPICard title="Global Impressions" value={stats.impressions} icon={TrendingUp} trend={12.4} color="text-primary" />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <KPICard title="Target Clicks" value={stats.clicks} icon={MousePointer2} trend={-3.2} color="text-emerald-500" />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <KPICard title="Click Through Rate" value={stats.ctr} suffix="%" icon={Target} trend={0.8} color="text-secondary" />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+              <KPICard title="Ad Investment" value={stats.spend} icon={DollarSign} color="text-accent" />
+            </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <div className="xl:col-span-2">
-              <PerformanceTrend data={combinedChartData} />
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
+            <div className="xl:col-span-8">
+              <div className="glass-card rounded-[2.5rem] p-8 h-full border-border/40 overflow-hidden relative group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -mr-32 -mt-32" />
+                <div className="flex items-center justify-between mb-8 relative">
+                    <div>
+                        <h2 className="text-xl font-black tracking-tight">Performance Stream</h2>
+                        <p className="text-xs text-muted-foreground font-medium">Real-time engagement metrics across all active channels</p>
+                    </div>
+                    <button className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors border-b-2 border-primary/20 pb-0.5">Export Analytics</button>
+                </div>
+                <PerformanceTrend data={combinedChartData} />
+              </div>
             </div>
             
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-card border border-border rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm h-full"
+              className="xl:col-span-4 glass-card rounded-[2.5rem] p-8 flex flex-col items-center justify-center border-primary/10 shadow-xl shadow-primary/5 relative overflow-hidden group"
             >
-               <div className="mb-6 relative h-48 w-48 flex items-center justify-center">
+               <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+               <div className="mb-8 relative h-56 w-56 flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90">
                     <circle 
-                      cx="96" cy="96" r="80" 
+                      cx="112" cy="112" r="95" 
                       stroke="currentColor" 
-                      strokeWidth="12" 
+                      strokeWidth="16" 
                       fill="transparent" 
-                      className="text-muted/30"
+                      className="text-muted/10"
                     />
                     <motion.circle 
-                      initial={{ strokeDashoffset: 504 }}
-                      animate={{ strokeDashoffset: 504 - (504 * stats.budgetUtilization / 100) }}
-                      transition={{ duration: 2, ease: "easeOut" }}
-                      cx="96" cy="96" r="80" 
-                      stroke="currentColor" 
-                      strokeWidth="12" 
-                      strokeDasharray="504"
+                      initial={{ strokeDashoffset: 597 }}
+                      animate={{ strokeDashoffset: 597 - (597 * stats.budgetUtilization / 100) }}
+                      transition={{ duration: 2, ease: "circOut" }}
+                      cx="112" cy="112" r="95" 
+                      stroke="url(#gradient)" 
+                      strokeWidth="16" 
+                      strokeDasharray="597"
                       fill="transparent" 
                       strokeLinecap="round"
-                      className="text-primary"
                     />
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="var(--color-primary)" />
+                            <stop offset="100%" stopColor="var(--color-secondary)" />
+                        </linearGradient>
+                    </defs>
                   </svg>
                   <div className="absolute flex flex-col items-center">
-                    <span className="text-4xl font-black text-foreground">{stats.budgetUtilization}%</span>
-                    <span className="text-xs text-muted-foreground font-bold uppercase tracking-widest mt-1">Utilization</span>
+                    <span className="text-5xl font-black tracking-tighter text-foreground">{stats.budgetUtilization}%</span>
+                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1 opacity-60">Utilization</span>
                   </div>
                 </div>
-                <h3 className="font-bold text-lg mb-2">Budget Health</h3>
-                <p className="text-sm text-muted-foreground px-4">Your campaigns are performing optimally within the allocated budgets.</p>
+                
+                <div className="text-center">
+                    <h3 className="font-black text-xl mb-3 tracking-tight">Financial Health</h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed px-4 opacity-80">
+                        Your current spend is within the <span className="text-emerald-500 font-bold">Safety Zone</span>. No overpacing detected for current flight.
+                    </p>
+                </div>
+                
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
-                  className="mt-8 px-6 py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all w-full"
+                  whileTap={{ scale: 0.98 }}
+                  className="mt-10 w-full py-4 bg-foreground text-background font-black rounded-2xl shadow-2xl hover:shadow-primary/20 transition-all text-xs uppercase tracking-widest"
                 >
-                  Manage Budgets
+                  Deep Budget Audit
                 </motion.button>
             </motion.div>
           </div>
 
-          <div className="mt-10">
-            <CampaignTable campaigns={campaigns} />
+          <div className="pt-4">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-card border border-border rounded-xl">
+                        <BarChart3 size={18} className="text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="font-black text-xl tracking-tight">Active Campaigns</h2>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">Operational Monitoring</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{campaigns.length} Active Records</span>
+                </div>
+            </div>
+            <div className="glass-card rounded-[2.5rem] border-border/40 overflow-hidden shadow-2xl shadow-black/5">
+                <CampaignTable campaigns={campaigns} />
+            </div>
           </div>
         </div>
       </main>

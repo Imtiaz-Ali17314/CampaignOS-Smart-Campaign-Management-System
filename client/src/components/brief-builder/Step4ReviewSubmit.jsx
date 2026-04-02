@@ -4,58 +4,60 @@ import { CheckCircle2, Building, Target, Palette } from 'lucide-react';
 const Step4ReviewSubmit = ({ formData }) => {
   const sections = [
     {
-      title: 'Client Details',
-      icon: <Building className="w-5 h-5 text-indigo-500" />,
+      title: 'Market Orientation',
+      icon: <Building className="w-4 h-4 text-primary" />,
       fields: [
-        { label: 'Client Name', value: formData.clientName },
-        { label: 'Industry', value: formData.industry },
-        { label: 'Website', value: formData.website },
-        { label: 'Competitors', value: formData.keyCompetitors || 'None specified' },
+        { label: 'Client', value: formData.clientName },
+        { label: 'Sector', value: formData.industry },
+        { label: 'URL', value: formData.website },
+        { label: 'Rivalry', value: formData.keyCompetitors || 'N/A' },
       ],
     },
     {
-      title: 'Campaign Goals',
-      icon: <Target className="w-5 h-5 text-rose-500" />,
+      title: 'Strategic Intent',
+      icon: <Target className="w-4 h-4 text-rose-500" />,
       fields: [
-        { label: 'Objective', value: formData.objective },
-        { label: 'Target Audience', value: formData.targetAudience },
+        { label: 'KPI', value: formData.objective },
+        { label: 'Segment', value: formData.targetAudience },
         { label: 'Budget', value: `$${formData.budget}` },
       ],
     },
     {
-      title: 'Creative Preferences',
-      icon: <Palette className="w-5 h-5 text-emerald-500" />,
+      title: 'Creative DNA',
+      icon: <Palette className="w-4 h-4 text-emerald-500" />,
       fields: [
         { label: 'Tone', value: formData.tone },
-        { label: 'Imagery Style', value: formData.imageryStyle },
-        { label: 'Do\'s', value: formData.dos || 'None' },
-        { label: 'Don\'ts', value: formData.donts || 'None' },
+        { label: 'Visuals', value: formData.imageryStyle },
+        { label: 'Do\'s', value: formData.dos || 'N/A' },
+        { label: 'Don\'ts', value: formData.donts || 'N/A' },
       ],
     },
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white text-center">Final Review</h2>
-        <p className="text-slate-500 dark:text-slate-400 text-center">Please verify the details before submitting to the AI.</p>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">Integrity Check</h2>
+        <p className="text-sm text-muted-foreground font-medium">Verify the strategic parameters before AI synthesis.</p>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         {sections.map((section, idx) => (
-          <div key={idx} className="bg-slate-50 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
-            <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-              {section.icon}
-              <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs">
+          <div key={idx} className="bg-muted/10 p-6 rounded-3xl border border-border/40 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-background rounded-xl border border-border/40 shadow-sm">
+                {section.icon}
+              </div>
+              <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-foreground">
                 {section.title}
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 px-2">
               {section.fields.map((field, fIdx) => (
-                <div key={fIdx} className="space-y-1">
-                  <p className="text-xs font-medium text-slate-400 dark:text-slate-500">{field.label}</p>
-                  <p className="text-sm text-slate-700 dark:text-slate-300 break-words">
+                <div key={fIdx} className="space-y-1.5 min-w-0">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50">{field.label}</p>
+                  <p className="text-xs text-foreground font-bold tracking-tight break-words uppercase">
                     {field.value}
                   </p>
                 </div>
@@ -65,10 +67,10 @@ const Step4ReviewSubmit = ({ formData }) => {
         ))}
       </div>
 
-      <div className="flex flex-col items-center gap-4 py-4">
-        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm font-medium animate-pulse">
-          <CheckCircle2 className="w-4 h-4" />
-          Ready for AI Brief Generation
+      <div className="flex flex-col items-center gap-4 py-6 border-t border-dashed border-border/60">
+        <div className="status-pill bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+          <CheckCircle2 className="w-3 h-3" />
+          System Parameters Validated
         </div>
       </div>
     </div>
