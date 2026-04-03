@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Target, DollarSign, Activity, Users, Calendar, Loader2, Sparkles, MessageSquare, Share2, Hash, Wand2 } from 'lucide-react';
+import { X, Target, DollarSign, Activity, Users, Calendar, Loader2, Sparkles, MessageSquare, Share2, Hash, Wand2, PlusCircle, Check, Database } from 'lucide-react';
 import { useNotification } from '../../context/NotificationContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -19,7 +19,8 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
     budget: '',
     status: 'draft',
     start_date: new Date().toISOString().split('T')[0],
-    end_date: ''
+    end_date: '',
+    creative_content: {}
   });
 
   // AI STATES
@@ -40,12 +41,14 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
           budget: campaign.budget || '',
           status: campaign.status || 'draft',
           start_date: campaign.start_date ? campaign.start_date.split('T')[0] : '',
-          end_date: campaign.end_date ? campaign.end_date.split('T')[0] : ''
+          end_date: campaign.end_date ? campaign.end_date.split('T')[0] : '',
+          creative_content: campaign.creative_content || {}
         });
       } else {
         setFormData({
             name: '', client_id: '', budget: '', status: 'draft',
-            start_date: new Date().toISOString().split('T')[0], end_date: ''
+            start_date: new Date().toISOString().split('T')[0], end_date: '',
+            creative_content: {}
         });
       }
     }
@@ -76,10 +79,8 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
             body: JSON.stringify({ product: formData.name, tone: 'professional', platform: 'multi-channel' })
         });
         
-        // Handle SSE
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
-        let fullContent = '';
         
         while (true) {
             const { done, value } = await reader.read();
@@ -92,12 +93,9 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                     if (dataStr === '[DONE]') break;
                     try {
                         const data = JSON.parse(dataStr);
-                        // If it's the full JSON string from fallback or first chunk
                         if (data.content.startsWith('{')) {
                             const parsed = JSON.parse(data.content);
                             setAiSuggestions(prev => ({ ...prev, headlines: [parsed.headline, parsed.body] }));
-                        } else {
-                            fullContent += data.content;
                         }
                     } catch (e) {}
                 }
@@ -151,6 +149,33 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
     }
   };
 
+  const adoptAsset = (type, value) => {
+    setFormData(prev => ({
+        ...prev,
+        creative_content: {
+            ...prev.creative_content,
+            [type]: Array.isArray(prev.creative_content[type]) 
+                ? [...new Set([...prev.creative_content[type], value])]
+                : typeof prev.creative_content[type] === 'string'
+                    ? [prev.creative_content[type], value]
+                    : [value]
+        }
+    }));
+    showNotification(`Asset Adopted to Strategic Record`, "info");
+  };
+
+  const isAdopted = (type, value) => {
+    const assets = formData.creative_content[type];
+    if (Array.isArray(assets)) return assets.includes(value);
+    return assets === value;
+  };
+
+  const clearAdopted = (type) => {
+    const newContent = { ...formData.creative_content };
+    delete newContent[type];
+    setFormData(prev => ({ ...prev, creative_content: newContent }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -188,7 +213,7 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
     <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 sm:p-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
       
-      <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-4xl bg-card border border-border/40 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-4xl bg-card border border-border/40 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
         
         <header className="relative p-10 sm:p-12 pb-6 border-b border-border/20">
             <div className="flex items-center justify-between">
@@ -220,42 +245,88 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
 
         <div className="flex-grow overflow-y-auto p-10 sm:p-12 scrollbar-hide">
             {activeTab === 'settings' ? (
-                <form id="campaign-form" onSubmit={handleSubmit} className="space-y-8">
+                <form id="campaign-form" onSubmit={handleSubmit} className="space-y-12">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div className="space-y-3">
                             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Campaign Identity</label>
-                            <input type="text" required value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Enter campaign name..." />
+                            <input type="text" required value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-muted-foreground/40" placeholder="Enter campaign name..." />
                         </div>
                         <div className="space-y-3">
                             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Target Brand Portfolio</label>
-                            <select required value={formData.client_id} onChange={(e) => setFormData(prev => ({ ...prev, client_id: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none">
-                                <option value="">Select Client...</option>
-                                {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                            </select>
+                            <div className="relative group">
+                                <select required value={formData.client_id} onChange={(e) => setFormData(prev => ({ ...prev, client_id: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer">
+                                    <option value="" className="bg-card text-foreground">Select Client...</option>
+                                    {clients.map(c => <option key={c.id} value={c.id} className="bg-card text-foreground py-2 px-6">{c.name}</option>)}
+                                </select>
+                                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity">
+                                    <Activity size={14} />
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    {/* PERSISTENCE LAYER SUMMARY */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-secondary/10 rounded-xl border border-secondary/20">
+                                <Database size={14} className="text-secondary" />
+                            </div>
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary">Persistence Layer</h3>
+                            <div className="h-px bg-border/20 flex-1" />
+                        </div>
+                        
+                        {Object.keys(formData.creative_content).length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {Object.entries(formData.creative_content).map(([type, assets]) => (
+                                    <div key={type} className="group relative p-6 bg-muted/10 border border-border/30 rounded-3xl space-y-4 hover:border-secondary/30 transition-all">
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="text-[9px] font-black uppercase tracking-widest text-secondary/60">{type.replace(/([A-Z])/g, ' $1')}</h4>
+                                            <button type="button" onClick={() => clearAdopted(type)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-rose-500/10 hover:text-rose-500 rounded-lg transition-all">
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {Array.isArray(assets) ? assets.map((a, idx) => (
+                                                <div key={idx} className="p-3 bg-secondary/5 border border-secondary/10 rounded-xl text-[11px] font-bold leading-relaxed">{a}</div>
+                                            )) : <div className="p-3 bg-secondary/5 border border-secondary/10 rounded-xl text-[11px] font-bold leading-relaxed">{assets}</div>}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="py-12 border border-dashed border-border/40 rounded-[2.5rem] flex flex-col items-center justify-center opacity-30 text-center px-10">
+                                <Sparkles size={32} className="mb-4" />
+                                <p className="text-[10px] font-black uppercase tracking-widest max-w-[200px]">No strategic assets adopted in Creative Lab</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="space-y-3">
                             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Allocated Budget ($)</label>
                             <div className="relative">
                                 <div className="absolute left-6 top-1/2 -translate-y-1/2 text-primary font-black">$</div>
-                                <input type="number" required value={formData.budget} onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl pl-12 pr-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                                <input type="number" required value={formData.budget} onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl pl-12 pr-6 font-bold text-sm" />
                             </div>
                         </div>
                         <div className="space-y-3">
                             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Strategic Status</label>
-                            <select value={formData.status} onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none">
-                                <option value="active">Active Execution</option>
-                                <option value="paused">Strategy Paused</option>
-                                <option value="completed">Objective Met</option>
-                                <option value="draft">Draft Proposal</option>
-                            </select>
+                            <div className="relative">
+                                <select value={formData.status} onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm appearance-none cursor-pointer">
+                                    <option value="active" className="bg-card text-foreground">Active Execution</option>
+                                    <option value="paused" className="bg-card text-foreground">Strategy Paused</option>
+                                    <option value="completed" className="bg-card text-foreground">Objective Met</option>
+                                    <option value="draft" className="bg-card text-foreground">Draft Proposal</option>
+                                </select>
+                            </div>
                         </div>
                         <div className="space-y-3">
                             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Initiation Date</label>
-                            <input type="date" required value={formData.start_date} onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                            <input type="date" required value={formData.start_date} onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm" />
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Flight End Date (Optional)</label>
-                            <input type="date" value={formData.end_date} onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Flight End Date</label>
+                            <input type="date" value={formData.end_date} onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm" />
                         </div>
                     </div>
                 </form>
@@ -295,7 +366,12 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Creative Headlines</h4>
                                         <div className="space-y-3">
                                             {aiSuggestions.headlines.map((h, i) => (
-                                                <div key={i} className="p-4 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold leading-relaxed">{h}</div>
+                                                <div key={i} className="p-4 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold leading-relaxed relative pr-12 group">
+                                                    {h}
+                                                    <button onClick={() => adoptAsset('headlines', h)} className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('headlines', h) ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground/30 hover:text-primary hover:bg-primary/10'}`}>
+                                                        {isAdopted('headlines', h) ? <Check size={14} /> : <PlusCircle size={14} />}
+                                                    </button>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
@@ -305,7 +381,12 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Social Narratives</h4>
                                         <div className="space-y-3">
                                             {aiSuggestions.socialPosts.map((p, i) => (
-                                                <div key={i} className="p-4 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold leading-relaxed">{p}</div>
+                                                <div key={i} className="p-4 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold leading-relaxed relative pr-12 group">
+                                                    {p}
+                                                    <button onClick={() => adoptAsset('socialPosts', p)} className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('socialPosts', p) ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground/30 hover:text-primary hover:bg-primary/10'}`}>
+                                                        {isAdopted('socialPosts', p) ? <Check size={14} /> : <PlusCircle size={14} />}
+                                                    </button>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
@@ -315,7 +396,9 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-500">Strategic Tags</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {aiSuggestions.hashtags.map((t, i) => (
-                                                <span key={i} className="px-3 py-1.5 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full text-[9px] font-black uppercase tracking-widest">{t}</span>
+                                                <button key={i} onClick={() => adoptAsset('hashtags', t)} className={`px-4 py-2 border rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${isAdopted('hashtags', t) ? 'bg-amber-500 text-white border-amber-500 shadow-lg' : 'bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20'}`}>
+                                                    {t}
+                                                </button>
                                             ))}
                                         </div>
                                     </div>

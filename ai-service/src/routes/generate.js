@@ -2,6 +2,51 @@ const express = require('express');
 const router = express.Router();
 const { openai, model } = require('../services/llm');
 
+// Helper to get random fallback results for dynamic feel
+const getRandomResult = (type, context = {}) => {
+    const fallbacks = {
+        copy: [
+            { headline: `Experience the future of ${context.product} with our ${context.tone} solution.`, body: `Our specialized platform for ${context.platform} delivers high-performance results tailored for your needs.`, cta: `Learn More About ${context.product}` },
+            { headline: `Unleash the Power of ${context.product}: A ${context.tone} Revolution.`, body: `Elevate your ${context.platform} execution with strategic intelligence and tactical precision.`, cta: `Initialize ${context.product} Now` },
+            { headline: `Why Strategic Leaders Choose ${context.product} for ${context.platform}.`, body: `A ${context.tone} approach to complex market challenges. Performance at scale.`, cta: `Join the ${context.product} Network` }
+        ],
+        social: [
+            [
+                `🚀 Pushing boundaries with our ${context.goal} initiative in a ${context.voice} voice.`,
+                `The new era of ${context.platform} is here. Stay ahead with our latest strategy.`,
+                `How are you handling your ${context.platform} growth? Our ${context.voice} approach makes it easy.`,
+                `Unlocking new potential on ${context.platform} today. #Strategy #Success`,
+                `Our mission: ${context.goal}. Our voice: ${context.voice}. Our impact: Global.`
+            ],
+            [
+                `Intelligence. Precision. Results. Our ${context.goal} protocol for ${context.platform} is live.`,
+                `The future belongs to the prepared. Is your ${context.voice} strategy ready?`,
+                `Data-driven insights meeting ${context.voice} execution. This is ${context.goal}.`,
+                `Transforming the ${context.platform} landscape, one strategy at a time. #Innovation`,
+                `Your ${context.goal} objective is our priority. Let's build it together.`
+            ],
+            [
+                `Strategic Pulse Check: ${context.goal} is set for ${context.platform} dominance.`,
+                `Efficiency reclaimed. Profitability optimized. Our ${context.voice} promise.`,
+                `Connecting vision to value through the ${context.goal} framework.`,
+                `A higher standard of ${context.platform} performance. Delivered. #Excellence`,
+                `Scale without friction. Progress with ${context.voice} authority.`
+            ]
+        ],
+        hashtags: [
+            ["#strategy", "#marketing", "#innovation", "#growth", "#performance", "#digital", "#intelligence", "#campaign", "#objective", "#future"],
+            ["#leadership", "#execution", "#scale", "#efficiency", "#metrics", "#data", "#vision", "#global", "#success", "#pulse"],
+            ["#creative", "#narrative", "#identity", "#impact", "#conversion", "#market", "#target", "#reach", "#influence", "#standard"]
+        ]
+    };
+
+    const results = fallbacks[type];
+    if (Array.isArray(results[0])) {
+        return results[Math.floor(Math.random() * results.length)];
+    }
+    return results[Math.floor(Math.random() * results.length)];
+};
+
 // POST /generate/copy - SSE Streaming
 router.post('/copy', async (req, res) => {
   const { product, tone, platform, word_limit = 50 } = req.body;
@@ -31,12 +76,7 @@ router.post('/copy', async (req, res) => {
     res.end();
   } catch (err) {
     console.error('AI Copy Fallback Triggered:', err.message);
-    // FALLBACK
-    const synthCopy = {
-        headline: `Experience the future of ${product} with our ${tone} solution.`,
-        body: `Our specialized platform for ${platform} delivers high-performance results tailored for your needs.`,
-        cta: `Learn More About ${product}`
-    };
+    const synthCopy = getRandomResult('copy', { product, tone, platform });
     res.write(`data: ${JSON.stringify({ content: JSON.stringify(synthCopy) })}\n\n`);
     res.write('data: [DONE]\n\n');
     res.end();
@@ -59,16 +99,8 @@ router.post('/social', async (req, res) => {
     res.json(JSON.parse(completion.choices[0].message.content));
   } catch (err) {
     console.error('AI Social Fallback Triggered:', err.message);
-    const synthSocial = {
-        captions: [
-            `🚀 Pushing boundaries with our ${campaign_goal} initiative in a ${brand_voice} voice.`,
-            `The new era of ${platform} is here. Stay ahead with our latest strategy.`,
-            `How are you handling your ${platform} growth? Our ${brand_voice} approach makes it easy.`,
-            `Unlocking new potential on ${platform} today. #Strategy #Success`,
-            `Our mission: ${campaign_goal}. Our voice: ${brand_voice}. Our impact: Global.`
-        ]
-    };
-    res.json(synthSocial);
+    const captions = getRandomResult('social', { platform, goal: campaign_goal, voice: brand_voice });
+    res.json({ captions });
   }
 });
 
@@ -89,10 +121,8 @@ router.post('/hashtags', async (req, res) => {
     res.json(JSON.parse(completion.choices[0].message.content));
   } catch (err) {
     console.error('AI Hashtags Fallback Triggered:', err.message);
-    const synthHashtags = {
-        hashtags: ["#strategy", "#marketing", "#innovation", "#growth", "#performance", "#digital", "#intelligence", "#campaign", "#objective", "#future"]
-    };
-    res.json(synthHashtags);
+    const hashtags = getRandomResult('hashtags', { industry });
+    res.json({ hashtags });
   }
 });
 
@@ -125,8 +155,6 @@ router.post('/brief', async (req, res) => {
     res.json(JSON.parse(completion.choices[0].message.content));
   } catch (err) {
     console.error('AI Brief Fallback Triggered:', err.message);
-    
-    // Resilient Fallback: Generate context-aware brief locally
     const synthResult = {
       campaignTitle: `${clientName} ${objective.charAt(0).toUpperCase() + objective.slice(1)} Pulse 2026`,
       headlines: [

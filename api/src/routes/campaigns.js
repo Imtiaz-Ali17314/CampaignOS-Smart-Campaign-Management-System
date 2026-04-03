@@ -102,9 +102,9 @@ router.post('/', [
 
   try {
     const result = await db.query(
-      `INSERT INTO campaigns (name, client_id, budget, status, start_date, end_date) 
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [name, client_id, budget, status, start_date, end_date]
+      `INSERT INTO campaigns (name, client_id, budget, status, start_date, end_date, creative_content) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [name, client_id, budget, status, start_date, end_date, req.body.creative_content || {}]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -129,7 +129,7 @@ router.put('/:id', [
   const params = [req.params.id];
 
   Object.entries(fields).forEach(([key, val]) => {
-    if (['name', 'budget', 'status', 'start_date', 'end_date'].includes(key)) {
+    if (['name', 'budget', 'status', 'start_date', 'end_date', 'creative_content'].includes(key)) {
       params.push(val);
       updates.push(`${key} = $${params.length}`);
     }
