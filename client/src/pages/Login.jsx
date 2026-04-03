@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, BarChart3 } from 'lucide-react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const Login = () => {
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
     const [errorMsg, setErrorMsg] = useState('');
@@ -20,12 +23,11 @@ const Login = () => {
             const response = await axios.post(`${API_URL}/auth/login`, credentials);
             const { token, user } = response.data;
             
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
+            login(token, user);
             
             setStatus('success');
             setTimeout(() => {
-                window.location.href = '/';
+                navigate('/');
             }, 1500);
         } catch (err) {
             setStatus('error');

@@ -7,43 +7,50 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import { NotificationProvider } from './context/NotificationContext';
 
+import { AuthProvider, useAuth } from './context/AuthContext';
+
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const { token, isLoading } = useAuth();
+  
+  if (isLoading) return null; // Or a minimal loading shell
   if (!token) return <Navigate to="/login" replace />;
+  
   return children;
 };
 
 function App() {
   return (
-    <NotificationProvider>
-        <Router>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                
-                <Route path="/" element={
-                <ProtectedRoute>
-                    <Dashboard />
-                </ProtectedRoute>
-                } />
-                
-                <Route path="/brief-builder" element={
-                <ProtectedRoute>
-                    <BriefBuilder />
-                </ProtectedRoute>
-                } />
-                
-                <Route path="/settings" element={
-                <ProtectedRoute>
-                    <Settings />
-                </ProtectedRoute>
-                } />
+    <AuthProvider>
+        <NotificationProvider>
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    
+                    <Route path="/" element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/brief-builder" element={
+                    <ProtectedRoute>
+                        <BriefBuilder />
+                    </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/settings" element={
+                    <ProtectedRoute>
+                        <Settings />
+                    </ProtectedRoute>
+                    } />
 
-                <Route path="/brief" element={<Navigate to="/brief-builder" replace />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </Router>
-    </NotificationProvider>
+                    <Route path="/brief" element={<Navigate to="/brief-builder" replace />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Router>
+        </NotificationProvider>
+    </AuthProvider>
   );
 }
 

@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const db = require('../db');
+const auth = require('../middleware/auth');
 
 router.post('/login', [
   body('email').isEmail().normalizeEmail(),
@@ -73,6 +74,27 @@ router.post('/register', [
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/verify-session', auth, async (req, res) => {
+  try {
+    const result = await db.query('SELECT id, email FROM users WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Session mismatch' });
+    }
+
+    const user = result.rows[0];
+    const newToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({ token: newToken, user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Strategic Reconnaissance Failed' });
   }
 });
 

@@ -117,7 +117,7 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
                 <Filter size={16} strokeWidth={2.5} />
             </button>
             <button 
-              onClick={onLaunch}
+              onClick={() => navigate('/brief-builder')}
               className="btn-premium btn-primary py-2.5 px-6 text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
             >
                 <TrendingUp size={14} />

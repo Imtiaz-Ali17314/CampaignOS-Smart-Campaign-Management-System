@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   TrendingUp, 
@@ -28,11 +28,13 @@ import useDarkMode from '../hooks/useDarkMode';
 import BudgetAuditModal from '../components/dashboard/BudgetAuditModal';
 import CampaignManagerModal from '../components/dashboard/CampaignManagerModal';
 import { useNotification } from '../context/NotificationContext';
+import { useAuth } from '../context/AuthContext';
 
 import campaignData from '../data/campaigns.json';
 
 const Dashboard = () => {
   const { showNotification } = useNotification();
+  const { token, logout, user: authUser } = useAuth();
   const navigate = useNavigate();
   const [dark, setDark] = useDarkMode();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -49,7 +51,6 @@ const Dashboard = () => {
 
   const fetchCampaigns = async () => {
     try {
-      const token = localStorage.getItem('token');
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
       
       const response = await fetch(`${apiUrl}/campaigns?limit=50`, {
@@ -63,28 +64,26 @@ const Dashboard = () => {
       }
 
       // MERGE LOCAL MOCKS WITH BACKEND RECORDS
-      // Normalize client mappings for visual consistency
       const normalizedMocks = campaignData.campaigns.map(c => ({
         ...c,
-        client_name: c.client, // Map mock 'client' to relational 'client_name'
+        client_name: c.client,
         is_mock: true
       }));
 
       setCampaigns([...normalizedMocks, ...backendCampaigns]);
     } catch (err) {
       console.error('Strategic Data Hybridization Failed:', err);
-      // Fallback only to mocks if infrastructure is offline
       setCampaigns(campaignData.campaigns.map(c => ({ ...c, client_name: c.client, is_mock: true })));
     } finally {
       setIsLoading(false);
     }
   };
 
-  React.useEffect(() => {
-    fetchCampaigns();
-  }, []);
+  useEffect(() => {
+    if (token) fetchCampaigns();
+  }, [token]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSelectedClient(urlClient || null);
   }, [urlClient]);
 
@@ -96,42 +95,17 @@ const Dashboard = () => {
     return { start, end };
   });
   
-  const [userProfile, setUserProfile] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : { email: 'Guest', name: 'Lead Strategist' };
-  });
+  const [userProfile, setUserProfile] = useState(authUser || { email: 'Guest', name: 'Lead Strategist' });
 
-  // FETCH STRATEGIC PROFILE ON MOUNT
-  React.useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-        
-        const response = await fetch(`${apiUrl}/user/profile`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserProfile(data.user);
-          // Sync back to local storage for quick cache
-          const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-          localStorage.setItem('user', JSON.stringify({ ...savedUser, ...data.user }));
-        }
-      } catch (err) {
-        console.error('Strategic Context Sync Failed:', err);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  // Sync profile when authUser changes
+  useEffect(() => {
+    if (authUser) setUserProfile(authUser);
+  }, [authUser]);
 
   const handleToggleStatus = async (id) => {
     const campaign = campaigns.find(c => c.id === id);
     if (!campaign) return;
     
-    // GUARD MOCK DATA
     if (campaign.is_mock) {
         const newMockStatus = campaign.status === 'active' ? 'paused' : 'active';
         setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: newMockStatus } : c));
@@ -140,7 +114,6 @@ const Dashboard = () => {
     }
 
     try {
-        const token = localStorage.getItem('token');
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
         const newStatus = campaign.status === 'active' ? 'paused' : 'active';
 
@@ -166,7 +139,6 @@ const Dashboard = () => {
     const campaign = campaigns.find(c => c.id === id);
     if (!campaign) return;
 
-    // GUARD MOCK DATA
     if (campaign.is_mock) {
         setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: 'completed' } : c));
         showNotification(`[Mock Objective] ${campaign.name} protocol marked as Complete.`, "success");
@@ -174,7 +146,6 @@ const Dashboard = () => {
     }
 
     try {
-        const token = localStorage.getItem('token');
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
         const response = await fetch(`${apiUrl}/campaigns/${id}`, {
@@ -196,7 +167,6 @@ const Dashboard = () => {
   };
 
   const handleArchive = async (id) => {
-    // PROTECT MOCK DATA INTEGRITY
     const campaign = campaigns.find(c => c.id === id);
     if (campaign?.is_mock) {
         showNotification("Institutional Metadata Guard: Local Mocks cannot be retired from the Vault.", "info");
@@ -204,7 +174,6 @@ const Dashboard = () => {
     }
 
     try {
-        const token = localStorage.getItem('token');
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
         
         const response = await fetch(`${apiUrl}/campaigns/${id}`, {
@@ -240,7 +209,6 @@ const Dashboard = () => {
     campaigns
       .filter(c => !selectedClient || c.client_name === selectedClient)
       .forEach(c => {
-        // DEFENSIVE GUARD FOR LIVE CAMPAIGNS WITHOUT ANALYTICS
         (c.dailyMetrics || []).forEach(m => {
           const mDate = new Date(m.date);
           if (mDate >= viewRange.start && mDate <= viewRange.end) {
@@ -257,7 +225,6 @@ const Dashboard = () => {
     const totalConversions = metricsInRange.reduce((acc, m) => acc + m.conversions, 0);
     const totalSpend = metricsInRange.reduce((acc, m) => acc + m.spend, 0);
     
-    // For budget, we'll use the total budget of campaigns that have metrics in this range
     const activeCampaignIds = new Set(metricsInRange.map(m => m.campaignId));
     const totalBudget = campaigns
       .filter(c => activeCampaignIds.has(c.id))
@@ -281,7 +248,6 @@ const Dashboard = () => {
     return campaigns
       .filter(c => !selectedClient || c.client_name === selectedClient)
       .map(c => {
-        // DEFENSIVE GUARD FOR LIVE CAMPAIGNS
         const rangeMetrics = (c.dailyMetrics || []).filter(m => {
           const mDate = new Date(m.date);
           return mDate >= viewRange.start && mDate <= viewRange.end;
@@ -297,11 +263,8 @@ const Dashboard = () => {
       }).filter(c => c.is_mock || c.impressions > 0 || c.spend > 0);
   }, [campaigns, viewRange, selectedClient]);
 
-  // Combined daily metrics for the chart
   const combinedChartData = useMemo(() => {
     const dailyMap = {};
-    
-    // Initialize the map with 0s for every day in the range
     let current = new Date(viewRange.start);
     while (current <= viewRange.end) {
       const dateStr = format(current, 'yyyy-MM-dd');
@@ -324,17 +287,10 @@ const Dashboard = () => {
     try {
         const headers = ["Date", "Impressions", "Clicks", "Spend ($)"];
         const rows = combinedChartData.map(d => [
-            d.date, 
-            d.impressions, 
-            d.clicks, 
-            d.spend
+            d.date, d.impressions, d.clicks, d.spend
         ]);
         
-        const csvContent = [
-            headers.join(','),
-            ...rows.map(row => row.join(','))
-        ].join('\n');
-        
+        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -414,7 +370,7 @@ const Dashboard = () => {
               >
                   <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-[2px]">
                       <div className="h-full w-full bg-card rounded-[14px] flex items-center justify-center font-black text-foreground group-hover:bg-transparent group-hover:text-white transition-all text-sm uppercase">
-                          {userProfile.name ? userProfile.name.substring(0, 2) : userProfile.email.substring(0, 2)}
+                          {userProfile.name ? userProfile.name.substring(0, 2) : userProfile.email?.substring(0, 2)}
                       </div>
                   </div>
               </motion.div>
@@ -449,11 +405,7 @@ const Dashboard = () => {
                       </button>
                       <div className="h-px bg-border/40 my-2" />
                       <button 
-                        onClick={() => {
-                          localStorage.removeItem('token');
-                          localStorage.removeItem('user');
-                          window.location.href = '/login';
-                        }}
+                        onClick={logout}
                         className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all"
                       >
                         <LogOut size={16} />
@@ -468,7 +420,6 @@ const Dashboard = () => {
         </header>
 
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 pb-20 space-y-12 page-transition">
-          {/* KPI Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
               <KPICard title="Global Impressions" value={stats.impressions} icon={TrendingUp} trend={12.4} color="text-primary" />
@@ -493,42 +444,22 @@ const Dashboard = () => {
                         <h2 className="text-xl font-black tracking-tight">Performance Stream</h2>
                         <p className="text-xs text-muted-foreground font-medium">Real-time engagement metrics across all active channels</p>
                     </div>
-                    <button 
-                      onClick={handleExportAnalytics}
-                      className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors border-b-2 border-primary/20 pb-0.5"
-                    >
-                      Export Analytics
-                    </button>
+                    <button onClick={handleExportAnalytics} className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors border-b-2 border-primary/20 pb-0.5">Export Analytics</button>
                 </div>
                 <PerformanceTrend data={combinedChartData} />
               </div>
             </div>
             
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="xl:col-span-4 glass-card rounded-[2.5rem] p-8 flex flex-col items-center justify-center border-primary/10 shadow-xl shadow-primary/5 relative overflow-hidden group"
-            >
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="xl:col-span-4 glass-card rounded-[2.5rem] p-8 flex flex-col items-center justify-center border-primary/10 shadow-xl shadow-primary/5 relative overflow-hidden group">
                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                <div className="mb-8 relative h-56 w-56 flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90">
-                    <circle 
-                      cx="112" cy="112" r="95" 
-                      stroke="currentColor" 
-                      strokeWidth="16" 
-                      fill="transparent" 
-                      className="text-muted/10"
-                    />
+                    <circle cx="112" cy="112" r="95" stroke="currentColor" strokeWidth="16" fill="transparent" className="text-muted/10"/>
                     <motion.circle 
                       initial={{ strokeDashoffset: 597 }}
                       animate={{ strokeDashoffset: 597 - (597 * stats.budgetUtilization / 100) }}
                       transition={{ duration: 2, ease: "circOut" }}
-                      cx="112" cy="112" r="95" 
-                      stroke="url(#gradient)" 
-                      strokeWidth="16" 
-                      strokeDasharray="597"
-                      fill="transparent" 
-                      strokeLinecap="round"
+                      cx="112" cy="112" r="95" stroke="url(#gradient)" strokeWidth="16" strokeDasharray="597" fill="transparent" strokeLinecap="round"
                     />
                     <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -542,22 +473,11 @@ const Dashboard = () => {
                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1 opacity-60">Utilization</span>
                   </div>
                 </div>
-                
                 <div className="text-center">
                     <h3 className="font-black text-xl mb-3 tracking-tight">Financial Health</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed px-4 opacity-80">
-                        Your current spend is within the <span className="text-emerald-500 font-bold">Safety Zone</span>. No overpacing detected for current flight.
-                    </p>
+                    <p className="text-xs text-muted-foreground leading-relaxed px-4 opacity-80">Your spend is within the <span className="text-emerald-500 font-bold">Safety Zone</span>. No overpacing detected.</p>
                 </div>
-                
-                <motion.button 
-                  whileHover={{ scale: 1.02, backgroundColor: 'var(--color-primary)', color: 'white' }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setIsAuditOpen(true)}
-                  className="mt-8 w-full py-4 bg-foreground text-background font-black rounded-2xl shadow-xl hover:shadow-primary/20 transition-all text-[10px] uppercase tracking-widest relative z-10"
-                >
-                  Deep Budget Audit
-                </motion.button>
+                <motion.button whileHover={{ scale: 1.02, backgroundColor: 'var(--color-primary)', color: 'white' }} whileTap={{ scale: 0.98 }} onClick={() => setIsAuditOpen(true)} className="mt-8 w-full py-4 bg-foreground text-background font-black rounded-2xl shadow-xl hover:shadow-primary/20 transition-all text-[10px] uppercase tracking-widest relative z-10">Deep Budget Audit</motion.button>
             </motion.div>
           </div>
 
@@ -573,10 +493,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <button 
-                        onClick={handleLaunch}
-                        className="btn-premium btn-primary py-2 px-6 text-[10px] font-black uppercase tracking-widest hidden sm:flex items-center gap-2"
-                    >
+                    <button onClick={handleLaunch} className="btn-premium btn-primary py-2 px-6 text-[10px] font-black uppercase tracking-widest hidden sm:flex items-center gap-2">
                         <TrendingUp size={14} />
                         Launch New Strategy
                     </button>
@@ -586,7 +503,6 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            {/* Campaigns Section */}
           <div className="glass-card rounded-[2.5rem] border-border/40 overflow-hidden relative group">
             <div className="absolute inset-0 bg-primary/[0.02] pointer-events-none" />
             <CampaignTable 

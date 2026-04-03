@@ -4,9 +4,12 @@ import { io } from 'socket.io-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 
+import { useAuth } from '../../context/AuthContext';
+
 const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:4000';
 
 const NotificationBell = () => {
+  const { token } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState('alerts'); // 'alerts' or 'history'
@@ -14,19 +17,18 @@ const NotificationBell = () => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Authenticate with JWT from local storage
-    const token = localStorage.getItem('token');
     if (!token) return;
 
     const socket = io(WS_URL, {
       auth: { token },
       transports: ['websocket', 'polling'],
-      reconnection: false,
+      reconnection: true,
+      reconnectionAttempts: 5,
       timeout: 5000
     });
 
-    socket.on('connect_error', () => {
-      console.warn('Real-time notification bridge inactive. Operating in offline/mock mode.');
+    socket.on('connect_error', (err) => {
+      console.warn('Real-time notification bridge inactive. Auth mismatch or offline.', err.message);
     });
 
     socket.on('connect', () => {
@@ -43,9 +45,14 @@ const NotificationBell = () => {
       }
     });
 
-    // Cleanup on unmount
-    return () => socket.disconnect();
-  }, []);
+    // Cleanup on unmount or token change
+    return () => {
+        socket.off('alert');
+        socket.off('connect');
+        socket.off('connect_error');
+        socket.disconnect();
+    };
+  }, [token]);
 
   // Request browser notification permission
   useEffect(() => {
