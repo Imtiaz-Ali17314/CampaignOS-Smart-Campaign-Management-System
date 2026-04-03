@@ -14,4 +14,21 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// POST /api/clients - Provision new Strategic Client
+router.post('/', auth, async (req, res) => {
+  const { name, industry } = req.body;
+  if (!name) return res.status(422).json({ error: 'Client identification required' });
+  
+  try {
+    const result = await db.query(
+      'INSERT INTO clients (name, industry) VALUES ($1, $2) RETURNING *',
+      [name, industry]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Client provision failure' });
+  }
+});
+
 module.exports = router;

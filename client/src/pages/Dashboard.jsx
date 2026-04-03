@@ -260,7 +260,7 @@ const Dashboard = () => {
           conversions: rangeMetrics.reduce((acc, m) => acc + m.conversions, 0),
           spend: rangeMetrics.reduce((acc, m) => acc + m.spend, 0)
         };
-      }).filter(c => c.is_mock || c.impressions > 0 || c.spend > 0);
+      }).filter(c => c.is_mock || c.deleted_at === null);
   }, [campaigns, viewRange, selectedClient]);
 
   const combinedChartData = useMemo(() => {

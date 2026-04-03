@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Sparkles, Wand2, Loader2 } from 'lucide-react';
 import Step1ClientDetails from '../components/brief-builder/Step1ClientDetails';
@@ -8,6 +8,7 @@ import Step4ReviewSubmit from '../components/brief-builder/Step4ReviewSubmit';
 import BriefOutput from '../components/brief-builder/BriefOutput';
 import Sidebar from '../components/dashboard/Sidebar';
 import { useNotification } from '../context/NotificationContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 import campaignData from '../data/campaigns.json';
@@ -20,6 +21,7 @@ const STEPS = [
 ];
 
 const BriefBuilder = () => {
+  const { token } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     clientName: '',
@@ -42,13 +44,8 @@ const BriefBuilder = () => {
   const { showNotification } = useNotification();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    fetchCampaigns();
-  }, []);
-
-  const fetchCampaigns = async () => {
+  const fetchCampaigns = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
       const response = await fetch(`${apiUrl}/campaigns?limit=10`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -60,7 +57,6 @@ const BriefBuilder = () => {
         backendCampaigns = data.campaigns;
       }
 
-      // MERGE LOCAL MOCKS
       const normalizedMocks = campaignData.campaigns.map(c => ({
         ...c,
         client_name: c.client,
@@ -72,7 +68,11 @@ const BriefBuilder = () => {
       console.error('Sidebar sync failed:', err);
       setCampaigns(campaignData.campaigns.map(c => ({ ...c, client_name: c.client, is_mock: true })));
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (token) fetchCampaigns();
+  }, [token, fetchCampaigns]);
 
   const validateStep = (step) => {
     const newErrors = {};
@@ -143,16 +143,34 @@ const BriefBuilder = () => {
 
   const handleLaunchCampaign = async () => {
     try {
-      const token = localStorage.getItem('token');
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
       
-      // Fetch clients to find the ID for the manual name or create a default relation
+      // 1. Fetch available clients
       const clientRes = await fetch(`${apiUrl}/clients`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const clientData = await clientRes.json();
-      const client = clientData.clients.find(c => c.name.toLowerCase() === formData.clientName.toLowerCase()) || clientData.clients[0];
+      
+      let client = clientData.clients.find(c => c.name.toLowerCase() === formData.clientName.toLowerCase());
+      
+      // 2. Create client if not found
+      if (!client) {
+        const createClientRes = await fetch(`${apiUrl}/clients`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ name: formData.clientName, industry: formData.industry })
+        });
+        if (createClientRes.ok) {
+            client = await createClientRes.json();
+        }
+      }
 
+      if (!client) client = clientData.clients[0]; // Final fallback
+
+      // 3. Create campaign
       const response = await fetch(`${apiUrl}/campaigns`, {
         method: 'POST',
         headers: {
@@ -171,6 +189,9 @@ const BriefBuilder = () => {
       if (response.ok) {
         showNotification('Strategic Intelligence Synchronized: Campaign Live', 'success');
         navigate('/dashboard');
+      } else {
+        const errData = await response.json();
+        showNotification(`Launch Restricted: ${errData.error || 'System collision'}`, 'error');
       }
     } catch (err) {
       showNotification('Launch Failure: Strategic Collision', 'error');
