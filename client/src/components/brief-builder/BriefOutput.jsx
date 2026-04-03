@@ -243,7 +243,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
           
           <div className="pt-16 border-t border-border/20 text-center">
             <div className="inline-block px-10 py-4 bg-muted/5 border border-border/40 rounded-2xl text-[9px] font-black tracking-[0.5em] text-muted-foreground/30 uppercase italic">
-                Generated via CampaignOS Neural Engine Model 4.0 // 2025 Standard
+                Generated via CampaignOS Neural Engine Model 4.0 // 2026 Standard
             </div>
           </div>
         </div>

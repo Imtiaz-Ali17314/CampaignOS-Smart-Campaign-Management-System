@@ -121,7 +121,7 @@ const BriefBuilder = () => {
       console.error('AI Service unavailable, using mock data:', error);
       await new Promise(resolve => setTimeout(resolve, 2000));
       const mockResult = {
-        campaignTitle: `${formData.clientName} ${formData.objective.charAt(0).toUpperCase() + formData.objective.slice(1)} Performance 2025`,
+        campaignTitle: `${formData.clientName} ${formData.objective.charAt(0).toUpperCase() + formData.objective.slice(1)} Performance 2026`,
         headlines: [
           `Experience the Future of ${formData.industry} with ${formData.clientName}.`,
           `Elevate Your Lifestyle. The ${formData.clientName} Difference.`,
