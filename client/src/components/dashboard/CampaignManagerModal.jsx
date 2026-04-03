@@ -110,12 +110,13 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
   };
 
   const handleSuggestSocial = async () => {
+    if (!formData.name) return showNotification("Please enter a campaign name first.", "info");
     setAiLoading(true);
     try {
         const res = await fetch(`${AI_URL}/generate/social`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ platform: 'Meta/LinkedIn', campaign_goal: formData.name || 'Growth', brand_voice: 'Professional' })
+            body: JSON.stringify({ platform: 'Meta/LinkedIn', campaign_goal: formData.name, brand_voice: 'Professional' })
         });
         if (res.ok) {
             const data = await res.json();
@@ -130,12 +131,13 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
   };
 
   const handleSuggestTags = async () => {
+    if (!formData.name) return showNotification("Please enter a campaign name first.", "info");
     setAiLoading(true);
     try {
         const res = await fetch(`${AI_URL}/generate/hashtags`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: formData.name || 'Marketing Strategy', industry: 'General Business' })
+            body: JSON.stringify({ content: formData.name, industry: 'General Business' })
         });
         if (res.ok) {
             const data = await res.json();
@@ -149,25 +151,38 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
     }
   };
 
-  const adoptAsset = (type, value) => {
-    setFormData(prev => ({
-        ...prev,
-        creative_content: {
-            ...prev.creative_content,
-            [type]: Array.isArray(prev.creative_content[type]) 
-                ? [...new Set([...prev.creative_content[type], value])]
-                : typeof prev.creative_content[type] === 'string'
-                    ? [prev.creative_content[type], value]
-                    : [value]
-        }
-    }));
-    showNotification(`Asset Adopted to Strategic Record`, "info");
-  };
-
   const isAdopted = (type, value) => {
     const assets = formData.creative_content[type];
     if (Array.isArray(assets)) return assets.includes(value);
     return assets === value;
+  };
+
+  const adoptAsset = (type, value) => {
+    const currentAssets = formData.creative_content[type] || [];
+    const isAlreadyAdopted = Array.isArray(currentAssets) 
+        ? currentAssets.includes(value) 
+        : currentAssets === value;
+
+    let newAssets;
+    if (isAlreadyAdopted) {
+        newAssets = Array.isArray(currentAssets) 
+            ? currentAssets.filter(a => a !== value)
+            : [];
+        showNotification(`Asset Disengaged from Strategic Record`, "info");
+    } else {
+        newAssets = Array.isArray(currentAssets) 
+            ? [...new Set([...currentAssets, value])]
+            : [currentAssets, value].filter(Boolean);
+        showNotification(`Asset Adopted to Strategic Record`, "info");
+    }
+
+    setFormData(prev => ({
+        ...prev,
+        creative_content: {
+            ...prev.creative_content,
+            [type]: newAssets
+        }
+    }));
   };
 
   const clearAdopted = (type) => {
@@ -275,22 +290,24 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                             <div className="h-px bg-border/20 flex-1" />
                         </div>
                         
-                        {Object.keys(formData.creative_content).length > 0 ? (
+                        {Object.keys(formData.creative_content).length > 0 && Object.values(formData.creative_content).some(a => Array.isArray(a) ? a.length > 0 : !!a) ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {Object.entries(formData.creative_content).map(([type, assets]) => (
-                                    <div key={type} className="group relative p-6 bg-muted/10 border border-border/30 rounded-3xl space-y-4 hover:border-secondary/30 transition-all">
-                                        <div className="flex justify-between items-center">
-                                            <h4 className="text-[9px] font-black uppercase tracking-widest text-secondary/60">{type.replace(/([A-Z])/g, ' $1')}</h4>
-                                            <button type="button" onClick={() => clearAdopted(type)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-rose-500/10 hover:text-rose-500 rounded-lg transition-all">
-                                                <X size={12} />
-                                            </button>
+                                    assets && (Array.isArray(assets) ? assets.length > 0 : true) && (
+                                        <div key={type} className="group relative p-6 bg-muted/10 border border-border/30 rounded-3xl space-y-4 hover:border-secondary/30 transition-all">
+                                            <div className="flex justify-between items-center">
+                                                <h4 className="text-[9px] font-black uppercase tracking-widest text-secondary/60">{type.replace(/([A-Z])/g, ' $1')}</h4>
+                                                <button type="button" onClick={() => clearAdopted(type)} className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-rose-500/10 hover:text-rose-500 rounded-lg transition-all">
+                                                    <X size={12} />
+                                                </button>
+                                            </div>
+                                            <div className="space-y-2">
+                                                {Array.isArray(assets) ? assets.map((a, idx) => (
+                                                    <div key={idx} className="p-3 bg-secondary/5 border border-secondary/10 rounded-xl text-[11px] font-bold leading-relaxed">{a}</div>
+                                                )) : <div className="p-3 bg-secondary/5 border border-secondary/10 rounded-xl text-[11px] font-bold leading-relaxed">{assets}</div>}
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            {Array.isArray(assets) ? assets.map((a, idx) => (
-                                                <div key={idx} className="p-3 bg-secondary/5 border border-secondary/10 rounded-xl text-[11px] font-bold leading-relaxed">{a}</div>
-                                            )) : <div className="p-3 bg-secondary/5 border border-secondary/10 rounded-xl text-[11px] font-bold leading-relaxed">{assets}</div>}
-                                        </div>
-                                    </div>
+                                    )
                                 ))}
                             </div>
                         ) : (
@@ -366,11 +383,11 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Creative Headlines</h4>
                                         <div className="space-y-3">
                                             {aiSuggestions.headlines.map((h, i) => (
-                                                <div key={i} className="p-4 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold leading-relaxed relative pr-12 group">
+                                                <div key={i} onClick={() => adoptAsset('headlines', h)} className={`p-4 border rounded-2xl text-xs font-bold leading-relaxed relative pr-12 cursor-pointer transition-all ${isAdopted('headlines', h) ? 'bg-primary/10 border-primary' : 'bg-muted/20 border-border/40 hover:border-primary/40'}`}>
                                                     {h}
-                                                    <button onClick={() => adoptAsset('headlines', h)} className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('headlines', h) ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground/30 hover:text-primary hover:bg-primary/10'}`}>
+                                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('headlines', h) ? 'text-primary' : 'text-muted-foreground/30'}`}>
                                                         {isAdopted('headlines', h) ? <Check size={14} /> : <PlusCircle size={14} />}
-                                                    </button>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -381,11 +398,11 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Social Narratives</h4>
                                         <div className="space-y-3">
                                             {aiSuggestions.socialPosts.map((p, i) => (
-                                                <div key={i} className="p-4 bg-muted/20 border border-border/40 rounded-2xl text-xs font-bold leading-relaxed relative pr-12 group">
+                                                <div key={i} onClick={() => adoptAsset('socialPosts', p)} className={`p-4 border rounded-2xl text-xs font-bold leading-relaxed relative pr-12 cursor-pointer transition-all ${isAdopted('socialPosts', p) ? 'bg-secondary/10 border-secondary' : 'bg-muted/20 border-border/40 hover:border-secondary/40'}`}>
                                                     {p}
-                                                    <button onClick={() => adoptAsset('socialPosts', p)} className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('socialPosts', p) ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground/30 hover:text-primary hover:bg-primary/10'}`}>
+                                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('socialPosts', p) ? 'text-secondary' : 'text-muted-foreground/30'}`}>
                                                         {isAdopted('socialPosts', p) ? <Check size={14} /> : <PlusCircle size={14} />}
-                                                    </button>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
