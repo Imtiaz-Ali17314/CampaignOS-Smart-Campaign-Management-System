@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   TrendingUp, 
@@ -12,10 +12,11 @@ import {
   BarChart3,
   LogOut,
   User,
+  Zap,
   Settings as SettingsIcon
 } from 'lucide-react';
 import { subDays, format } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
 
 
 import KPICard from '../components/dashboard/KPICard';
@@ -43,7 +44,7 @@ const Dashboard = () => {
   const urlClient = searchParams.get('client');
   const [campaigns, setCampaigns] = useState([]);
   const [selectedClient, setSelectedClient] = useState(urlClient || null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   // CRUD STATES
   const [isManagerOpen, setIsManagerOpen] = useState(false);
@@ -71,8 +72,8 @@ const Dashboard = () => {
       }));
 
       setCampaigns([...normalizedMocks, ...backendCampaigns]);
-    } catch (err) {
-      console.error('Strategic Data Hybridization Failed:', err);
+    } catch (fetchError) {
+      console.error('Strategic Data Hybridization Failed:', fetchError);
       setCampaigns(campaignData.campaigns.map(c => ({ ...c, client_name: c.client, is_mock: true })));
     } finally {
       setIsLoading(false);
@@ -81,6 +82,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (token) fetchCampaigns();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   useEffect(() => {
@@ -130,7 +132,7 @@ const Dashboard = () => {
             setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
             showNotification(`Strategic Pulse Update: ${campaign.name} set to ${newStatus}`, "info");
         }
-    } catch (err) {
+    } catch {
         showNotification("Pulse Update failed: Connection collision.", "error");
     }
   };
@@ -161,7 +163,7 @@ const Dashboard = () => {
             setCampaigns(prev => prev.map(c => c.id === id ? { ...c, status: 'completed' } : c));
             showNotification(`Objective Met: ${campaign.name} protocol marked as Complete.`, "success");
         }
-    } catch (err) {
+    } catch {
         showNotification("Operational Completion failed: Bridge Error.", "error");
     }
   };
@@ -185,7 +187,7 @@ const Dashboard = () => {
             setCampaigns(prev => prev.filter(c => c.id !== id));
             showNotification(`Strategic Decommission Complete. Record Archived.`, "success");
         }
-    } catch (err) {
+    } catch {
         showNotification("Decommission failed: Connection collision.", "error");
     }
   };
@@ -302,7 +304,7 @@ const Dashboard = () => {
         window.URL.revokeObjectURL(url);
         
         showNotification("Analytics Ledger Synchronized: CSV Export Complete", "success");
-    } catch (error) {
+    } catch {
         showNotification("Export initialization failed.", "error");
     }
   };
@@ -420,18 +422,24 @@ const Dashboard = () => {
         </header>
 
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 pb-20 space-y-12 page-transition">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-              <KPICard title="Global Impressions" value={stats.impressions} icon={TrendingUp} trend={12.4} color="text-primary" />
+              <KPICard title="Impressions" value={stats.impressions} icon={TrendingUp} trend={12.4} color="text-primary" />
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-              <KPICard title="Target Clicks" value={stats.clicks} icon={MousePointer2} trend={-3.2} color="text-emerald-500" />
+              <KPICard title="Clicks" value={stats.clicks} icon={MousePointer2} trend={-3.2} color="text-emerald-500" />
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-              <KPICard title="Click Through Rate" value={stats.ctr} suffix="%" icon={Target} trend={0.8} color="text-secondary" />
+              <KPICard title="CTR" value={stats.ctr} suffix="%" icon={Target} trend={0.8} color="text-secondary" />
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <KPICard title="Ad Investment" value={stats.spend} icon={DollarSign} color="text-accent" />
+              <KPICard title="Conversions" value={stats.conversions} icon={Zap} trend={5.1} color="text-accent" />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+              <KPICard title="Spend" value={stats.spend} icon={DollarSign} color="text-rose-400" />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+              <KPICard title="ROAS" value={stats.roas} suffix="x" icon={BarChart3} trend={2.3} color="text-amber-400" />
             </motion.div>
           </div>
 

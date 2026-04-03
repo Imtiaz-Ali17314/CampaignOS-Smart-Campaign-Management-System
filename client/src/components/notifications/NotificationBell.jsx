@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, AlertCircle, Clock } from 'lucide-react';
 import { io } from 'socket.io-client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { format } from 'date-fns';
 
 import { useAuth } from '../../context/AuthContext';
@@ -14,6 +14,8 @@ const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState('alerts'); // 'alerts' or 'history'
   const [unreadCount, setUnreadCount] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -75,6 +77,32 @@ const NotificationBell = () => {
 
   const markAllAsRead = () => {
     setUnreadCount(0);
+  };
+
+  const fetchHistory = async () => {
+    if (!token) return;
+    setIsLoadingHistory(true);
+    try {
+      const response = await fetch(`${WS_URL}/alerts`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setHistory(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch alert history:', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const handleToggleView = () => {
+    const newView = view === 'alerts' ? 'history' : 'alerts';
+    setView(newView);
+    if (newView === 'history') {
+      fetchHistory();
+    }
   };
 
   const handleFireTestAlert = () => {
@@ -155,13 +183,42 @@ const NotificationBell = () => {
 
             <div className="max-h-[450px] overflow-y-auto scrollbar-hide bg-card/40 backdrop-blur-3xl">
               {view === 'history' ? (
-                 <div className="p-10 text-center">
-                    <div className="p-5 bg-primary/5 rounded-3xl mb-4 border border-primary/10 inline-block">
-                        <Clock size={32} className="text-primary" />
+                isLoadingHistory ? (
+                   <div className="p-10 flex justify-center items-center">
+                       <span className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                   </div>
+                ) : history.length === 0 ? (
+                   <div className="p-10 text-center">
+                      <div className="p-5 bg-primary/5 rounded-3xl mb-4 border border-primary/10 inline-block">
+                          <Clock size={32} className="text-primary" />
+                      </div>
+                      <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Audit Trail Clean</p>
+                      <p className="text-[10px] text-muted-foreground font-medium px-6">No historical strategies or threshold violations found in the master log.</p>
+                   </div>
+                ) : (
+                    <div className="divide-y divide-border/10">
+                      {history.map((notif) => (
+                        <div key={notif.id} className="p-6 hover:bg-muted/30 transition-colors flex gap-5 items-start group opacity-70">
+                          <div className="p-3 rounded-2xl bg-primary/10 text-primary mt-0.5 shrink-0 border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <Clock size={18} strokeWidth={2.5} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1.5 border-b border-border/10 pb-1.5">
+                              <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary/80 truncate">
+                                {notif.campaign_name || 'System Broadcast'}
+                              </span>
+                              <span className="text-[9px] font-bold text-muted-foreground/60 uppercase flex items-center gap-1 shrink-0">
+                                {format(new Date(notif.triggered_at), 'MMM d, HH:mm')}
+                              </span>
+                            </div>
+                            <p className="text-sm text-foreground/70 leading-snug font-medium line-clamp-3">
+                              {notif.message}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Audit Trail Active</p>
-                    <p className="text-[10px] text-muted-foreground font-medium px-6">All historical strategies and threshold violations are being indexed in the master log.</p>
-                 </div>
+                )
               ) : (
                 notifications.length === 0 ? (
                     <div className="p-16 flex flex-col items-center justify-center text-center">
@@ -208,7 +265,7 @@ const NotificationBell = () => {
             
             <div className="p-5 bg-muted/10 border-t border-border/20 mt-auto">
               <button 
-                onClick={() => setView(view === 'alerts' ? 'history' : 'alerts')}
+                onClick={handleToggleView}
                 className="w-full py-3 text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:bg-primary/10 rounded-xl transition-all border border-primary/20"
               >
                 {view === 'alerts' ? 'Strategic History' : 'View Live Alerts'}

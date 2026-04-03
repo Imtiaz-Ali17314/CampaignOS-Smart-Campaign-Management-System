@@ -33,6 +33,7 @@ CREATE TABLE campaigns (
   conversions INTEGER DEFAULT 0,
   start_date DATE,
   end_date DATE,
+  creative_content JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   deleted_at TIMESTAMPTZ DEFAULT NULL  -- soft delete

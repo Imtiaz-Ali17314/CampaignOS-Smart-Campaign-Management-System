@@ -17,181 +17,211 @@
           "date": "2026-03-01",
           "impressions": 49883,
           "clicks": 2166,
-          "spend": 610
+          "spend": 610,
+          "conversions": 94
         },
         {
           "date": "2026-03-02",
           "impressions": 51207,
           "clicks": 2321,
-          "spend": 622
+          "spend": 622,
+          "conversions": 100
         },
         {
           "date": "2026-03-03",
           "impressions": 39220,
           "clicks": 641,
-          "spend": 574
+          "spend": 574,
+          "conversions": 28
         },
         {
           "date": "2026-03-04",
           "impressions": 41583,
           "clicks": 890,
-          "spend": 454
+          "spend": 454,
+          "conversions": 39
         },
         {
           "date": "2026-03-05",
           "impressions": 51267,
           "clicks": 2170,
-          "spend": 636
+          "spend": 636,
+          "conversions": 94
         },
         {
           "date": "2026-03-06",
           "impressions": 50921,
           "clicks": 1315,
-          "spend": 504
+          "spend": 504,
+          "conversions": 57
         },
         {
           "date": "2026-03-07",
           "impressions": 49634,
           "clicks": 1131,
-          "spend": 579
+          "spend": 579,
+          "conversions": 49
         },
         {
           "date": "2026-03-08",
           "impressions": 47322,
           "clicks": 2094,
-          "spend": 522
+          "spend": 522,
+          "conversions": 91
         },
         {
           "date": "2026-03-09",
           "impressions": 47510,
           "clicks": 2322,
-          "spend": 526
+          "spend": 526,
+          "conversions": 101
         },
         {
           "date": "2026-03-10",
           "impressions": 45514,
           "clicks": 1365,
-          "spend": 506
+          "spend": 506,
+          "conversions": 59
         },
         {
           "date": "2026-03-11",
           "impressions": 53123,
           "clicks": 2837,
-          "spend": 565
+          "spend": 565,
+          "conversions": 123
         },
         {
           "date": "2026-03-12",
           "impressions": 42289,
           "clicks": 528,
-          "spend": 446
+          "spend": 446,
+          "conversions": 23
         },
         {
           "date": "2026-03-13",
           "impressions": 39727,
           "clicks": 1651,
-          "spend": 455
+          "spend": 455,
+          "conversions": 71
         },
         {
           "date": "2026-03-14",
           "impressions": 39608,
           "clicks": 558,
-          "spend": 510
+          "spend": 510,
+          "conversions": 24
         },
         {
           "date": "2026-03-15",
           "impressions": 43158,
           "clicks": 568,
-          "spend": 601
+          "spend": 601,
+          "conversions": 25
         },
         {
           "date": "2026-03-16",
           "impressions": 38246,
           "clicks": 1891,
-          "spend": 606
+          "spend": 606,
+          "conversions": 82
         },
         {
           "date": "2026-03-17",
           "impressions": 40586,
           "clicks": 623,
-          "spend": 618
+          "spend": 618,
+          "conversions": 27
         },
         {
           "date": "2026-03-18",
           "impressions": 38280,
           "clicks": 953,
-          "spend": 568
+          "spend": 568,
+          "conversions": 41
         },
         {
           "date": "2026-03-19",
           "impressions": 42424,
           "clicks": 1197,
-          "spend": 638
+          "spend": 638,
+          "conversions": 52
         },
         {
           "date": "2026-03-20",
           "impressions": 40119,
           "clicks": 740,
-          "spend": 520
+          "spend": 520,
+          "conversions": 32
         },
         {
           "date": "2026-03-21",
           "impressions": 48222,
           "clicks": 935,
-          "spend": 660
+          "spend": 660,
+          "conversions": 40
         },
         {
           "date": "2026-03-22",
           "impressions": 38424,
           "clicks": 2234,
-          "spend": 617
+          "spend": 617,
+          "conversions": 97
         },
         {
           "date": "2026-03-23",
           "impressions": 45986,
           "clicks": 840,
-          "spend": 617
+          "spend": 617,
+          "conversions": 36
         },
         {
           "date": "2026-03-24",
           "impressions": 39288,
           "clicks": 1962,
-          "spend": 535
+          "spend": 535,
+          "conversions": 85
         },
         {
           "date": "2026-03-25",
           "impressions": 41137,
           "clicks": 2423,
-          "spend": 646
+          "spend": 646,
+          "conversions": 105
         },
         {
           "date": "2026-03-26",
           "impressions": 42570,
           "clicks": 2546,
-          "spend": 479
+          "spend": 479,
+          "conversions": 110
         },
         {
           "date": "2026-03-27",
           "impressions": 48771,
           "clicks": 2750,
-          "spend": 497
+          "spend": 497,
+          "conversions": 119
         },
         {
           "date": "2026-03-28",
           "impressions": 46088,
           "clicks": 2337,
-          "spend": 653
+          "spend": 653,
+          "conversions": 101
         },
         {
           "date": "2026-03-29",
           "impressions": 46652,
           "clicks": 560,
-          "spend": 666
+          "spend": 666,
+          "conversions": 24
         },
         {
           "date": "2026-03-30",
           "impressions": 45475,
           "clicks": 1558,
-          "spend": 608
+          "spend": 608,
+          "conversions": 67
         }
       ]
     },
@@ -212,181 +242,211 @@
           "date": "2026-03-01",
           "impressions": 110138,
           "clicks": 5433,
-          "spend": 1677
+          "spend": 1677,
+          "conversions": 241
         },
         {
           "date": "2026-03-02",
           "impressions": 140524,
           "clicks": 4840,
-          "spend": 1364
+          "spend": 1364,
+          "conversions": 215
         },
         {
           "date": "2026-03-03",
           "impressions": 152587,
           "clicks": 5298,
-          "spend": 1809
+          "spend": 1809,
+          "conversions": 235
         },
         {
           "date": "2026-03-04",
           "impressions": 131901,
           "clicks": 1910,
-          "spend": 1846
+          "spend": 1846,
+          "conversions": 85
         },
         {
           "date": "2026-03-05",
           "impressions": 142441,
           "clicks": 6750,
-          "spend": 1480
+          "spend": 1480,
+          "conversions": 299
         },
         {
           "date": "2026-03-06",
           "impressions": 139070,
           "clicks": 7528,
-          "spend": 1810
+          "spend": 1810,
+          "conversions": 334
         },
         {
           "date": "2026-03-07",
           "impressions": 153522,
           "clicks": 1984,
-          "spend": 1900
+          "spend": 1900,
+          "conversions": 88
         },
         {
           "date": "2026-03-08",
           "impressions": 143076,
           "clicks": 3732,
-          "spend": 1783
+          "spend": 1783,
+          "conversions": 166
         },
         {
           "date": "2026-03-09",
           "impressions": 138062,
           "clicks": 6076,
-          "spend": 1861
+          "spend": 1861,
+          "conversions": 269
         },
         {
           "date": "2026-03-10",
           "impressions": 135061,
           "clicks": 6689,
-          "spend": 1395
+          "spend": 1395,
+          "conversions": 297
         },
         {
           "date": "2026-03-11",
           "impressions": 124567,
           "clicks": 7218,
-          "spend": 1570
+          "spend": 1570,
+          "conversions": 320
         },
         {
           "date": "2026-03-12",
           "impressions": 160597,
           "clicks": 7025,
-          "spend": 1543
+          "spend": 1543,
+          "conversions": 312
         },
         {
           "date": "2026-03-13",
           "impressions": 128217,
           "clicks": 2491,
-          "spend": 1891
+          "spend": 1891,
+          "conversions": 110
         },
         {
           "date": "2026-03-14",
           "impressions": 151714,
           "clicks": 6067,
-          "spend": 1491
+          "spend": 1491,
+          "conversions": 269
         },
         {
           "date": "2026-03-15",
           "impressions": 109968,
           "clicks": 1575,
-          "spend": 1886
+          "spend": 1886,
+          "conversions": 70
         },
         {
           "date": "2026-03-16",
           "impressions": 139627,
           "clicks": 3390,
-          "spend": 1524
+          "spend": 1524,
+          "conversions": 150
         },
         {
           "date": "2026-03-17",
           "impressions": 160155,
           "clicks": 1806,
-          "spend": 1658
+          "spend": 1658,
+          "conversions": 80
         },
         {
           "date": "2026-03-18",
           "impressions": 149353,
           "clicks": 8222,
-          "spend": 1525
+          "spend": 1525,
+          "conversions": 365
         },
         {
           "date": "2026-03-19",
           "impressions": 120102,
           "clicks": 6560,
-          "spend": 1564
+          "spend": 1564,
+          "conversions": 291
         },
         {
           "date": "2026-03-20",
           "impressions": 129093,
           "clicks": 2592,
-          "spend": 1380
+          "spend": 1380,
+          "conversions": 115
         },
         {
           "date": "2026-03-21",
           "impressions": 127244,
           "clicks": 5531,
-          "spend": 1312
+          "spend": 1312,
+          "conversions": 245
         },
         {
           "date": "2026-03-22",
           "impressions": 125780,
           "clicks": 6126,
-          "spend": 1291
+          "spend": 1291,
+          "conversions": 272
         },
         {
           "date": "2026-03-23",
           "impressions": 133304,
           "clicks": 7016,
-          "spend": 1489
+          "spend": 1489,
+          "conversions": 311
         },
         {
           "date": "2026-03-24",
           "impressions": 149200,
           "clicks": 5348,
-          "spend": 1601
+          "spend": 1601,
+          "conversions": 237
         },
         {
           "date": "2026-03-25",
           "impressions": 116839,
           "clicks": 4729,
-          "spend": 1802
+          "spend": 1802,
+          "conversions": 210
         },
         {
           "date": "2026-03-26",
           "impressions": 115536,
           "clicks": 6661,
-          "spend": 1447
+          "spend": 1447,
+          "conversions": 295
         },
         {
           "date": "2026-03-27",
           "impressions": 130092,
           "clicks": 7176,
-          "spend": 1430
+          "spend": 1430,
+          "conversions": 318
         },
         {
           "date": "2026-03-28",
           "impressions": 144448,
           "clicks": 5499,
-          "spend": 1536
+          "spend": 1536,
+          "conversions": 244
         },
         {
           "date": "2026-03-29",
           "impressions": 119394,
           "clicks": 3170,
-          "spend": 1831
+          "spend": 1831,
+          "conversions": 141
         },
         {
           "date": "2026-03-30",
           "impressions": 161289,
           "clicks": 4436,
-          "spend": 1336
+          "spend": 1336,
+          "conversions": 197
         }
       ]
     },
@@ -407,181 +467,211 @@
           "date": "2026-03-01",
           "impressions": 90788,
           "clicks": 3791,
-          "spend": 182
+          "spend": 182,
+          "conversions": 138
         },
         {
           "date": "2026-03-02",
           "impressions": 94501,
           "clicks": 3685,
-          "spend": 154
+          "spend": 154,
+          "conversions": 134
         },
         {
           "date": "2026-03-03",
           "impressions": 69907,
           "clicks": 3484,
-          "spend": 172
+          "spend": 172,
+          "conversions": 127
         },
         {
           "date": "2026-03-04",
           "impressions": 85677,
           "clicks": 4740,
-          "spend": 133
+          "spend": 133,
+          "conversions": 173
         },
         {
           "date": "2026-03-05",
           "impressions": 88009,
           "clicks": 2772,
-          "spend": 148
+          "spend": 148,
+          "conversions": 101
         },
         {
           "date": "2026-03-06",
           "impressions": 99762,
           "clicks": 2259,
-          "spend": 147
+          "spend": 147,
+          "conversions": 82
         },
         {
           "date": "2026-03-07",
           "impressions": 69378,
           "clicks": 3628,
-          "spend": 126
+          "spend": 126,
+          "conversions": 132
         },
         {
           "date": "2026-03-08",
           "impressions": 79494,
           "clicks": 3428,
-          "spend": 171
+          "spend": 171,
+          "conversions": 125
         },
         {
           "date": "2026-03-09",
           "impressions": 102050,
           "clicks": 5258,
-          "spend": 129
+          "spend": 129,
+          "conversions": 192
         },
         {
           "date": "2026-03-10",
           "impressions": 77594,
           "clicks": 3592,
-          "spend": 146
+          "spend": 146,
+          "conversions": 131
         },
         {
           "date": "2026-03-11",
           "impressions": 83843,
           "clicks": 3660,
-          "spend": 172
+          "spend": 172,
+          "conversions": 133
         },
         {
           "date": "2026-03-12",
           "impressions": 79491,
           "clicks": 1552,
-          "spend": 142
+          "spend": 142,
+          "conversions": 57
         },
         {
           "date": "2026-03-13",
           "impressions": 92169,
           "clicks": 4727,
-          "spend": 175
+          "spend": 175,
+          "conversions": 172
         },
         {
           "date": "2026-03-14",
           "impressions": 78647,
           "clicks": 850,
-          "spend": 154
+          "spend": 154,
+          "conversions": 31
         },
         {
           "date": "2026-03-15",
           "impressions": 85495,
           "clicks": 3971,
-          "spend": 139
+          "spend": 139,
+          "conversions": 145
         },
         {
           "date": "2026-03-16",
           "impressions": 84711,
           "clicks": 2812,
-          "spend": 142
+          "spend": 142,
+          "conversions": 103
         },
         {
           "date": "2026-03-17",
           "impressions": 72165,
           "clicks": 2898,
-          "spend": 155
+          "spend": 155,
+          "conversions": 106
         },
         {
           "date": "2026-03-18",
           "impressions": 87786,
           "clicks": 1958,
-          "spend": 129
+          "spend": 129,
+          "conversions": 71
         },
         {
           "date": "2026-03-19",
           "impressions": 93738,
           "clicks": 2763,
-          "spend": 186
+          "spend": 186,
+          "conversions": 101
         },
         {
           "date": "2026-03-20",
           "impressions": 79148,
           "clicks": 4513,
-          "spend": 175
+          "spend": 175,
+          "conversions": 165
         },
         {
           "date": "2026-03-21",
           "impressions": 93289,
           "clicks": 4619,
-          "spend": 143
+          "spend": 143,
+          "conversions": 168
         },
         {
           "date": "2026-03-22",
           "impressions": 75967,
           "clicks": 2654,
-          "spend": 149
+          "spend": 149,
+          "conversions": 97
         },
         {
           "date": "2026-03-23",
           "impressions": 72606,
           "clicks": 1328,
-          "spend": 166
+          "spend": 166,
+          "conversions": 48
         },
         {
           "date": "2026-03-24",
           "impressions": 79773,
           "clicks": 3877,
-          "spend": 140
+          "spend": 140,
+          "conversions": 141
         },
         {
           "date": "2026-03-25",
           "impressions": 71301,
           "clicks": 3498,
-          "spend": 135
+          "spend": 135,
+          "conversions": 128
         },
         {
           "date": "2026-03-26",
           "impressions": 81520,
           "clicks": 4306,
-          "spend": 152
+          "spend": 152,
+          "conversions": 157
         },
         {
           "date": "2026-03-27",
           "impressions": 100976,
           "clicks": 2777,
-          "spend": 144
+          "spend": 144,
+          "conversions": 101
         },
         {
           "date": "2026-03-28",
           "impressions": 90306,
           "clicks": 3165,
-          "spend": 136
+          "spend": 136,
+          "conversions": 115
         },
         {
           "date": "2026-03-29",
           "impressions": 78885,
           "clicks": 3480,
-          "spend": 131
+          "spend": 131,
+          "conversions": 127
         },
         {
           "date": "2026-03-30",
           "impressions": 74483,
           "clicks": 3988,
-          "spend": 161
+          "spend": 161,
+          "conversions": 145
         }
       ]
     },
@@ -602,181 +692,211 @@
           "date": "2026-03-01",
           "impressions": 21545,
           "clicks": 1107,
-          "spend": 1234
+          "spend": 1234,
+          "conversions": 29
         },
         {
           "date": "2026-03-02",
           "impressions": 19124,
           "clicks": 1068,
-          "spend": 1054
+          "spend": 1054,
+          "conversions": 28
         },
         {
           "date": "2026-03-03",
           "impressions": 16461,
           "clicks": 648,
-          "spend": 1323
+          "spend": 1323,
+          "conversions": 17
         },
         {
           "date": "2026-03-04",
           "impressions": 21647,
           "clicks": 598,
-          "spend": 1146
+          "spend": 1146,
+          "conversions": 16
         },
         {
           "date": "2026-03-05",
           "impressions": 20270,
           "clicks": 1128,
-          "spend": 1275
+          "spend": 1275,
+          "conversions": 29
         },
         {
           "date": "2026-03-06",
           "impressions": 23563,
           "clicks": 1097,
-          "spend": 973
+          "spend": 973,
+          "conversions": 29
         },
         {
           "date": "2026-03-07",
           "impressions": 17041,
           "clicks": 346,
-          "spend": 1090
+          "spend": 1090,
+          "conversions": 9
         },
         {
           "date": "2026-03-08",
           "impressions": 21705,
           "clicks": 284,
-          "spend": 914
+          "spend": 914,
+          "conversions": 7
         },
         {
           "date": "2026-03-09",
           "impressions": 19463,
           "clicks": 775,
-          "spend": 1319
+          "spend": 1319,
+          "conversions": 20
         },
         {
           "date": "2026-03-10",
           "impressions": 17217,
           "clicks": 477,
-          "spend": 1070
+          "spend": 1070,
+          "conversions": 12
         },
         {
           "date": "2026-03-11",
           "impressions": 16892,
           "clicks": 435,
-          "spend": 946
+          "spend": 946,
+          "conversions": 11
         },
         {
           "date": "2026-03-12",
           "impressions": 19896,
           "clicks": 1005,
-          "spend": 1303
+          "spend": 1303,
+          "conversions": 26
         },
         {
           "date": "2026-03-13",
           "impressions": 22822,
           "clicks": 744,
-          "spend": 1065
+          "spend": 1065,
+          "conversions": 19
         },
         {
           "date": "2026-03-14",
           "impressions": 16689,
           "clicks": 781,
-          "spend": 1266
+          "spend": 1266,
+          "conversions": 20
         },
         {
           "date": "2026-03-15",
           "impressions": 20729,
           "clicks": 1222,
-          "spend": 1220
+          "spend": 1220,
+          "conversions": 32
         },
         {
           "date": "2026-03-16",
           "impressions": 19252,
           "clicks": 408,
-          "spend": 925
+          "spend": 925,
+          "conversions": 11
         },
         {
           "date": "2026-03-17",
           "impressions": 20190,
           "clicks": 815,
-          "spend": 1168
+          "spend": 1168,
+          "conversions": 21
         },
         {
           "date": "2026-03-18",
           "impressions": 22092,
           "clicks": 1002,
-          "spend": 1148
+          "spend": 1148,
+          "conversions": 26
         },
         {
           "date": "2026-03-19",
           "impressions": 23452,
           "clicks": 719,
-          "spend": 896
+          "spend": 896,
+          "conversions": 19
         },
         {
           "date": "2026-03-20",
           "impressions": 17760,
           "clicks": 579,
-          "spend": 1125
+          "spend": 1125,
+          "conversions": 15
         },
         {
           "date": "2026-03-21",
           "impressions": 23119,
           "clicks": 862,
-          "spend": 1292
+          "spend": 1292,
+          "conversions": 22
         },
         {
           "date": "2026-03-22",
           "impressions": 17515,
           "clicks": 796,
-          "spend": 1164
+          "spend": 1164,
+          "conversions": 21
         },
         {
           "date": "2026-03-23",
           "impressions": 23339,
           "clicks": 1376,
-          "spend": 904
+          "spend": 904,
+          "conversions": 36
         },
         {
           "date": "2026-03-24",
           "impressions": 18210,
           "clicks": 965,
-          "spend": 1261
+          "spend": 1261,
+          "conversions": 25
         },
         {
           "date": "2026-03-25",
           "impressions": 18633,
           "clicks": 1052,
-          "spend": 1218
+          "spend": 1218,
+          "conversions": 27
         },
         {
           "date": "2026-03-26",
           "impressions": 18061,
           "clicks": 963,
-          "spend": 960
+          "spend": 960,
+          "conversions": 25
         },
         {
           "date": "2026-03-27",
           "impressions": 18358,
           "clicks": 569,
-          "spend": 1192
+          "spend": 1192,
+          "conversions": 15
         },
         {
           "date": "2026-03-28",
           "impressions": 20996,
           "clicks": 622,
-          "spend": 1108
+          "spend": 1108,
+          "conversions": 16
         },
         {
           "date": "2026-03-29",
           "impressions": 19299,
           "clicks": 1111,
-          "spend": 1112
+          "spend": 1112,
+          "conversions": 29
         },
         {
           "date": "2026-03-30",
           "impressions": 16160,
           "clicks": 383,
-          "spend": 1254
+          "spend": 1254,
+          "conversions": 10
         }
       ]
     },
@@ -797,181 +917,211 @@
           "date": "2026-03-01",
           "impressions": 30306,
           "clicks": 861,
-          "spend": 426
+          "spend": 426,
+          "conversions": 19
         },
         {
           "date": "2026-03-02",
           "impressions": 24790,
           "clicks": 1453,
-          "spend": 399
+          "spend": 399,
+          "conversions": 33
         },
         {
           "date": "2026-03-03",
           "impressions": 29508,
           "clicks": 1314,
-          "spend": 365
+          "spend": 365,
+          "conversions": 30
         },
         {
           "date": "2026-03-04",
           "impressions": 24113,
           "clicks": 1105,
-          "spend": 346
+          "spend": 346,
+          "conversions": 25
         },
         {
           "date": "2026-03-05",
           "impressions": 24506,
           "clicks": 677,
-          "spend": 358
+          "spend": 358,
+          "conversions": 15
         },
         {
           "date": "2026-03-06",
           "impressions": 30134,
           "clicks": 1347,
-          "spend": 390
+          "spend": 390,
+          "conversions": 30
         },
         {
           "date": "2026-03-07",
           "impressions": 23916,
           "clicks": 743,
-          "spend": 376
+          "spend": 376,
+          "conversions": 17
         },
         {
           "date": "2026-03-08",
           "impressions": 30242,
           "clicks": 1549,
-          "spend": 405
+          "spend": 405,
+          "conversions": 35
         },
         {
           "date": "2026-03-09",
           "impressions": 32183,
           "clicks": 501,
-          "spend": 337
+          "spend": 337,
+          "conversions": 11
         },
         {
           "date": "2026-03-10",
           "impressions": 26048,
           "clicks": 1321,
-          "spend": 379
+          "spend": 379,
+          "conversions": 30
         },
         {
           "date": "2026-03-11",
           "impressions": 31810,
           "clicks": 829,
-          "spend": 357
+          "spend": 357,
+          "conversions": 19
         },
         {
           "date": "2026-03-12",
           "impressions": 25044,
           "clicks": 900,
-          "spend": 376
+          "spend": 376,
+          "conversions": 20
         },
         {
           "date": "2026-03-13",
           "impressions": 28863,
           "clicks": 676,
-          "spend": 416
+          "spend": 416,
+          "conversions": 15
         },
         {
           "date": "2026-03-14",
           "impressions": 31120,
           "clicks": 1554,
-          "spend": 300
+          "spend": 300,
+          "conversions": 35
         },
         {
           "date": "2026-03-15",
           "impressions": 32703,
           "clicks": 812,
-          "spend": 363
+          "spend": 363,
+          "conversions": 18
         },
         {
           "date": "2026-03-16",
           "impressions": 28295,
           "clicks": 1240,
-          "spend": 432
+          "spend": 432,
+          "conversions": 28
         },
         {
           "date": "2026-03-17",
           "impressions": 30507,
           "clicks": 962,
-          "spend": 380
+          "spend": 380,
+          "conversions": 22
         },
         {
           "date": "2026-03-18",
           "impressions": 22064,
           "clicks": 430,
-          "spend": 373
+          "spend": 373,
+          "conversions": 10
         },
         {
           "date": "2026-03-19",
           "impressions": 29071,
           "clicks": 1114,
-          "spend": 308
+          "spend": 308,
+          "conversions": 25
         },
         {
           "date": "2026-03-20",
           "impressions": 30305,
           "clicks": 1183,
-          "spend": 370
+          "spend": 370,
+          "conversions": 27
         },
         {
           "date": "2026-03-21",
           "impressions": 21898,
           "clicks": 989,
-          "spend": 340
+          "spend": 340,
+          "conversions": 22
         },
         {
           "date": "2026-03-22",
           "impressions": 23522,
           "clicks": 506,
-          "spend": 297
+          "spend": 297,
+          "conversions": 11
         },
         {
           "date": "2026-03-23",
           "impressions": 30933,
           "clicks": 1738,
-          "spend": 383
+          "spend": 383,
+          "conversions": 39
         },
         {
           "date": "2026-03-24",
           "impressions": 22720,
           "clicks": 1289,
-          "spend": 365
+          "spend": 365,
+          "conversions": 29
         },
         {
           "date": "2026-03-25",
           "impressions": 32492,
           "clicks": 1519,
-          "spend": 368
+          "spend": 368,
+          "conversions": 34
         },
         {
           "date": "2026-03-26",
           "impressions": 22070,
           "clicks": 1018,
-          "spend": 371
+          "spend": 371,
+          "conversions": 23
         },
         {
           "date": "2026-03-27",
           "impressions": 25157,
           "clicks": 866,
-          "spend": 418
+          "spend": 418,
+          "conversions": 20
         },
         {
           "date": "2026-03-28",
           "impressions": 26922,
           "clicks": 497,
-          "spend": 323
+          "spend": 323,
+          "conversions": 11
         },
         {
           "date": "2026-03-29",
           "impressions": 25692,
           "clicks": 1293,
-          "spend": 401
+          "spend": 401,
+          "conversions": 29
         },
         {
           "date": "2026-03-30",
           "impressions": 30829,
           "clicks": 1236,
-          "spend": 328
+          "spend": 328,
+          "conversions": 28
         }
       ]
     },
@@ -992,181 +1142,211 @@
           "date": "2026-03-01",
           "impressions": 58250,
           "clicks": 1421,
-          "spend": 746
+          "spend": 746,
+          "conversions": 66
         },
         {
           "date": "2026-03-02",
           "impressions": 54408,
           "clicks": 1029,
-          "spend": 1049
+          "spend": 1049,
+          "conversions": 48
         },
         {
           "date": "2026-03-03",
           "impressions": 55617,
           "clicks": 1846,
-          "spend": 1018
+          "spend": 1018,
+          "conversions": 86
         },
         {
           "date": "2026-03-04",
           "impressions": 62014,
           "clicks": 3061,
-          "spend": 1086
+          "spend": 1086,
+          "conversions": 142
         },
         {
           "date": "2026-03-05",
           "impressions": 62819,
           "clicks": 1404,
-          "spend": 951
+          "spend": 951,
+          "conversions": 65
         },
         {
           "date": "2026-03-06",
           "impressions": 51999,
           "clicks": 1611,
-          "spend": 933
+          "spend": 933,
+          "conversions": 75
         },
         {
           "date": "2026-03-07",
           "impressions": 54400,
           "clicks": 2610,
-          "spend": 993
+          "spend": 993,
+          "conversions": 121
         },
         {
           "date": "2026-03-08",
           "impressions": 63541,
           "clicks": 3554,
-          "spend": 868
+          "spend": 868,
+          "conversions": 165
         },
         {
           "date": "2026-03-09",
           "impressions": 61366,
           "clicks": 1710,
-          "spend": 886
+          "spend": 886,
+          "conversions": 79
         },
         {
           "date": "2026-03-10",
           "impressions": 47630,
           "clicks": 1785,
-          "spend": 907
+          "spend": 907,
+          "conversions": 83
         },
         {
           "date": "2026-03-11",
           "impressions": 55056,
           "clicks": 2158,
-          "spend": 808
+          "spend": 808,
+          "conversions": 100
         },
         {
           "date": "2026-03-12",
           "impressions": 55772,
           "clicks": 2130,
-          "spend": 769
+          "spend": 769,
+          "conversions": 99
         },
         {
           "date": "2026-03-13",
           "impressions": 53446,
           "clicks": 914,
-          "spend": 892
+          "spend": 892,
+          "conversions": 42
         },
         {
           "date": "2026-03-14",
           "impressions": 47629,
           "clicks": 2441,
-          "spend": 831
+          "spend": 831,
+          "conversions": 113
         },
         {
           "date": "2026-03-15",
           "impressions": 44617,
           "clicks": 2336,
-          "spend": 1017
+          "spend": 1017,
+          "conversions": 108
         },
         {
           "date": "2026-03-16",
           "impressions": 53408,
           "clicks": 2188,
-          "spend": 1003
+          "spend": 1003,
+          "conversions": 101
         },
         {
           "date": "2026-03-17",
           "impressions": 45291,
           "clicks": 718,
-          "spend": 772
+          "spend": 772,
+          "conversions": 33
         },
         {
           "date": "2026-03-18",
           "impressions": 46318,
           "clicks": 1280,
-          "spend": 844
+          "spend": 844,
+          "conversions": 59
         },
         {
           "date": "2026-03-19",
           "impressions": 63423,
           "clicks": 1888,
-          "spend": 808
+          "spend": 808,
+          "conversions": 88
         },
         {
           "date": "2026-03-20",
           "impressions": 52683,
           "clicks": 598,
-          "spend": 955
+          "spend": 955,
+          "conversions": 28
         },
         {
           "date": "2026-03-21",
           "impressions": 60895,
           "clicks": 3007,
-          "spend": 1028
+          "spend": 1028,
+          "conversions": 139
         },
         {
           "date": "2026-03-22",
           "impressions": 55399,
           "clicks": 2288,
-          "spend": 744
+          "spend": 744,
+          "conversions": 106
         },
         {
           "date": "2026-03-23",
           "impressions": 47870,
           "clicks": 2108,
-          "spend": 1045
+          "spend": 1045,
+          "conversions": 98
         },
         {
           "date": "2026-03-24",
           "impressions": 56273,
           "clicks": 2547,
-          "spend": 907
+          "spend": 907,
+          "conversions": 118
         },
         {
           "date": "2026-03-25",
           "impressions": 54221,
           "clicks": 2324,
-          "spend": 781
+          "spend": 781,
+          "conversions": 108
         },
         {
           "date": "2026-03-26",
           "impressions": 54749,
           "clicks": 3086,
-          "spend": 1011
+          "spend": 1011,
+          "conversions": 143
         },
         {
           "date": "2026-03-27",
           "impressions": 56252,
           "clicks": 2241,
-          "spend": 886
+          "spend": 886,
+          "conversions": 104
         },
         {
           "date": "2026-03-28",
           "impressions": 48508,
           "clicks": 1506,
-          "spend": 1031
+          "spend": 1031,
+          "conversions": 70
         },
         {
           "date": "2026-03-29",
           "impressions": 60215,
           "clicks": 620,
-          "spend": 1042
+          "spend": 1042,
+          "conversions": 29
         },
         {
           "date": "2026-03-30",
           "impressions": 43151,
           "clicks": 1194,
-          "spend": 958
+          "spend": 958,
+          "conversions": 55
         }
       ]
     }

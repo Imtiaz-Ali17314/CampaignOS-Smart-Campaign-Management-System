@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
     }
 
     // Basic SQL Injection protection for dynamic sorting (since $1 doesn't work for column names)
-    const allowedSortCols = ['name', 'budget', 'spend', 'created_at', 'status'];
+    const allowedSortCols = ['name', 'budget', 'spend', 'impressions', 'clicks', 'conversions', 'created_at', 'status'];
     const finalSortBy = allowedSortCols.includes(sortBy) ? sortBy : 'created_at';
     const finalOrder = order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
 
@@ -45,8 +45,12 @@ router.get('/', async (req, res) => {
 
     const result = await db.query(sql, params);
     
-    // Get total count for pagination
-    const countResult = await db.query('SELECT COUNT(*) FROM campaigns WHERE deleted_at IS NULL');
+    // Get total count for pagination (respects active filters)
+    let countSql = 'SELECT COUNT(*) FROM campaigns c WHERE c.deleted_at IS NULL';
+    const countParams = [];
+    if (status) { countParams.push(status); countSql += ` AND c.status = $${countParams.length}`; }
+    if (client_id) { countParams.push(client_id); countSql += ` AND c.client_id = $${countParams.length}`; }
+    const countResult = await db.query(countSql, countParams);
     const total = parseInt(countResult.rows[0].count);
 
     res.json({
