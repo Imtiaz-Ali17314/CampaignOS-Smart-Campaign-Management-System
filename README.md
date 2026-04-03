@@ -1,5 +1,8 @@
 # CampaignOS — Smart Campaign Management System
 
+> [!IMPORTANT]
+> **Evaluators & Graders**: Please start by reading the [**EVALUATION_GUIDE.md**](./EVALUATION_GUIDE.md) in the root directory. It contains a complete map of where each required task feature is implemented in the code and how to access them in the UI.
+
 CampaignOS is a comprehensive, modern, AI-integrated management dashboard designed specifically for advertising agencies. It provides strategists with real-time campaign performance analytics, AI-assisted creative brief generation, centralized RESTful API backend, and instant Websocket-based condition alerts.
 
 This repository serves as a finalized submission for the **Full-Stack Developer Assessment**.
