@@ -66,4 +66,37 @@ npm install
 npm run dev
 ```
 
+### Alternative: Running Services Manually (Without Docker)
+If you prefer not to use Docker, you can run all microservices locally using Node. You will need a local PostgreSQL database running, and you must apply `api/src/db/schema.sql` to your database manually. Then, update your `.env` with your `DATABASE_URL`.
+
+Open **four separate terminal tabs** and boot each service:
+
+**1. API Service (Port 3000):**
+```bash
+cd api
+npm install
+npm run dev
+```
+
+**2. AI Service (Port 3001):**
+```bash
+cd ai-service
+npm install
+npm run dev
+```
+
+**3. Notification WebSocket Server (Port 4000):**
+```bash
+cd notifications
+npm install
+npm run dev
+```
+
+**4. Frontend Client (Port 5173):**
+```bash
+cd client
+npm install
+npm run dev
+```
+
 The CampaignOS Dashboard is now fully operational at: **`http://localhost:5173`** ✨
