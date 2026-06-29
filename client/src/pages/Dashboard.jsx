@@ -61,7 +61,15 @@ const Dashboard = () => {
       let backendCampaigns = [];
       if (response.ok) {
         const data = await response.json();
-        backendCampaigns = data.campaigns;
+        backendCampaigns = data.campaigns.map(c => ({
+          ...c,
+          budget: Number(c.budget),
+          spend: Number(c.spend),
+          impressions: Number(c.impressions),
+          clicks: Number(c.clicks),
+          conversions: Number(c.conversions),
+          dailyMetrics: c.creative_content?.dailyMetrics || c.dailyMetrics || []
+        }));
       }
 
       // MERGE LOCAL MOCKS WITH BACKEND RECORDS
