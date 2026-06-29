@@ -151,7 +151,7 @@ const NotificationBell = () => {
             initial={{ opacity: 0, y: 15, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.95 }}
-            className="absolute right-0 mt-4 w-80 sm:w-96 glass-card rounded-[2rem] shadow-2xl z-[1000] overflow-hidden border-primary/10"
+            className="absolute right-0 mt-4 w-80 sm:w-96 bg-card border border-border/80 rounded-[2rem] shadow-2xl z-[1000] overflow-hidden"
           >
             <div className="p-6 border-b border-border/40 flex items-center justify-between bg-muted/5 backdrop-blur-xl">
               <div className="flex items-center gap-3">
@@ -181,7 +181,7 @@ const NotificationBell = () => {
               )}
             </div>
 
-            <div className="max-h-[450px] overflow-y-auto scrollbar-hide bg-card/40 backdrop-blur-3xl">
+            <div className="max-h-[450px] overflow-y-auto scrollbar-hide bg-card">
               {view === 'history' ? (
                 isLoadingHistory ? (
                    <div className="p-10 flex justify-center items-center">
