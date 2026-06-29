@@ -3,7 +3,7 @@ const db = require('./index');
 async function runMigrations() {
   try {
     console.log('--- Initializing Strategic Persistence Migration ---');
-    
+
     // Add missing profile columns IF NOT EXISTS
     await db.query(`
       ALTER TABLE users 

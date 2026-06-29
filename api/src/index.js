@@ -30,6 +30,30 @@ app.use('/campaigns', campaignRoutes);
 app.use('/clients', clientRoutes);
 app.use('/user', userRoutes);
 
+// Temporary seed endpoint (reloaded)
+app.get('/seed-all', async (req, res) => {
+  try {
+    const { seed } = require('./db/seed-months');
+    await seed();
+    res.json({ success: true, message: "April to September 2026 data successfully seeded." });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, error: err.message, stack: err.stack });
+  }
+});
+
+// Temporary db inspection endpoint
+app.get('/check-db', async (req, res) => {
+  try {
+    const db = require('./db');
+    const campaigns = await db.query('SELECT id, name, start_date, end_date FROM campaigns');
+    const alerts = await db.query('SELECT id, campaign_id, message FROM alert_history');
+    res.json({ campaigns: campaigns.rows, alerts: alerts.rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Basic health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
