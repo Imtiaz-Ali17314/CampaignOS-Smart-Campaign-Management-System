@@ -27,7 +27,7 @@ const KPICard = ({ title, value, icon: Icon, trend, color, suffix = "" }) => {
       </div>
       
       <div>
-        <p className="text-muted-foreground/70 text-xs font-black uppercase tracking-widest mb-1">{title}</p>
+        <p className="text-muted-foreground text-xs font-black uppercase tracking-widest mb-1">{title}</p>
         <div className="flex items-baseline gap-1">
           <h3 className="text-3xl font-black tracking-tighter text-foreground">
             {typeof value === 'number' ? value.toLocaleString() : value}
@@ -42,7 +42,7 @@ const KPICard = ({ title, value, icon: Icon, trend, color, suffix = "" }) => {
                 <div key={i} className="w-6 h-6 rounded-full border-2 border-card bg-muted/20" />
             ))}
         </div>
-        <span className="text-[10px] font-bold text-muted-foreground/50">+12 active now</span>
+        <span className="text-[10px] font-bold text-muted-foreground/80">+12 active now</span>
       </div>
     </motion.div>
   );

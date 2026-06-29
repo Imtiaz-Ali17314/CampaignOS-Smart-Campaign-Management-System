@@ -56,7 +56,7 @@ const Step4ReviewSubmit = ({ formData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 px-2">
               {section.fields.map((field, fIdx) => (
                 <div key={fIdx} className="space-y-1.5 min-w-0">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50">{field.label}</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{field.label}</p>
                   <p className="text-xs text-foreground font-bold tracking-tight break-words uppercase">
                     {field.value}
                   </p>

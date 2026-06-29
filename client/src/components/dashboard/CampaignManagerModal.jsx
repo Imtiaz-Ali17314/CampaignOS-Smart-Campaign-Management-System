@@ -240,7 +240,7 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                         <h2 className="text-2xl font-black tracking-tight uppercase italic">
                             {campaign ? 'Strategic' : 'Launch'} <span className="gradient-text">{campaign ? 'Pivot' : 'Campaign'}</span>
                         </h2>
-                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-60">Operations Command Center</p>
+                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-90">Operations Command Center</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -263,11 +263,11 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                 <form id="campaign-form" onSubmit={handleSubmit} className="space-y-12">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Campaign Identity</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Campaign Identity</label>
                             <input type="text" required value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-muted-foreground/40" placeholder="Enter campaign name..." />
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Target Brand Portfolio</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Target Brand Portfolio</label>
                             <div className="relative group">
                                 <select required value={formData.client_id} onChange={(e) => setFormData(prev => ({ ...prev, client_id: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer">
                                     <option value="" className="bg-card text-foreground">Select Client...</option>
@@ -320,14 +320,14 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Allocated Budget ($)</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Allocated Budget ($)</label>
                             <div className="relative">
                                 <div className="absolute left-6 top-1/2 -translate-y-1/2 text-primary font-black">$</div>
                                 <input type="number" required value={formData.budget} onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl pl-12 pr-6 font-bold text-sm" />
                             </div>
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Strategic Status</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Strategic Status</label>
                             <div className="relative">
                                 <select value={formData.status} onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm appearance-none cursor-pointer">
                                     <option value="active" className="bg-card text-foreground">Active Execution</option>
@@ -338,11 +338,11 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                             </div>
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Initiation Date</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Initiation Date</label>
                             <input type="date" required value={formData.start_date} onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm" />
                         </div>
                         <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Flight End Date</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Flight End Date</label>
                             <input type="date" value={formData.end_date} onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))} className="w-full h-14 bg-muted/20 border border-border/40 rounded-2xl px-6 font-bold text-sm" />
                         </div>
                     </div>
@@ -385,7 +385,7 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                             {aiSuggestions.headlines.map((h, i) => (
                                                 <div key={i} onClick={() => adoptAsset('headlines', h)} className={`p-4 border rounded-2xl text-xs font-bold leading-relaxed relative pr-12 cursor-pointer transition-all ${isAdopted('headlines', h) ? 'bg-primary/10 border-primary' : 'bg-muted/20 border-border/40 hover:border-primary/40'}`}>
                                                     {h}
-                                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('headlines', h) ? 'text-primary' : 'text-muted-foreground/30'}`}>
+                                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('headlines', h) ? 'text-primary' : 'text-muted-foreground/70'}`}>
                                                         {isAdopted('headlines', h) ? <Check size={14} /> : <PlusCircle size={14} />}
                                                     </div>
                                                 </div>
@@ -400,7 +400,7 @@ const CampaignManagerModal = ({ isOpen, onClose, campaign = null, onComplete }) 
                                             {aiSuggestions.socialPosts.map((p, i) => (
                                                 <div key={i} onClick={() => adoptAsset('socialPosts', p)} className={`p-4 border rounded-2xl text-xs font-bold leading-relaxed relative pr-12 cursor-pointer transition-all ${isAdopted('socialPosts', p) ? 'bg-secondary/10 border-secondary' : 'bg-muted/20 border-border/40 hover:border-secondary/40'}`}>
                                                     {p}
-                                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('socialPosts', p) ? 'text-secondary' : 'text-muted-foreground/30'}`}>
+                                                    <div className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isAdopted('socialPosts', p) ? 'text-secondary' : 'text-muted-foreground/70'}`}>
                                                         {isAdopted('socialPosts', p) ? <Check size={14} /> : <PlusCircle size={14} />}
                                                     </div>
                                                 </div>

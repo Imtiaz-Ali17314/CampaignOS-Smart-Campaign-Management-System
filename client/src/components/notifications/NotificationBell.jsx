@@ -167,7 +167,7 @@ const NotificationBell = () => {
               {view === 'alerts' ? (
                 <button 
                   onClick={() => setNotifications([])}
-                  className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-rose-500 transition-colors"
+                  className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-rose-500 transition-colors"
                 >
                   Flush All
                 </button>
@@ -207,11 +207,11 @@ const NotificationBell = () => {
                               <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary/80 truncate">
                                 {notif.campaign_name || 'System Broadcast'}
                               </span>
-                              <span className="text-[9px] font-bold text-muted-foreground/60 uppercase flex items-center gap-1 shrink-0">
+                              <span className="text-[9px] font-bold text-muted-foreground uppercase flex items-center gap-1 shrink-0">
                                 {format(new Date(notif.triggered_at), 'MMM d, HH:mm')}
                               </span>
                             </div>
-                            <p className="text-sm text-foreground/70 leading-snug font-medium line-clamp-3">
+                            <p className="text-sm text-foreground/90 leading-snug font-medium line-clamp-3">
                               {notif.message}
                             </p>
                           </div>
@@ -225,8 +225,8 @@ const NotificationBell = () => {
                       <div className="p-5 bg-muted/20 rounded-3xl mb-4 border border-border/40 opacity-30">
                         <Bell size={40} strokeWidth={1} />
                       </div>
-                      <p className="text-sm font-black tracking-tight text-foreground uppercase tracking-widest opacity-30">System Clear</p>
-                      <p className="text-[10px] font-bold mt-1 text-muted-foreground/40 uppercase max-w-[150px]">No critical threshold violations detected.</p>
+                      <p className="text-sm font-black tracking-tight text-foreground uppercase tracking-widest opacity-80">System Clear</p>
+                      <p className="text-[10px] font-bold mt-1 text-muted-foreground uppercase max-w-[150px]">No critical threshold violations detected.</p>
                       
                       <button 
                         onClick={handleFireTestAlert}
@@ -247,7 +247,7 @@ const NotificationBell = () => {
                               <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary truncate">
                                 {notif.campaign_name || 'System Broadcast'}
                               </span>
-                              <span className="text-[9px] font-bold text-muted-foreground/60 uppercase flex items-center gap-1 shrink-0">
+                              <span className="text-[9px] font-bold text-muted-foreground uppercase flex items-center gap-1 shrink-0">
                                 <Clock size={10} strokeWidth={3} />
                                 {format(new Date(notif.triggered_at), 'HH:mm')}
                               </span>

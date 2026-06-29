@@ -65,14 +65,14 @@ const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
       </div>
 
       <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto overflow-x-hidden pt-2 scrollbar-hide">
-        {!isCollapsed && <p className="px-3 text-[10px] font-black tracking-widest text-muted-foreground/60 uppercase mb-3">Principal Menu</p>}
+        {!isCollapsed && <p className="px-3 text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-3">Principal Menu</p>}
         {menuItems.map((item) => (
           <NavLink 
             key={item.path}
             to={item.path} 
             className={({ isActive }) => `
               group flex items-center p-3 rounded-xl transition-all duration-300 relative
-              ${isActive ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:bg-muted/50'}
+              ${isActive ? 'bg-primary/10 text-primary font-bold' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}
             `}
           >
             <item.icon size={20} className="shrink-0" />
@@ -92,15 +92,15 @@ const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
         <div className="pt-8 pb-4">
           {!isCollapsed && (
             <div className="flex items-center justify-between px-3 mb-4">
-              <p className="text-[10px] font-black tracking-widest text-muted-foreground/60 uppercase">Portfolio</p>
-              <Users size={12} className="text-muted-foreground/40" />
+              <p className="text-[10px] font-black tracking-widest text-muted-foreground uppercase">Portfolio</p>
+              <Users size={12} className="text-muted-foreground/80" />
             </div>
           )}
           <div className="space-y-1">
             {/* NEW: Campaigns Link that resets filter */}
             <button 
               onClick={() => handleClientClick(null)}
-              className={`w-full flex items-center p-3 rounded-xl text-sm transition-all ${!activeClient ? 'bg-primary/5 text-primary font-bold' : 'text-muted-foreground hover:bg-muted/30'} ${isCollapsed ? 'justify-center' : ''}`}
+              className={`w-full flex items-center p-3 rounded-xl text-sm transition-all ${!activeClient ? 'bg-primary/5 text-primary font-bold' : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'} ${isCollapsed ? 'justify-center' : ''}`}
             >
                <BarChart3 size={16} className={`shrink-0 ${isCollapsed ? '' : 'mr-3'}`} />
                {!isCollapsed && <span>Campaigns Overview</span>}
@@ -126,7 +126,7 @@ const Sidebar = ({ campaigns, onClientSelect, activeClient }) => {
             to="/settings" 
             className={({ isActive }) => `
               flex items-center p-3 rounded-xl transition-all duration-300
-              ${isActive ? 'bg-card border border-border shadow-sm text-primary' : 'text-muted-foreground hover:bg-muted/50'}
+              ${isActive ? 'bg-card border border-border shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}
             `}
           >
             <Settings size={20} className="shrink-0" />

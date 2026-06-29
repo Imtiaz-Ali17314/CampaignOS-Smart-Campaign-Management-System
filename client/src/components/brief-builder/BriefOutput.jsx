@@ -158,7 +158,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
             <h1 className="text-5xl font-black text-foreground tracking-tight leading-none uppercase italic">
               {result.campaignTitle}
             </h1>
-            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/40">
+            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">
                Flight Intelligence & Narrative Framework
             </div>
           </div>
@@ -176,7 +176,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
                 {result.headlines.map((headline, idx) => (
                   <div key={idx} className="p-6 bg-muted/5 rounded-3xl border border-border/30 relative overflow-hidden group hover:border-primary/40 transition-colors">
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
-                    <p className="text-foreground/80 font-black italic text-sm tracking-tight leading-relaxed">"{headline}"</p>
+                    <p className="text-foreground font-black italic text-sm tracking-tight leading-relaxed">"{headline}"</p>
                   </div>
                 ))}
               </div>
@@ -191,7 +191,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
                 <h3 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px]">Visual Grammar</h3>
               </div>
               <div className="p-8 bg-rose-500/[0.02] rounded-[2.5rem] border border-rose-500/10 backdrop-blur-3xl">
-                <p className="text-foreground/70 text-xs leading-loose font-bold tracking-widest uppercase">
+                <p className="text-foreground/90 text-xs leading-loose font-bold tracking-widest uppercase">
                   {result.visualDirection}
                 </p>
               </div>
@@ -209,7 +209,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
                 {result.channels.map((channel, idx) => (
                   <div key={idx} className="space-y-3">
                     <div className="flex justify-between items-end">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{channel.name}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{channel.name}</span>
                       <span className="text-sm font-black text-emerald-500 tracking-tighter">{channel.budgetPct}%</span>
                     </div>
                     <div className="h-1.5 w-full bg-muted/20 rounded-full overflow-hidden">
@@ -234,7 +234,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
                 <h3 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px]">Vocal Signature</h3>
               </div>
               <div className="p-8 bg-orange-500/[0.02] rounded-[2.5rem] border border-orange-500/10 backdrop-blur-3xl italic">
-                <p className="text-foreground/70 text-xs leading-loose font-bold tracking-widest uppercase">
+                <p className="text-foreground/90 text-xs leading-loose font-bold tracking-widest uppercase">
                   {result.toneGuide}
                 </p>
               </div>
@@ -242,7 +242,7 @@ const BriefOutput = ({ result, onReset, onLaunch }) => {
           </div>
           
           <div className="pt-16 border-t border-border/20 text-center">
-            <div className="inline-block px-10 py-4 bg-muted/5 border border-border/40 rounded-2xl text-[9px] font-black tracking-[0.5em] text-muted-foreground/30 uppercase italic">
+            <div className="inline-block px-10 py-4 bg-muted/5 border border-border/40 rounded-2xl text-[9px] font-black tracking-[0.5em] text-muted-foreground/70 uppercase italic">
                 Generated via CampaignOS Neural Engine Model 4.0 // 2026 Standard
             </div>
           </div>

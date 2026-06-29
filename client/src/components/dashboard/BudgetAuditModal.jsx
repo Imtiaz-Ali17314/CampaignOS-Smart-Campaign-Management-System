@@ -160,7 +160,7 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
               </div>
               <div>
                 <h2 className="text-2xl font-black tracking-tight">Deep Budget <span className="gradient-text">Audit</span></h2>
-                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-60">Financial Efficiency Protocol Active</p>
+                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-90">Financial Efficiency Protocol Active</p>
               </div>
           </div>
           <button 
@@ -286,7 +286,7 @@ const BudgetAuditModal = ({ stats, campaigns, onClose }) => {
                                 {rec.desc}
                               </p>
                            </div>
-                           <ArrowUpRight size={14} className="text-muted-foreground/40 group-hover:text-primary transition-colors duration-300" />
+                           <ArrowUpRight size={14} className="text-muted-foreground group-hover:text-primary transition-colors duration-300" />
                         </div>
                       </motion.div>
                     ))}

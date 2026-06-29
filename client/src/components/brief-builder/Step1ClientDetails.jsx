@@ -16,7 +16,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Building2 className="w-3 h-3" />
             Client Identity*
           </label>
@@ -32,7 +32,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <User className="w-3 h-3" />
             Industry Sector*
           </label>
@@ -48,7 +48,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Globe className="w-3 h-3" />
             Digital Presence (URL)*
           </label>
@@ -64,7 +64,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Users className="w-3 h-3" />
             Strategic Competitors
           </label>

@@ -156,12 +156,12 @@ const Settings = () => {
           <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="space-y-10">
             <div>
                 <h2 className="text-2xl font-black mb-1 truncate">Strategist Details</h2>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-60">Personal Identity & Specialization</p>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-90">Personal Identity & Specialization</p>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Full Identity</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Full Identity</label>
                 <input 
                     type="text" 
                     value={profileData.name}
@@ -171,7 +171,7 @@ const Settings = () => {
                 />
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Strategic Rank</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Strategic Rank</label>
                 <select 
                     value={profileData.rank}
                     onChange={(e) => setProfileData(prev => ({ ...prev, rank: e.target.value }))}
@@ -184,7 +184,7 @@ const Settings = () => {
                 </select>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Primary Specialty</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Primary Specialty</label>
                 <select 
                     value={profileData.specialty}
                     onChange={(e) => setProfileData(prev => ({ ...prev, specialty: e.target.value }))}
@@ -197,13 +197,13 @@ const Settings = () => {
                 </select>
               </div>
                <div className="space-y-3 opacity-50 cursor-not-allowed">
-                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Authentication Key (Email)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Authentication Key (Email)</label>
                 <input type="email" disabled value={profileData.email} className="w-full h-14 bg-muted/20 border border-border/20 rounded-2xl px-6 font-bold text-sm italic" />
               </div>
             </div>
 
             <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Operational Bio / Mission</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Operational Bio / Mission</label>
                 <textarea 
                     value={profileData.bio}
                     onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
@@ -222,13 +222,13 @@ const Settings = () => {
             
             <div>
                 <h2 className="text-2xl font-black mb-1">AI Intelligence Core</h2>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-60">Tuning the Neural Strategic Engine</p>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-90">Tuning the Neural Strategic Engine</p>
             </div>
 
             <div className="space-y-8 relative">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Standard Intelligence Model</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Standard Intelligence Model</label>
                         <select 
                             value={aiSettings.model}
                             onChange={(e) => setAiSettings(prev => ({ ...prev, model: e.target.value }))}
@@ -240,7 +240,7 @@ const Settings = () => {
                         </select>
                     </div>
                     <div className="space-y-3">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Response Velocity</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Response Velocity</label>
                         <div className="h-14 bg-card border border-border/40 rounded-2xl px-6 flex items-center justify-between">
                             <span className="text-xs font-black uppercase tracking-widest opacity-40">Streaming Mode</span>
                             <div 
@@ -258,7 +258,7 @@ const Settings = () => {
 
                 <div className="space-y-4">
                     <div className="flex items-center justify-between px-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">Creativity Index (Temperature)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Creativity Index (Temperature)</label>
                         <span className="text-[10px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-lg tracking-widest">{aiSettings.creativity / 100} (Dynamic)</span>
                     </div>
                     <input 
@@ -267,14 +267,14 @@ const Settings = () => {
                         onChange={(e) => setAiSettings(prev => ({ ...prev, creativity: parseInt(e.target.value) }))}
                         className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-primary" 
                     />
-                    <div className="flex justify-between text-[8px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] px-1">
+                    <div className="flex justify-between text-[8px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] px-1">
                         <span>Literal</span>
                         <span>Hallucinatory</span>
                     </div>
                 </div>
 
                 <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">System Persona / Instructions</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">System Persona / Instructions</label>
                     <textarea 
                         value={aiSettings.persona}
                         onChange={(e) => setAiSettings(prev => ({ ...prev, persona: e.target.value }))}
@@ -290,7 +290,7 @@ const Settings = () => {
           <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
             <div>
                 <h2 className="text-2xl font-black mb-1">Alert Engine</h2>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-60">Predictive Anomaly & Performance Triggers</p>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-90">Predictive Anomaly & Performance Triggers</p>
             </div>
             
             <div className="space-y-4">
@@ -303,7 +303,7 @@ const Settings = () => {
                     <div key={item.id} className="p-6 bg-card border border-border/40 rounded-[2.5rem] flex items-center justify-between group hover:border-primary/20 transition-all">
                         <div className="max-w-[70%]">
                             <p className="text-sm font-black mb-1">{item.label}</p>
-                            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed opacity-60">{item.desc}</p>
+                            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed opacity-90">{item.desc}</p>
                         </div>
                         <div 
                             onClick={() => setNotificationSettings(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
@@ -324,13 +324,13 @@ const Settings = () => {
           <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="space-y-10">
             <div>
                 <h2 className="text-2xl font-black mb-1">Security & Key Matrix</h2>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-60">Credential Encryption & VPC Access</p>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-90">Credential Encryption & VPC Access</p>
             </div>
 
             <div className="space-y-8">
                 <div className="space-y-3">
                     <div className="flex items-center justify-between px-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">AI Service API Key</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">AI Service API Key</label>
                         <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 rounded-lg">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                             <span className="text-[8px] font-black uppercase text-emerald-500 tracking-widest">Active</span>
@@ -341,7 +341,7 @@ const Settings = () => {
                             type="password" 
                             disabled
                             value={securitySettings.apiKey}
-                            className="w-full h-14 bg-muted/10 border border-border/40 rounded-2xl px-6 font-mono text-xs text-muted-foreground/60 italic" 
+                            className="w-full h-14 bg-muted/10 border border-border/40 rounded-2xl px-6 font-mono text-xs text-muted-foreground italic" 
                         />
                         <button className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-muted/20 rounded-lg transition-all text-[8px] font-black uppercase tracking-widest text-primary">
                             Rotate Key
@@ -357,7 +357,7 @@ const Settings = () => {
                             </div>
                             <p className="text-sm font-black">Secure VPC Tunnel</p>
                         </div>
-                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed opacity-60">Encrypt all data packets via custom virtual private cloud</p>
+                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed opacity-90">Encrypt all data packets via custom virtual private cloud</p>
                         <button 
                             onClick={() => setSecuritySettings(prev => ({ ...prev, vpcTunnel: !prev.vpcTunnel }))}
                             className={`w-full py-3 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest ${securitySettings.vpcTunnel ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-muted/5 border-border/40 text-muted-foreground'}`}
@@ -372,7 +372,7 @@ const Settings = () => {
                             </div>
                             <p className="text-sm font-black">Two-Factor Strat</p>
                         </div>
-                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed opacity-60">Required verification for all campaign archival actions</p>
+                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest leading-relaxed opacity-90">Required verification for all campaign archival actions</p>
                         <button 
                             onClick={() => setSecuritySettings(prev => ({ ...prev, twoFactor: !prev.twoFactor }))}
                             className={`w-full py-3 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest ${securitySettings.twoFactor ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-muted/5 border-border/40 text-muted-foreground'}`}
@@ -388,10 +388,10 @@ const Settings = () => {
         return (
           <div className="p-20 text-center flex flex-col items-center justify-center space-y-4">
             <div className="p-6 bg-muted/20 rounded-[2rem]">
-                <Shield size={40} className="text-muted-foreground/40" />
+                <Shield size={40} className="text-muted-foreground" />
             </div>
-            <h2 className="font-black uppercase tracking-[0.3em] overflow-hidden text-sm text-muted-foreground/60">Module Error</h2>
-            <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Contact system architect</p>
+            <h2 className="font-black uppercase tracking-[0.3em] overflow-hidden text-sm text-muted-foreground">Module Error</h2>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Contact system architect</p>
           </div>
         );
     }

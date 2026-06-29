@@ -80,7 +80,7 @@ const DateRangePicker = ({ onRangeChange }) => {
           ) : (
             <div className="p-3 space-y-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Configure Span</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Configure Span</span>
                 <button 
                   onClick={() => setIsCustomMode(false)}
                   className="text-[10px] font-bold text-primary hover:underline"
@@ -90,7 +90,7 @@ const DateRangePicker = ({ onRangeChange }) => {
               </div>
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 px-1">Start Date</label>
+                  <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1">Start Date</label>
                   <input 
                     type="date" 
                     value={customRange.start}
@@ -99,7 +99,7 @@ const DateRangePicker = ({ onRangeChange }) => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 px-1">End Date</label>
+                  <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1">End Date</label>
                   <input 
                     type="date" 
                     value={customRange.end}

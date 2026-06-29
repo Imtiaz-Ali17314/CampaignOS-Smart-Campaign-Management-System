@@ -348,7 +348,7 @@ const Dashboard = () => {
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   {selectedClient ? `${selectedClient} Portfolio` : 'Global System'}
                 </div>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-90">
                   {selectedClient ? 'Filtered View' : 'Last Sync: 2m ago'}
                 </span>
               </div>
@@ -394,7 +394,7 @@ const Dashboard = () => {
                     className="absolute right-0 mt-3 w-64 bg-card border border-border/60 rounded-3xl shadow-2xl z-[100] p-3 backdrop-blur-xl"
                   >
                     <div className="p-4 mb-2 border-b border-border/40">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">{userProfile.rank || 'Strategist'}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">{userProfile.rank || 'Strategist'}</p>
                       <p className="text-sm font-black text-foreground truncate">{userProfile.name || userProfile.email}</p>
                     </div>
 

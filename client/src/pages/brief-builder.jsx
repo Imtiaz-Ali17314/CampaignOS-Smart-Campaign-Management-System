@@ -261,7 +261,7 @@ const BriefBuilder = () => {
                           ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-110' 
                           : currentStep > idx 
                           ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-                          : 'bg-card border-border text-muted-foreground/40'
+                          : 'bg-card border-border text-muted-foreground/80'
                       }`}
                     >
                       {currentStep > idx ? '✓' : idx + 1}

@@ -133,7 +133,7 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
               {['name', 'status', 'budget', 'spend', 'conversions'].map((key) => (
                 <th 
                   key={key} 
-                  className="px-8 py-5 text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors"
+                  className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] cursor-pointer hover:text-primary transition-colors"
                   onClick={() => handleSort(key)}
                 >
                   <div className="flex items-center gap-2">
@@ -152,7 +152,7 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
               <tr key={campaign.id} className="hover:bg-primary/[0.02] transition-colors group">
                 <td className="px-8 py-6">
                   <div className="font-black text-sm tracking-tight text-foreground group-hover:text-primary transition-colors">{campaign.name}</div>
-                  <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-0.5">{campaign.client_name}</div>
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{campaign.client_name}</div>
                 </td>
                 <td className="px-8 py-6">
                   <StatusPill status={campaign.status} />
@@ -253,7 +253,7 @@ const CampaignTable = ({ campaigns, onAudit, onToggleStatus, onComplete, onArchi
       </div>
 
       <div className="p-6 bg-muted/5 border-t border-border/20 flex items-center justify-between">
-        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">
           Viewing <span className="text-foreground">{((currentPage - 1) * rowsPerPage) + 1}</span> - <span className="text-foreground">{Math.min(currentPage * rowsPerPage, filteredCampaigns.length)}</span> of <span className="text-foreground">{filteredCampaigns.length}</span> strategies
         </p>
         <div className="flex gap-3">

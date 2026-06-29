@@ -24,7 +24,7 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <MessageSquareText className="w-3 h-3" />
             Narrative Tone
           </label>
@@ -41,7 +41,7 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Image className="w-3 h-3" />
             Visual Aesthetic
           </label>
@@ -58,7 +58,7 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Palette className="w-3 h-3" />
             Primary Hue Spectrum
           </label>
@@ -75,7 +75,7 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <CheckCircle size={12} className="text-emerald-500" />
             Strategic Do's
           </label>
@@ -89,7 +89,7 @@ const Step3CreativePreferences = ({ formData, setFormData }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <XCircle size={12} className="text-rose-500" />
             Strategic Don'ts
           </label>

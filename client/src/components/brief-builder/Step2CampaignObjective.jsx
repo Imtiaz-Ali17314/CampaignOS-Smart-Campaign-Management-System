@@ -22,7 +22,7 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
 
       <div className="space-y-8">
         <div className="space-y-4">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Target className="w-3 h-3" />
             Core Objective*
           </label>
@@ -62,7 +62,7 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <Users2 className="w-3 h-3" />
             Segment Description*
           </label>
@@ -77,7 +77,7 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
             <CircleDollarSign className="w-3 h-3" />
             Budgetary Commitment (USD)*
           </label>
