@@ -76,9 +76,9 @@ const Login = () => {
                     <form onSubmit={handleLogin} className="relative space-y-8">
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-2">Access Token (Email)</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Access Token (Email)</label>
                                 <div className="relative group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/5 rounded-xl border border-white/10 text-white/40 group-focus-within:text-primary transition-colors">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-foreground/5 border border-foreground/10 text-foreground/40 group-focus-within:text-primary transition-colors rounded-xl">
                                         <Mail size={16} />
                                     </div>
                                     <input 
@@ -87,15 +87,15 @@ const Login = () => {
                                         placeholder="commander@campaign-os.com"
                                         value={credentials.email}
                                         onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
-                                        className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl pl-16 pr-6 text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-white/10"
+                                        className="w-full h-16 bg-foreground/5 border border-foreground/10 rounded-2xl pl-16 pr-6 text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/40"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-2">Security Key (Password)</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 ml-2">Security Key (Password)</label>
                                 <div className="relative group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/5 rounded-xl border border-white/10 text-white/40 group-focus-within:text-secondary transition-colors">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-foreground/5 border border-foreground/10 text-foreground/40 group-focus-within:text-secondary transition-colors rounded-xl">
                                         <Lock size={16} />
                                     </div>
                                     <input 
@@ -104,7 +104,7 @@ const Login = () => {
                                         placeholder="••••••••••••"
                                         value={credentials.password}
                                         onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                                        className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl pl-16 pr-6 text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all placeholder:text-white/10"
+                                        className="w-full h-16 bg-foreground/5 border border-foreground/10 rounded-2xl pl-16 pr-6 text-foreground font-bold text-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all placeholder:text-muted-foreground/40"
                                     />
                                 </div>
                             </div>
@@ -140,10 +140,10 @@ const Login = () => {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={status === 'loading' || status === 'success'}
-                            className="w-full h-16 bg-white text-black font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:shadow-white/10 transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                            className="w-full h-16 bg-foreground text-background font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:shadow-primary/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
                         >
                             {status === 'loading' ? (
-                                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-background/20 border-t-background rounded-full animate-spin" />
                             ) : status === 'success' ? (
                                 <CheckCircle2 size={20} />
                             ) : (
@@ -155,20 +155,20 @@ const Login = () => {
                         </motion.button>
 
                         <div className="text-center pt-2">
-                             <Link to="/register" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-primary transition-colors">
-                                New commander? <span className="text-white border-b border-white/20">Sign Up</span>
+                             <Link to="/register" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+                                New commander? <span className="text-foreground border-b border-foreground/20 hover:text-primary hover:border-primary transition-all">Sign Up</span>
                              </Link>
                         </div>
                     </form>
                 </div>
 
                 {/* Footer Info */}
-                <div className="mt-8 flex items-center justify-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                <div className="mt-8 flex items-center justify-center gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
                     <div className="flex items-center gap-2">
                         <ShieldCheck size={14} className="text-primary" />
                         AES-256 Bit Encryption
                     </div>
-                    <div className="w-1 h-1 bg-white/10 rounded-full" />
+                    <div className="w-1 h-1 bg-foreground/10 rounded-full" />
                     <div className="flex items-center gap-2">
                         <BarChart3 size={14} className="text-primary" />
                         System Ready
