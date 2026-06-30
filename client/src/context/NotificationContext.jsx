@@ -16,19 +16,37 @@ export const NotificationProvider = ({ children }) => {
 
   const getIcon = (type) => {
     switch (type) {
-      case 'success': return <CheckCircle2 size={18} className="text-emerald-500" />;
-      case 'error': return <XCircle size={18} className="text-rose-500" />;
-      case 'warning': return <AlertCircle size={18} className="text-amber-500" />;
-      default: return <Info size={18} className="text-primary" />;
+      case 'success': return <CheckCircle2 size={20} className="text-emerald-500" />;
+      case 'error': return <XCircle size={20} className="text-rose-500" />;
+      case 'warning': return <AlertCircle size={20} className="text-amber-500" />;
+      default: return <Info size={20} className="text-primary" />;
     }
   };
 
-  const getStyle = (type) => {
+  const getIconContainerStyle = (type) => {
     switch (type) {
-        case 'success': return 'bg-emerald-500 border-emerald-600 shadow-emerald-500/20 text-white';
-        case 'error': return 'bg-rose-500 border-rose-600 shadow-rose-500/20 text-white';
-        case 'warning': return 'bg-amber-500 border-amber-600 shadow-amber-500/20 text-white';
-        default: return 'bg-primary border-primary/20 shadow-primary/20 text-white';
+      case 'success': return 'bg-emerald-500/10 border border-emerald-500/20';
+      case 'error': return 'bg-rose-500/10 border border-rose-500/20';
+      case 'warning': return 'bg-amber-500/10 border border-amber-500/20';
+      default: return 'bg-primary/10 border border-primary/20';
+    }
+  };
+
+  const getLabelColor = (type) => {
+    switch (type) {
+      case 'success': return 'text-emerald-500';
+      case 'error': return 'text-rose-500';
+      case 'warning': return 'text-amber-500';
+      default: return 'text-primary';
+    }
+  };
+
+  const getLabel = (type) => {
+    switch (type) {
+      case 'success': return 'Success Protocol';
+      case 'error': return 'Error Alert';
+      case 'warning': return 'Warning Alert';
+      default: return 'System Transmission';
     }
   };
 
@@ -42,20 +60,24 @@ export const NotificationProvider = ({ children }) => {
             initial={{ opacity: 0, y: 50, x: 20 }}
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed bottom-8 right-8 z-[9999] min-w-[320px] flex items-center gap-4 p-5 rounded-[2rem] border shadow-2xl ${getStyle(notification.type)}`}
+            className="fixed bottom-8 right-8 z-[9999] min-w-[340px] max-w-[450px] flex items-start gap-4 p-5 rounded-2xl border border-border/80 bg-card/95 shadow-2xl backdrop-blur-xl text-foreground"
           >
-            <div className="p-2.5 bg-white/10 rounded-2xl flex items-center justify-center">
+            <div className={`p-2 rounded-xl flex items-center justify-center shrink-0 ${getIconContainerStyle(notification.type)}`}>
               {getIcon(notification.type)}
             </div>
-            <div className="flex-1">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-0.5">System Transmission</p>
-              <p className="text-sm font-black leading-tight">{notification.message}</p>
+            <div className="flex-1 min-w-0 pt-0.5">
+              <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${getLabelColor(notification.type)}`}>
+                {getLabel(notification.type)}
+              </p>
+              <p className="text-sm font-semibold text-foreground/90 leading-snug break-words">
+                {notification.message}
+              </p>
             </div>
             <button 
               onClick={() => setNotification(null)}
-              className="p-2 hover:bg-black/5 rounded-xl text-white/40 hover:text-white transition-all"
+              className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-all shrink-0"
             >
-              <XCircle size={14} />
+              <XCircle size={16} />
             </button>
           </motion.div>
         )}

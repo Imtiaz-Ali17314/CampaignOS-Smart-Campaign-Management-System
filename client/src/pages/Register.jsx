@@ -139,10 +139,10 @@ const Register = () => {
                                 <motion.div 
                                     initial={{ opacity: 0, x: -10 }} 
                                     animate={{ opacity: 1, x: 0 }} 
-                                    className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-500"
+                                    className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-start gap-3 text-rose-500"
                                 >
-                                    <AlertCircle size={18} />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">{errorMsg}</span>
+                                    <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                                    <span className="text-xs font-semibold leading-relaxed break-words">{errorMsg}</span>
                                 </motion.div>
                             )}
 

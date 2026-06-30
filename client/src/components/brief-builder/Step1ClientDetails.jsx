@@ -28,7 +28,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
             placeholder="Search or enter brand name"
             className={`input-field ${errors.clientName ? 'border-rose-500/50' : ''}`}
           />
-          {errors.clientName && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.clientName}</p>}
+          {errors.clientName && <p className="text-xs font-semibold text-rose-500 mt-1.5">{errors.clientName}</p>}
         </div>
 
         <div className="space-y-2">
@@ -44,7 +44,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
             placeholder="e.g. FINTECH / AG-TECH"
             className={`input-field ${errors.industry ? 'border-rose-500/50' : ''}`}
           />
-          {errors.industry && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.industry}</p>}
+          {errors.industry && <p className="text-xs font-semibold text-rose-500 mt-1.5">{errors.industry}</p>}
         </div>
 
         <div className="space-y-2 md:col-span-2">
@@ -60,7 +60,7 @@ const Step1ClientDetails = ({ formData, setFormData, errors }) => {
             placeholder="https://platform.brand.com"
             className={`input-field ${errors.website ? 'border-rose-500/50' : ''}`}
           />
-          {errors.website && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.website}</p>}
+          {errors.website && <p className="text-xs font-semibold text-rose-500 mt-1.5">{errors.website}</p>}
         </div>
 
         <div className="space-y-2 md:col-span-2">

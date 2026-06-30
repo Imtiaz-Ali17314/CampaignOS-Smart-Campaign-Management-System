@@ -58,7 +58,7 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
               </label>
             ))}
           </div>
-          {errors.objective && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.objective}</p>}
+          {errors.objective && <p className="text-xs font-semibold text-rose-500 mt-1.5">{errors.objective}</p>}
         </div>
 
         <div className="space-y-2">
@@ -73,7 +73,7 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
             placeholder="e.g. TECH DECISION MAKERS AGED 25-45 IN URBAN HUBS..."
             className={`input-field h-32 resize-none uppercase text-[10px] tracking-widest font-black ${errors.targetAudience ? 'border-rose-500/50' : ''}`}
           />
-          {errors.targetAudience && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.targetAudience}</p>}
+          {errors.targetAudience && <p className="text-xs font-semibold text-rose-500 mt-1.5">{errors.targetAudience}</p>}
         </div>
 
         <div className="space-y-2">
@@ -89,7 +89,7 @@ const Step2CampaignObjective = ({ formData, setFormData, errors }) => {
             placeholder="MIN: 1,000"
             className={`input-field font-black ${errors.budget ? 'border-rose-500/50' : ''}`}
           />
-          {errors.budget && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">{errors.budget}</p>}
+          {errors.budget && <p className="text-xs font-semibold text-rose-500 mt-1.5">{errors.budget}</p>}
         </div>
       </div>
     </div>
