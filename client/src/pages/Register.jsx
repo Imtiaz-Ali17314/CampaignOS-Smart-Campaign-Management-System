@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, Zap, UserPlus } from 'lucide-react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const Register = () => {
+    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ email: '', password: '', confirmPassword: '' });
     const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
     const [errorMsg, setErrorMsg] = useState('');
@@ -24,18 +25,14 @@ const Register = () => {
         setErrorMsg('');
 
         try {
-            const response = await axios.post(`${API_URL}/auth/register`, {
+            await axios.post(`${API_URL}/auth/register`, {
                 email: credentials.email,
                 password: credentials.password
             });
-            const { token, user } = response.data;
-            
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
             
             setStatus('success');
             setTimeout(() => {
-                window.location.href = '/';
+                navigate('/login');
             }, 1500);
         } catch (err) {
             setStatus('error');
@@ -148,22 +145,37 @@ const Register = () => {
                                     <span className="text-[10px] font-black uppercase tracking-widest">{errorMsg}</span>
                                 </motion.div>
                             )}
+
+                            {status === 'success' && (
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9 }} 
+                                    animate={{ opacity: 1, scale: 1 }} 
+                                    className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3 text-emerald-500"
+                                >
+                                    <CheckCircle2 size={18} />
+                                    <span className="text-xs font-black uppercase tracking-widest">Registration successful! Redirecting...</span>
+                                </motion.div>
+                            )}
                         </AnimatePresence>
 
-                        <button 
-                            disabled={status === 'loading'}
+                        <motion.button 
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            disabled={status === 'loading' || status === 'success'}
                             type="submit"
                             className="w-full h-16 bg-foreground text-background font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:shadow-primary/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
                         >
                             {status === 'loading' ? (
                                 <div className="w-5 h-5 border-2 border-background/20 border-t-background rounded-full animate-spin" />
+                            ) : status === 'success' ? (
+                                <CheckCircle2 size={20} />
                             ) : (
                                 <>
                                     Establish Command
                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
-                        </button>
+                        </motion.button>
 
                         <div className="text-center pt-2">
                              <Link to="/login" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
