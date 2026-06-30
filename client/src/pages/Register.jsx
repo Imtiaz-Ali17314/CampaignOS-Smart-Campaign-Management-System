@@ -40,7 +40,12 @@ const Register = () => {
         } catch (err) {
             setStatus('error');
             if (err.response) {
-                setErrorMsg(err.response.data.error || 'Registration Failed');
+                if (err.response.data.errors && Array.isArray(err.response.data.errors)) {
+                    const messages = err.response.data.errors.map(e => e.msg).join(', ');
+                    setErrorMsg(messages || 'Registration Failed');
+                } else {
+                    setErrorMsg(err.response.data.error || 'Registration Failed');
+                }
             } else if (err.request) {
                 setErrorMsg('Infrastructure Offline: Check if API (3000) is running');
             } else {

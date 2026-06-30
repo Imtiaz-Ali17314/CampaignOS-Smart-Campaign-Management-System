@@ -32,7 +32,12 @@ const Login = () => {
         } catch (err) {
             setStatus('error');
             if (err.response) {
-                setErrorMsg(err.response.data.error || 'Authentication Failed');
+                if (err.response.data.errors && Array.isArray(err.response.data.errors)) {
+                    const messages = err.response.data.errors.map(e => e.msg).join(', ');
+                    setErrorMsg(messages || 'Authentication Failed');
+                } else {
+                    setErrorMsg(err.response.data.error || 'Authentication Failed');
+                }
             } else if (err.request) {
                 setErrorMsg('Infrastructure Offline: Check if API (3000) is running');
             } else {
