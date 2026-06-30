@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Sparkles, Wand2, Loader2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Sparkles, Wand2, Loader2, Menu } from 'lucide-react';
 import Step1ClientDetails from '../components/brief-builder/Step1ClientDetails';
 import Step2CampaignObjective from '../components/brief-builder/Step2CampaignObjective';
 import Step3CreativePreferences from '../components/brief-builder/Step3CreativePreferences';
@@ -41,6 +41,7 @@ const BriefBuilder = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { showNotification } = useNotification();
   const navigate = useNavigate();
 
@@ -229,15 +230,28 @@ const BriefBuilder = () => {
 
   return (
     <div className="flex bg-background min-h-screen text-foreground">
-      <Sidebar campaigns={campaigns} />
+      <Sidebar 
+        campaigns={campaigns} 
+        isMobileOpen={isMobileSidebarOpen}
+        setIsMobileOpen={setIsMobileSidebarOpen}
+      />
       
       <main className="flex-1 overflow-x-hidden pt-10 px-6 md:px-12 pb-20 scrollbar-hide">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <header className="mb-12 space-y-4">
-            <div className="status-pill bg-primary/10 text-primary">
-              <Sparkles className="w-3 h-3" />
-              Creative Intelligence Core
+            <div className="flex items-center gap-4">
+              <motion.div
+                whileHover={{ rotate: 90 }}
+                onClick={() => setIsMobileSidebarOpen(true)}
+                className="p-3.5 bg-primary rounded-2xl lg:hidden shadow-lg shadow-primary/20 cursor-pointer"
+              >
+                <Menu size={20} className="text-white" />
+              </motion.div>
+              <div className="status-pill bg-primary/10 text-primary">
+                <Sparkles className="w-3 h-3" />
+                Creative Intelligence Core
+              </div>
             </div>
             <h1 className="text-4xl font-black tracking-tight leading-none">
               Strategize <span className="gradient-text">Anywhere.</span>

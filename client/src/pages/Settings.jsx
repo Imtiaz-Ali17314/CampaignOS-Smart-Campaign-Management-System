@@ -13,7 +13,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ChevronLeft,
-  X
+  X,
+  Menu
 } from 'lucide-react';
 import Sidebar from '../components/dashboard/Sidebar';
 import campaignData from '../data/campaigns.json';
@@ -25,6 +26,7 @@ const Settings = () => {
   const activeTab = searchParams.get('tab') || 'profile';
   const { showNotification } = useNotification();
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // PRIMARY STRATEGIC STATES
   const [profileData, setProfileData] = useState({
@@ -399,11 +401,23 @@ const Settings = () => {
 
   return (
     <div className="flex bg-background min-h-screen text-foreground transition-colors duration-500">
-      <Sidebar campaigns={campaignData.campaigns} />
+      <Sidebar 
+        campaigns={campaignData.campaigns} 
+        isMobileOpen={isMobileSidebarOpen}
+        setIsMobileOpen={setIsMobileSidebarOpen}
+      />
       
       <main className="flex-1 overflow-x-hidden pt-10 px-6 md:px-12 pb-20">
-        <header className="max-w-4xl mx-auto mb-12 flex items-center justify-between">
-            <div className="flex items-center gap-6">
+        <header className="max-w-4xl mx-auto mb-12 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 sm:gap-6">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsMobileSidebarOpen(true)}
+                  className="p-3 bg-primary rounded-2xl lg:hidden shadow-lg shadow-primary/20 cursor-pointer flex items-center justify-center"
+                >
+                  <Menu size={18} className="text-white" />
+                </motion.div>
                 <motion.button 
                     whileHover={{ x: -5 }}
                     onClick={() => navigate('/')}

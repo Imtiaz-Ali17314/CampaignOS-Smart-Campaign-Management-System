@@ -60,12 +60,12 @@ const PerformanceTrend = ({ data }) => {
       animate={{ opacity: 1, scale: 1 }}
       className="bg-card p-6 rounded-2xl border border-border shadow-sm w-full h-[400px]"
     >
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h2 className="text-lg font-bold tracking-tight">Performance Trend</h2>
           <p className="text-sm text-muted-foreground">Historical data for selected range</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {['impressions', 'clicks', 'spend'].map((key) => (
             <button
               key={key}

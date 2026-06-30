@@ -40,6 +40,7 @@ const Dashboard = () => {
   const [dark, setDark] = useDarkMode();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const urlClient = searchParams.get('client');
   const [campaigns, setCampaigns] = useState([]);
@@ -323,6 +324,8 @@ const Dashboard = () => {
         campaigns={campaigns}
         onClientSelect={setSelectedClient}
         activeClient={selectedClient}
+        isMobileOpen={isMobileSidebarOpen}
+        setIsMobileOpen={setIsMobileSidebarOpen}
       />
 
       <main className="flex-1 overflow-x-hidden pt-6 sm:pt-10">
@@ -330,6 +333,7 @@ const Dashboard = () => {
           <div className="flex items-center gap-5">
             <motion.div
               whileHover={{ rotate: 90 }}
+              onClick={() => setIsMobileSidebarOpen(true)}
               className="p-3.5 bg-primary rounded-2xl lg:hidden shadow-lg shadow-primary/20 cursor-pointer"
             >
               <Menu size={20} className="text-white" />
